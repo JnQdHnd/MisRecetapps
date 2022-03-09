@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head th:replace="layout/layout :: head"></head>
+	<script th:src="@{/js/crea-receta.js}"></script>
+	<body>
+		<div class="container-fluid row justify-content-center px-0 mx-0" th:fragment="artefactoForm">		
+			<div class="card bg-white text-primary col-12 px-0 mx-0"> 	
+				<div class="card-header">
+					<div class="container-fluid mx-0 px-0">
+						<div class="row justify-content-between">
+	  						<div class="col-auto">
+	  							<div class="row justify-content-start text-nowrap flex-nowrap">
+									<h4 class="card-title" th:text="${titulo}"></h4>
+								</div>	
+							</div>
+							<div class="col-auto">
+								<div class="row justify-content-end text-nowrap flex-nowrap">
+									<button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fa fa-times text-primary fs-4" aria-hidden="true"></i>
+									</button>
+								</div>
+							</div>					
+						</div>
+					</div>	
+				</div>			
+				<div class="card-body">
+					<form id="formArtefacto" th:action="@{/receta/itemIncorporado}" th:object="${artefacto}" method="post" enctype="multipart/form-data">										
+						<div class="form-group row justify-content-between mb-2">		 
+							<label class="col-12 col-sm-12 col-md-3 col-lg-2 col-xl-2 col-form-label fs-6">Nombre:</label>	
+							<div class="col-12 col-sm-12 col-md col-lg col-xl">			
+								<input id="nombreArtefacto" name="nombreArtefacto" type="text" th:field="*{nombre}" class="form-control fs-6"/>
+								<small class="form-text text-warning" id="nombreArtefactoError" text="nombreArtefactoError" style="display:none"></small>
+							</div>
+						</div>	
+						<div class="row my-2">		
+							<label class="col-12 col-sm-12 col-md-3 col-lg-2 col-xl-2 fs-6 col-form-label">Consumo:</label>
+							<div class="col-12 col-sm-12 col-md-9 col-lg-10 col-xl-10">
+								<div class="input-group flex-nowrap">	
+									<input type="number" 
+										   id="consumoEnergetico" 
+										   name="consumoEnergetico"
+										   style="width: 50%;" 
+										   step="00.01" 
+										   th:field="*{consumoEnergetico}" 
+										   placeholder="100" 
+										   class="form-control text-center fs-6"
+										   th:value="${artefacto.consumoEnergetico} == 0 ? null : ${artefacto.consumoEnergetico}"/>
+									
+									<select id="unidadDeConsumo" name="unidadDeConsumo"
+											style="width: 50%;" 
+											th:class="${artefacto.unidadDeConsumo}==null or ${artefacto.unidadDeConsumo}== 0 ? 'form-select text-secondary fs-6' : 'form-select fs-6'" 
+											th:field="*{unidadDeConsumo}"
+											onchange="cambiaColorSelect(this)">
+										  <option th:value="0" th:selected="${artefacto.unidadDeConsumo} == null" hidden>Elegir unidad de medida...</option>
+									      <option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
+									      	      th:if="${unidad.tipoDeMedida.equals('consumoElectrico') || unidad.tipoDeMedida.equals('consumoGas')}" 
+									      	      th:value= "${unidad}" th:text="${unidad.simbolo}"
+									      	      th:title="${unidad.nombre}"
+									      	      th:selected="${unidad} == ${artefacto.unidadDeConsumo}"
+									      	      class="text-dark"></option>
+									</select>									
+								</div>
+								<div class="row">
+									<div class="col-6">
+										<small class="form-text text-warning" id="consumoEnergeticoError" text="consumoEnergeticoError" style="display:none"></small>
+									</div>
+									<div class="col-6">
+										<small class="form-text text-warning" id="unidadDeConsumoError" text="unidadDeConsumoError" style="display:none"></small>
+									</div>
+								</div>						
+							</div>								
+						</div>	
+						
+						<div class="row my-2">		
+							<label class="col-12 col-sm-12 col-md-6 col-lg-2 col-xl-2 fs-6 col-form-label text-nowrap">Medida de uso:</label>
+							<div class="pt-2 col">
+								<div class="col-12 col-sm-12 col-md-6 col-lg-2 col-xl-2 form-check form-check-inline flex-nowrap text-nowrap">
+									<input class="form-check-input fs-6" type="radio" name="esHorno" id="niveles" value="false" th:field="*{esHorno}">
+									<label class="form-check-label fs-6" for="niveles">Niveles&nbsp
+										<abbr class="text-decoration-none" title="Ejemplo: Bajo, Medio, Alto; 1, 2, 3, 4, 5...">
+											<i class="fa fa-question-circle-o fs-6" aria-hidden="true"></i>
+										</abbr>
+									</label>
+								</div>
+								<div class="col-12 col-sm-12 col-md-6 col-lg-2 col-xl-2 form-check form-check-inline flex-nowrap text-nowrap">
+									<input class="form-check-input fs-6" type="radio" name="esHorno" id="grados" value="true" th:field="*{esHorno}">
+									<label class="form-check-label fs-6" for="grados">Grados °C o °F&nbsp
+										<abbr class="text-decoration-none" title="Ejemplo: Como funciona un horno; 180°C, 240°F...">
+											<i class="fa fa-question-circle-o fs-6" aria-hidden="true"></i>
+										</abbr>
+									</label>
+								</div>
+							</div>								
+						</div>				
+						
+						<div class="form-group row justify-content-end mt-4">
+							<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
+								<input type="submit" th:value="${btnText}" class="btn btn-verdeagua col-12 fs-5" onclick="verificaArtefacto(); return false;"/>				
+							</div>
+						</div>
+						<div class="escondidos" name="escondidos">
+							<input type="hidden" th:field="*{id}"/>	
+						</div>
+					</form>	
+				</div>
+			</div> 
+		</div>
+		
+		<div th:replace="layout/layout :: footScripts"></div>		
+		
+		<script th:if="${artefacto.id}==null" type="text/javascript">
+			$(document).ready(function(){});
+			if($('#consumoEnergetico').val() == 0){
+				$('#consumoEnergetico').val(null);
+			}
+			if($('#unidadDeConsumo').val() == null || $('#unidadDeConsumo').val() == 0){
+				$('#unidadDeConsumo').val(0);
+			}
+		</script>
+	</body>
+	
+</html>

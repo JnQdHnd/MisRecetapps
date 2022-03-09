@@ -1,0 +1,16 @@
+----------------------------------------------------------------
+Mon Jan 31 09:06:47 CET 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance a816c00e-017e-af2c-0f6f-0000036beee0 
+on database directory memory:D:\Programacion\CursoSpringUdemy\Proyectos\MVC-JPA\miRecetApp\26a6ee2d-b5fa-402d-a8d7-2f028a5d48e9 with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@3b192d32 
+Loaded from file:/C:/Users/j_que/.m2/repository/org/eclipse/birt/runtime/org.apache.derby/10.11.1.1_v201605202053/org.apache.derby-10.11.1.1_v201605202053.jar
+java.vendor=Oracle Corporation
+java.runtime.version=11.0.2+9
+user.dir=D:\Programacion\CursoSpringUdemy\Proyectos\MVC-JPA\miRecetApp
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Mon Jan 31 09:06:49 CET 2022:
+Shutting down instance a816c00e-017e-af2c-0f6f-0000036beee0 on database directory memory:D:\Programacion\CursoSpringUdemy\Proyectos\MVC-JPA\miRecetApp\26a6ee2d-b5fa-402d-a8d7-2f028a5d48e9 with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@3b192d32 

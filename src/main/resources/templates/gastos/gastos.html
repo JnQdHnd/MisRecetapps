@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head th:replace="layout/layout :: head"></head>	
+	<body>
+		<header th:replace="layout/layout :: header"></header>	
+		<div class="container-fluid pt-0 pb-1 px-1 m-0 row justify-content-center">
+			<div class="card p-0 m-0 text-center bg-light">				
+				<div class="card-header text-start fw-bold">
+					<div class="row align-middle">
+						<span class="fs-2" th:text="${titulo}"></span>
+					</div>
+				</div>	
+				<div class="card-body pt-1" id="cuerpo">
+					<div class="row h-100 justify-content-center">
+						<div class="col-12 m-0">
+							<div class="row mt-1">
+								<div class="col-12 btn-group" role="group">
+									<input type="radio" class="btn-check" name="btnRadio" id="hogar" value="hogar" autocomplete="off" checked="checked">
+			  						<label class="btn btn-outline-primary fs-3 col-6" for="hogar">Hogar</label>		
+									<input type="radio" class="btn-check" name="btnRadio" id="empresa" value="empresa" autocomplete="off">
+									<label class="btn btn-outline-primary fs-3 col-6" for="empresa">Empresa</label>
+								</div>
+							</div>
+							<div class="row my-2" id="hogarSeleccionado">
+								<div class="col-12">
+									<a class="col-12 btn btn-verdeagua fs-2" style="padding-top: 10%; padding-bottom: 10%;" type="button" th:href="@{/gastoDivisible/listar}" th:text="${btnGastosConsumo}"></a>								
+								</div>
+							</div>	
+							<div class="row my-2" id="empresaSeleccionado" hidden>
+								<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 pb-1 pb-sm-1 pb-md-0 pb-lg-0 pb-xl-0 pe-md-1 pe-lg-1 pe-xl-1">
+									<a class="btn btn-celeste col-12  fs-2" style="padding-top: 20%; padding-bottom: 20%;" type="button" th:href="@{/gastoIndivisible/listar}" th:text="${btnGastosFijos}"></a>
+								</div>
+								<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 pt-1 pt-sm-1 pt-md-0 pt-lg-0 pt-xl-0 ps-md-1 ps-lg-1 ps-xl-1">
+									<a class="btn btn-verdeagua col-12  fs-2" style="padding-top: 20%; padding-bottom: 20%;" type="button" th:href="@{/gastoDivisible/listar}" th:text="${btnGastosConsumo}"></a>
+								</div>						
+							</div>
+						</div>
+					</div>	
+				</div>	
+			</div> 			
+		</div>	
+	
+		<footer th:replace="layout/layout :: footer"></footer>
+		<script th:src="@{/js/selecciona-gastos.js}"></script>		
+	</body>
+</html>

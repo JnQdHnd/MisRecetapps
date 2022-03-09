@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<script th:src="@{/js/crea-receta.js}"></script>
+	<body>
+		<div class="container-fluid row justify-content-center px-0 mx-0" th:fragment="productoForm">		
+			<div class="card bg-white text-success col-12 px-0 mx-0"> 	
+				<div class="card-header">
+					<div class="container-fluid mx-0 px-0">
+						<div class="row justify-content-between">
+	  						<div class="col-auto">
+	  							<div class="row justify-content-start text-nowrap flex-nowrap">
+									<h4 class="card-title" th:text="${titulo}"></h4>									
+								</div>	
+							</div>
+							<div class="col-auto">
+								<div class="row justify-content-end text-nowrap flex-nowrap">
+									<button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fa fa-times text-success fs-4" aria-hidden="true"></i>
+									</button>
+								</div>
+							</div>
+							<div id="videoMarco" style="display:none">
+								<div class="row justify-content-center my-1" >
+									<video class="col-12 col-sm-12 col-md-10 col-lg-7 col-xl-6" id="video" width="80%" ></video>	
+								</div>	
+							</div>				
+						</div>
+					</div>	
+				</div>			
+				<div class="card-body">
+					<form id="formProducto" th:action="@{/receta/itemIncorporado}" th:object="${producto}" method="post" enctype="multipart/form-data">										
+						<div class="form-group row justify-content-between mb-2">		 
+							<label class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-2 col-form-label fs-6">Nombre:</label>	
+							<div class="col-12 col-sm-12 col-md col-lg col-xl">		
+								<input id="nombreProducto" name="nombreProducto" type="text" th:field="*{nombre}" class="form-control fs-6"/>
+								<small class="form-text text-warning" id="nombreProductoError" text="nombreProductoError" style="display:none"></small>								
+							</div>
+						</div>	
+						<div class="form-group row my-2">		
+							<label class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-2 fs-6 col-form-label">Precio:</label>	
+							<div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-10">
+								<div class="row">
+									<div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 pe-xl-0 pe-lg-0 pb-1 pb-sm-1 pb-md-1 pb-lg-0 pb-xl-0">
+										<div class="input-group">
+											<span class="input-group-text fs-6 col-auto" style="width: 35px;text-align: center;">$</span>			
+											<input type="number" 
+													id="precio" 
+													step="0.01" min="0" 
+													placeholder="0.00" 
+													th:field="*{precio}" 
+													class="form-control text-center fs-6 col"/>
+										</div>
+										<small class="form-text text-warning" id="precioProductoError" text="precioProductoError" style="display:none"></small>
+									</div>
+									<div class="col-12 col-sm-12 col-md-12 col-lg col-xl ps-xl-1 ps-lg-1">	
+										<div class="input-group">			
+											<span class="input-group-text fs-6 col-auto" style="width: 47px; text-align: center;">los</span>				
+											<input type="number" 
+													id="cantidad" 
+													step="0.01" 
+													th:field="*{cantidad}" 
+													placeholder="1000" 
+													class="form-control text-center fs-6 col" />
+											<select id="unidadDeMedida" class="form-select text-secondary fs-6 col-auto" th:field="*{unidadDeMedida}" onchange="cambiaColorSelect(this)">
+												  <option style="color: rgb(192, 192, 192)" th:value="0" disabled="disabled" hidden>Elegir...</option>
+											      <option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
+											     		 th:if="${!unidad.tipoDeMedida.equals('consumoElectrico') && !unidad.tipoDeMedida.equals('consumoGas')}"
+											     		 th:value= "${unidad}" th:text="${unidad.simbolo}" th:title="${unidad.nombre}" class="text-dark" ></option>
+											</select>
+										</div>
+										<small class="form-text text-warning" id="cantidadProductoError" text="cantidadProductoError" style="display:none"></small>
+										<small class="form-text text-warning" id="unidadProductoError" text="unidadProductoError" style="display:none"></small>
+									</div>
+								</div>
+							</div>	
+						</div>
+						<div class="form-group row my-2">	
+							<label class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-2 col-form-label fs-6">Desperdicio (%):</label>	
+							<div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3">
+								<div class="input-group">			
+									<input id="desperdicio" class="form-control text-center fs-6" type="number" step="1" th:field="*{desperdicio}"/>
+									<span class="input-group-text fs-6">%</span>
+								</div>
+								<small class="form-text text-warning" id="desperdicioError" text="desperdicioError" style="display:none"></small>		
+							</div>
+						</div>			
+						<div class="form-group row my-2">		 
+							<label class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-2 col-form-label fs-6">Código:</label>	
+							<div class="col col-sm col-md col-lg col-xl me-xl-1 me-lg-1 pe-xl-0 pe-lg-0">		
+								<input type="text" th:field="*{codigoDeBarra}" class="form-control fs-6" id="result" th:errorclass="'form-control alert-danger fs-6'"/>
+								<small class="form-text text-warning" id="codigoError" text="codigoError"></small>
+								<small class="form-text text-warning" th:if="${#fields.hasErrors('codigoDeBarra')}" th:errors="*{codigoDeBarra}"></small>
+							</div>
+							<div class="col-12 col-sm-12 col-md-12 col-lg-auto col-xl-auto mt-1 mt-sm-1 mt-md-1 mt-lg-0 mt-xl-0 ps-lg-0 ms-lg-1 ps-xl-0 ms-xl-1">
+								<div class="row">
+									<div class="col-auto" id="sourceSelectPanel" style="display:none; width: 85px;">							
+										<div class="dropdown">							
+											<a class="btn btn-celeste dropdown-toggle col-auto" type="button" id="dropdownCamera" data-bs-toggle="dropdown" aria-expanded="false">							  					  	
+											  	<i class="fa fa-share me-1"></i>
+											  	<i class="bi bi-camera-fill "></i>
+										  	</a>							 
+										  	<ul class="col dropdown-menu" id="sourceSelect" aria-labelledby="dropdownCamera"></ul>	
+										  	<input type="hidden" id="idCam" value=""></input>						 
+										</div>			
+									</div>	
+									<div class="col">			
+										<a class="btn btn-celeste col-12" id="startButton" onclick="escanea(); return false;">Escanear Código&nbsp&nbsp<i class="fa fa-barcode fa-lg"></i></a>
+									</div>
+								</div>	
+							</div>
+						</div>
+						<div class="form-group row justify-content-end mt-4">
+							<div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-10">
+								<input type="submit" th:value="${btnText}" class="btn btn-verdeagua col-12 fs-5" onclick="verificaProducto(); return false;"/>				
+							</div>
+						</div>
+						<div class="escondidos" name="escondidos">
+							<input type="hidden" th:field="*{id}"/>	
+						</div>					
+					</form>	
+				</div>
+			</div>			
+		</div>
+		<script th:src="@{/js/zxing.js}"></script>
+		<script th:src="@{/js/zxing-js-implementacion.js}"></script>			
+		<script th:if="${producto.id}==null" type="text/javascript">
+			$(document).ready(function(){});		
+			$('#precio').val(null);
+			$('#cantidad').val(null);
+			$('#desperdicio').val(null);
+			$('#unidadDeMedida').val(0);
+		</script>			
+	</body>	
+</html>

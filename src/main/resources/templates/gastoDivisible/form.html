@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="layout/layout :: head"></head>
+	<body>	
+		<header th:replace="layout/layout :: header"></header>	
+		<div class="container-fluid pt-0 pb-1 px-1 m-0 row justify-content-center">	
+			<div class="card bg-primary text-white col-lg-10 col-xl-9 px-0"> 	
+				<div class="card-header">
+					<div class="col-auto">
+						<span class="card-title fs-3" th:text="${titulo}"></span>									
+					</div>																								
+				</div>			
+				<div class="card-body pt-0 pt-sm-0 pt-md-2 pt-lg-2 pt-xl-2">
+					<form th:action="@{/gastoDivisible/form}" th:object="${gastoDivisible}" method="post" enctype="multipart/form-data">						
+						<div class="form-group row justify-content-between mb-1">		 
+							<label class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 fs-5 col-form-label">Servicio:</label>
+							<div class="col-12 col-sm-12 col-md-12 col-lg col-xl">	
+								<select id="nombre" class="form-select fs-5" th:field="*{nombre}" th:errorclass="'form-select fs-5 alert-danger'">
+									  <option style="color: rgb(192, 192, 192)" th:value="0" disabled="disabled" hidden>Elegir servicio...</option>
+								      <option th:each="servicio : ${T(miRecetApp.app.model.entity.Servicio).values()}" 
+								      	      th:value= "${servicio.nombre}" th:text="${servicio.nombre}"></option>
+								</select>
+								<small class="form-text text-warning fs-6" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+							</div>	 
+						</div>	
+						<div class="row my-2">		 
+							<label class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3  fs-5 col-form-label">Proveedor:</label>	
+							<div class="col-12 col-sm-12 col-md-12 col-lg col-xl">			
+								<input type="text" th:field="*{descripcion}" class="form-control fs-5" th:errorclass="'form-control alert-danger fs-5'"/>
+								<small class="form-text text-warning fs-6" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></small>
+							</div>
+						</div>	
+						<div class="row my-2">							
+							<label class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3  fs-5 col-form-label" title="Precio por unidad de medida">Precio:</label>	
+							<div class="col-12 col-sm-12 col-md-12 col-lg col-xl">
+								<div class="input-group">
+									<span class="input-group-text fs-5">$</span>			
+									<input type="number" id="precio" step="0.01" min="0" placeholder="0.00" th:field="*{costoDeLaUnidadConsumida}" class="form-control fs-5" th:errorclass="'form-control alert-danger fs-5'"/>
+								</div>
+								<small class="form-text text-warning fs-6" th:if="${#fields.hasErrors('costoDeLaUnidadConsumida')}" th:errors="*{costoDeLaUnidadConsumida}"></small>							
+							</div>
+						</div>
+						<div class="row my-2">		
+							<label class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3  fs-5 col-form-label">Unidad de medida:</label>	
+							<div class="col-12 col-sm-12 col-md-12 col-lg col-xl">
+								<select id="unidadDeMedida" class="form-select fs-5" th:field="*{unidadDeMedidaDelGasto}" th:errorclass="'form-select alert-danger fs-5'">
+									  <option style="color: rgb(192, 192, 192)" th:value="0" disabled="disabled" hidden>Elegir unidad de medida...</option>
+								      <option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
+								      	      th:if="${unidad.tipoDeMedida.equals('consumoElectrico') || unidad.tipoDeMedida.equals('consumoGas') 
+								      	      || unidad.simbolo.equals('l') || unidad.simbolo.equals('m3')}" 
+								      	      th:value= "${unidad}" th:text="${unidad.simbolo + ' - ' + unidad.nombre}"></option>
+								</select>
+								<small class="form-text text-warning fs-6" th:if="${#fields.hasErrors('unidadDeMedidaDelGasto')}" th:errors="*{unidadDeMedidaDelGasto}"></small>
+							</div>							
+						</div>														
+						<div class="form-group row justify-content-end mt-4">
+							<div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9">
+								<input type="submit" th:value="${btnText}" class="btn btn-verdeagua col-12 my-2 fs-4"/>				
+							</div>
+						</div>				
+						<input type="hidden" id="idGasto" th:field="*{id}"/>	
+					</form>	
+				</div>
+				<div class="card-footer text-nowrap justify-align-center mx-0 px-0">
+					<footer th:replace="layout/layout :: footer"></footer>		
+				</div>
+			</div> 
+		</div>
+		<script th:src="@{/js/gastos-divisibles.js}"></script>
+	</body>	
+</html>

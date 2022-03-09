@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head th:replace="layout/layout :: head"></head>
+	<body>	
+		<header th:replace="layout/layout :: header"></header>		
+		<div id="listaProductos" class="container-fluid pt-0 pb-1 px-1 m-0">			
+			<div class="card bg-light">			
+				<div class="card-header">
+					<div class="container-fluid ps-1">
+  						<div class="row justify-content-between">
+  							<div class="col-auto">
+								<span class="card-title fw-bold" th:text="${titulo}"></span>	
+							</div>								    
+	    					<div id="headersBtns" class="" sec:authorize="hasRole('ROLE_USER')">
+	    						<div class="row justify-content-end text-nowrap flex-nowrap">
+     								<a class="btn btn-primary btnNuevo" th:href="@{/producto/form}" th:text="'Nuevo'"></a>
+     								<a class="col-auto btn btn-success text-white" th:href="@{/producto/listar(format=xlsx)}" th:text="XLS">XLS</a>
+   								</div>
+							</div>
+    					</div>
+  					</div>	
+				</div>				
+				<div class="card-body table-responsive m-0 p-0">								
+					<table class="table table-striped">
+						<thead>
+							<tr>								
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 5%; text-align:center;" th:text="Id">Id</th>
+								<th class="text-nowrap fs-6 align-middle py-3" th:text="#{text.producto.listar.nombre}">Nombre</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 12%;text-align:right;" th:text="#{text.producto.listar.cantidad}">Medida(M)</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 12%;text-align:right;" th:text="#{text.producto.listar.precio}" title="Precio por unidad de medida">$ x M</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 12%;text-align:right;" th:text="#{text.producto.listar.desperdicio}" title="Porcentaje de desperdicio(D)">% (D)</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 12%;text-align:right;" th:text="#{text.producto.listar.precioSinDesperdicio}">$ x M. s/ D</th>
+								<th class="text-nowrap fs-6 align-middle py-3" th:text="#{text.producto.listar.codigo}" style="text-align:center;">Código</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 90px;text-align:center;" sec:authorize="hasRole('ROLE_USER')">EDITAR</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 90px;text-align:center;" sec:authorize="hasRole('ROLE_USER')">ELIMINAR</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="producto:${productos}">
+								<td class="text-nowrap fs-6 align-middle" th:text="${producto.id}" style="text-align:center"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${producto.nombre}"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${producto.getCantidadFormateada(producto.cantidad)} + ' ' + ${producto.unidadDeMedida.simbolo}" style="text-align:right;"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${producto.getPrecioFormateado()}" style="text-align:right;"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${producto.getCantidadFormateada(producto.desperdicio)}" style="text-align:right;"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${producto.getPrecioSinDesperdicioFormateado()}" style="text-align:right;"></td>								
+								<td class="text-nowrap fs-6 align-middle" th:text="${producto.codigoDeBarra}" style="text-align:center"></td>							
+								<td sec:authorize="hasRole('ROLE_USER')" style="text-align:center">
+									 <a class="btn btn-celeste" th:href="@{/producto/form/} + ${producto.id}" th:title="'Editar'" style="width: 70px;">
+									 	<i class="fa fa-pencil fs-5 mx-1" aria-hidden="true"></i>
+									 </a> 
+								</td>
+								<td sec:authorize="hasRole('ROLE_USER')" style="text-align:center">
+									 <a class="btn btn-danger" th:href="@{/producto/eliminar/} + ${producto.id}" th:title="'Eliminar'" onclick="return confirm('¿Seguro de Eliminar?')" style="width: 70px;">
+										 <i class="fa fa-trash fs-5 mx-1" aria-hidden="true"></i>
+									 </a> 
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<nav th:replace="layout/paginator-nav :: paginator"></nav>
+				</div>
+				<div class="card-footer text-nowrap justify-align-center mx-0 px-0">
+					<footer th:replace="layout/layout :: footer"></footer>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

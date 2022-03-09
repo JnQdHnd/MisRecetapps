@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head th:fragment="head">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width"/>
+		<title th:text="'MisRecetApps - ' + ${titulo}"></title>
+		<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+		<link rel="stylesheet" th:href="@{/css/bootstrap_theme_purple.css}" />
+		<link rel="stylesheet" th:href="@{/css/misrecetapps.css}" />
+		<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" />
+		<link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css}">
+		<link rel="stylesheet" th:href="@{/font-awesome-4.7.0/css/font-awesome.min.css}">
+		<script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+		<script th:src="@{/js/jquery-ui.min.js}"></script>
+		<script th:src="@{/js/popper.min.js}"></script>
+		<script th:src="@{/js/bootstrap.min.js}"></script>
+		<script th:src="@{//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js}"></script>		
+		<script th:src="@{/js/ver-receta.js}"></script>	
+	</head>
+	
+	<body>
+		<!-- BARRA SUPERIOR: ICONO PRINCIPAL Y TITULO CON ACCESO AL INICIO -->
+		<header th:fragment="header">
+			<div id="dispositivo" th:dispositivo="${deviceType}"></div>		
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-1">
+				<div class="container-fluid">
+					<a id="navBrand" class="navbar-brand" th:href="@{/inicio}">
+						<span id="logoTituloInicio" class="fw-bold" style="color: #a279e3" >MisRecetApps</span>			
+					</a>
+					<button class="navbar-toggler" 
+							type="button"
+							data-bs-toggle="collapse" 
+							data-bs-target="#navbarNav"
+							aria-controls="navbarNav" 
+							aria-expanded="false"
+							aria-label="Toggle navigation">
+						<span id="navIcono" class="navbar-toggler-icon"></span>
+					</button>
+					
+					<!-- GRUPO IZQ DE ACCESOS A FUNCIONES DEL PROGRAMA - DEPOSITO - CONFIGURACION - MOTIVOS - PRODUCTOS - CATEGORIAS -->
+					<div id="navbarNav" class="collapse navbar-collapse" >
+						<ul class="navbar-nav">						
+							<li class="nav-item">
+								<a sec:authorize="hasRole('ROLE_USER')" class="nav-link" th:href="@{/receta/listar}" th:text="#{text.layout.receta}">Recetas</a>
+							</li>
+							<li class="nav-item">
+								<a sec:authorize="hasRole('ROLE_USER')" class="nav-link" th:href="@{/producto/listar}" th:text="#{text.layout.producto}">Productos</a>
+							</li>
+							<li class="nav-item">
+								<a sec:authorize="hasRole('ROLE_USER')" class="nav-link" th:href="@{/artefacto/listar}" th:text="#{text.layout.artefacto}">Artefactos</a>
+							</li>
+							<li class="nav-item">
+								<a sec:authorize="hasRole('ROLE_USER')" class="nav-link" th:href="@{/manoDeObra/listar}" th:text="#{text.layout.manoDeObra}">Trabajadorxs</a>
+							</li>
+							<li class="nav-item">
+								<a sec:authorize="hasRole('ROLE_USER')" class="nav-link" th:href="@{/gastos}" th:text="#{text.layout.gastos}">Gastos</a>
+							</li>														
+						</ul>						
+						<!-- GRUPO DERECHA DE ICONOS Y BOTONES - INICIO DE SESIÓN - POSIBILIDAD DE IDIOMAS Y OTROS -->	
+						<ul class="navbar-nav">					
+							<li sec:authorize="!isAuthenticated()">
+								<a id="iniciaSesionBtn" class="" th:href="@{/login}" th:text="#{text.layout.iniciarSesion}">Iniciar Sesión</a>
+							</li>
+							<li sec:authorize="isAuthenticated()">
+								<div class="dropdown">	
+									<a  id="dropdownMenuLogingLogout"  
+										class="dropdown-toggle" 
+										type="button" data-bs-toggle="dropdown" aria-expanded="false">
+									    <span sec:authentication="name"></span>
+									</a>				
+									<ul id="cerrarSesionBtn" class="dropdown-menu dropdown-menu-end mb-1" aria-labelledby="dropdownLogingLogout">
+									    <li>
+									    	<form id="logoutForm" th:action="@{/logout}" method="post">
+									    		<input class="dropdown-item" type="submit" th:value="#{text.layout.cerrarSesion}" 
+									    		onclick="document.getElementById('logoutForm').submit();"></input>
+									    	</form>
+									    </li>							   
+									</ul>
+								</div>	
+							</li>
+						</ul>						
+					</div>
+				</div>
+			</nav>
+	
+			<div class="alert alert-success fs-6 mx-1 mb-1" 
+				 th:if="${success != null}" 
+				 th:text="${success}"></div>
+			<div class="alert alert-danger fs-6 mx-1 mb-1" 
+			  	 th:if="${error != null}" 
+			  	 th:text="${error}"></div>
+			<div class="alert alert-warning fs-6  mx-1 mb-1" 
+				 th:if="${warning != null}" 
+				 th:text="${warning}"></div>
+			<div class="alert alert-info fs-6 mx-1 mb-1" 
+				 th:if="${info != null}" 
+				 th:text="${info}"></div>
+		</header>
+		
+		<!-- PIE DE PÁGINA -->
+						
+		<footer th:fragment="footer" class="py-2">
+			<div class="fs-6 text-center flex-nowrap" sec:authorize="isAuthenticated()">
+				<span class="text-secondary" style="font-size: 90%">Usuario: </span>
+				<span class="text-secondary" style="font-size: 90%" sec:authentication="name"></span>
+				<span class="text-secondary" style="font-size: 90%">| Rol: </span>
+				<span class="text-secondary" style="font-size: 90%" sec:authentication="principal.authorities"></span>
+			</div>
+			
+			<div th:fragment="footScripts">
+				<script th:src="@{/js/generales.js}"></script>
+				<script th:src="@{/js/configuraDispositivo.js}"></script>
+			</div>					
+		</footer>
+	</body>
+</html>
+
+<!-- BLOQUE PARA INCORPORAR MULTILENGUAJE--------------------------------------------------------------
+					<ul class="navbar-nav mx-4">
+					 	<li class="nav-item mx-1">
+					 		<form id="lang_ES" th:action="@{/locale(lang=es_ES)}" method="post">
+								<button class="btn btn-outline-success">ES</button>
+							</form>
+					 	<a class= "btn btn-outline-success" th:href= "@{/locale(lang=es_ES)}">ES</a>
+					 	</li>
+					 	<li class="nav-item mx-1">
+					 		<form id="lang_EN" th:action="@{/locale(lang=en_US)}" method="post">
+								<button class="btn btn-outline-success">EN</button>
+							</form>
+					 	<a class= "btn btn-outline-success" th:href= "@{/locale(lang=en_US)}">EN</a>
+					 	</li>
+					 	<li class="nav-item mx-1">
+					 		<form id="lang_DE" th:action="@{/locale(lang=de_DE)}" method="post">
+								<button class="btn btn-outline-success">DE</button>
+							</form>
+					 	<a class= "btn btn-outline-success" th:href= "@{/locale(lang=de_DE)}">DE</a>
+					 	</li>
+					</ul> 
+--------------------------------------------------------------------------------------------------------->

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="layout/layout :: head"></head>
+	<body>
+		<header th:replace="layout/layout :: header"></header>	
+		<div class="container-fluid pt-0 pb-1 px-1 m-0 row justify-content-center">				
+			<div class="card px-0 mx-1 border-primary text-primary" style="max-width: 700px;"> 	
+				<div class="card-header py-2">
+					<div class="row justify-content-start align-middle text-nowrap flex-nowrap">
+						<span class="fs-3 fw-bold" th:text="${titulo}"></span>
+					</div>	
+				</div>			
+				<div class="card-body pt-1 mt-0 px-2 mx-1">
+					<form id="formulario" th:action="@{/receta/form}" th:object="${receta}" method="post" enctype="multipart/form-data">
+						<input type="hidden" id="esNuevo" th:value="${esNuevo}">
+						<input type="hidden" id="seHaCreadoItem" th:value="${seHaCreadoItem}">
+	<!--NOMBE---------------------------------------------------------------------------------------------------->											
+						<div class="row">
+							<div class="col-12">
+								<div class="form-group row justify-content-between mb-1">							
+									<label class="col-12 mx-0 fs-4">Título</label>
+									<span class="col-12 text-primary mt-0 pb-0 mb-2 mx-0" style="font-size: small;">Vamos a darle un nombre a tu deliciosa preparación...</span>
+									<div class="col-12 m-0">	
+										<input id="nombre" name="nombre" type="text" th:field="*{nombre}" class="form-control fs-6"/>
+										<small id="errorNombre" class="form-text text-danger" th:text="#{NotBlank.receta.nombre}" style="display: none"></small>
+									</div>	 
+								</div>
+							</div>
+						</div>
+	<!--PORCIONES---------------------------------------------------------------------------------------------------->								
+						<div class="row">
+							<div class="col" style="min-width: 180px;">
+								<div class="form-group row justify-content-between mb-1">							
+									<label class="col-12 mx-0 fs-4">Porciones</label>
+									<span class="col-12 text-primary mt-0 pb-0 mb-2 mx-0 text-nowrap" style="font-size: small;">¿Cuántos platos serviremos?</span>
+									<div class="col-12 mx-0">	
+										<input id="porciones" 
+											   name="porciones" 
+											   type="number" 
+											   step="1" 											   
+											   th:field="*{porciones}"											   
+											   class="form-control fs-6" 
+											   min="1"/>
+										<small id="errorPorciones" class="form-text text-danger" th:text="#{NotBlank.receta.porciones}" style="display: none"></small>
+									</div>	 
+								</div>
+							</div>						
+						</div>							
+	<!--INGREDIENTES---------------------------------------------------------------------------------------------------->
+	
+						<input id="cantidadDeIngredientes" name="cantidadDeIngredientes"
+							type="hidden" th:value="${#lists.size(receta.ingredientes)}" />	
+						<div class="row">
+							<div class="col mx-0">
+								<div class="row">
+									<label class="col-12 fs-4">Ingredientes</label>
+								</div>
+								<div class="row">
+									<span class="col-12 text-primary mt-0 mb-1 pb-1 "
+										style="font-size: small;">Elije los ingredientes e
+										indica la cantidad...</span>
+								</div>
+							</div>
+							<div class="col-auto mx-0">							
+								<button class="btn btn-outline-info align-middle btnIngredienteA mt-2 mb-1 py-0"
+										style="width: 50px; height: 45px"
+										onclick="agregaIngrediente(); return false;">
+									<i class="fa fa-plus" aria-hidden="true"></i>
+								</button>
+							</div>
+						</div>
+						<div class="row" id="cuerpoIngredientes" th:each="ingrediente, iterador : *{ingredientes}">
+							<div class="col mx-0">
+								<div class="card bg-light p-0 mb-2" 
+									 th:id="'ingrediente' + ${iterador.index+1}" 
+									 th:name="'ingrediente' + ${iterador.index+1}" 
+									 th:orden="${iterador.index+1}">
+									<div class="card-body  p-1">
+										<div class="row flex-nowrap justify-content-between">
+											<div class="col ms-1">
+												<span class="ingredienteTitulo text-secondary fs-6" 
+													  th:name="'ingredienteTitulo' + ${iterador.index+1}"										   
+													  th:text="'Ingrediente ' + ${iterador.index+1}">
+												</span>
+											</div>
+											<div class="col-auto p-0 m-0">
+												<a  th:orden="${iterador.index+1}"
+													th:name="'btnIngrediente'+${iterador.index+1}"
+													th:id="'btnIngrediente'+${iterador.index+1}"
+													th:class="${#lists.size(receta.ingredientes)}==1 ? 
+															  'btn btn-link text-danger btnIngrediente pt-0 mt-0 me-2 disabled' :
+															  'btn btn-link text-danger btnIngrediente pt-0 mt-0 me-2'"		  		  
+													style="width: auto; height: auto;"
+													href=""
+													onclick="eliminaIngrediente(this);return false;"
+													th:ingrediente="${ingrediente.id}">
+													<i class="fa fa-trash-o" aria-hidden="true"></i>
+												</a>
+											</div>									
+										</div>
+										<div class="input-group mb-1">
+											<span class="input-group-text px-2 text-primary fs-6"
+											style="width: 90px;">
+												Producto
+											</span> 
+											<select
+												th:orden="${iterador.index+1}"
+												th:id="'producto' + ${iterador.index+1}"
+												th:name="|ingredientes[__${iterador.index}__].productoId|"
+												th:class="${ingrediente.productoId} == null ? 'form-select text-secondary producto fs-6' : 'form-select producto fs-6'"
+												onchange="buscaUnidad(this);">
+												<option style="color: rgb(192, 192, 192)" th:value="0"
+													disabled="disabled"
+													th:selected="${ingrediente.productoId} == null or ${ingrediente.productoId} == 0" hidden>
+													Elegir producto...
+												</option>
+												<option th:each="producto : ${productos}"
+														class="text-dark opcionProducto"
+														th:id="${producto.id} + 'productoID'"
+														th:value="${producto.id}"
+														th:unidad="${producto.unidadDeMedida}"
+														th:text="${producto.nombre}"
+														th:selected="${ingrediente.productoId} == ${producto.id}">
+												</option>
+												<option th:orden="${iterador.index+1}" 
+														th:value="A"
+														type="button" 
+														class="btn btnModal" 
+														data-bs-toggle="modal"
+														data-bs-target="#agregaProductoModal"
+														onclick="modalProducto(this)">
+														+ Agregar nuevo	producto...
+												</option>
+											</select>
+										</div>
+	
+										<div class="input-group">
+											<span class="input-group-text px-2 text-primary fs-6"
+												  style="width: 90px;">
+												Cantidad
+											</span> 
+											<input th:id="'cantidadIngrediente' + ${iterador.index+1}"
+												   th:name="|ingredientes[__${iterador.index}__].cantidad|"
+												   th:value="${ingrediente.cantidad} == 0 ? null : ${ingrediente.cantidad}"
+												   type="number"
+												   class="form-control cantidadIngrediente fs-6"
+												   step="0.1" 
+												   min="0" 
+												   style="min-width: 100px;"
+												   placeholder="Indicar cantidad. Ej: 250" />
+											<select	th:id="'unidadDeMedida'+ ${iterador.index+1}"
+													th:name="|ingredientes[__${iterador.index}__].unidadDeMedida|"
+													style="min-width: 100px; max-width: 250px;" 
+													th:class="${ingrediente.unidadDeMedida} == null ? 'form-select text-secondary unidadDeMedida fs-6' : 'form-select unidadDeMedida fs-6'">
+												<option style="color: rgb(192, 192, 192)" 
+														th:value="0"
+														disabled="disabled"
+														th:selected="${ingrediente.unidadDeMedida} == null" 
+														hidden>
+														Elegir unidad de medida...
+												</option>
+												<option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}"
+														th:if="${unidad.tipoDeMedida.equals('masa') || unidad.tipoDeMedida.equals('capacidad') 
+															   || unidad.tipoDeMedida.equals('unidad')}"
+														th:value="${unidad}" 
+														th:text="${unidad.simbolo}"
+														th:title="${unidad.nombre}"
+														th:selected="${ingrediente.unidadDeMedida} == ${unidad}"
+														class="text-dark">
+												</option>
+											</select>
+										</div>								
+									</div>
+								</div>
+							</div>
+						</div>
+	
+	<!--ARTEFACTOS---------------------------------------------------------------------------------------------------->	
+	
+						<input id="cantidadDeArtefactos" name="cantidadDeArtefactos" type="hidden" th:value="${#lists.size(receta.artefactosUtilizados)}"/>
+	
+						<div class="row align-items-center pt-0 mt-1 mb-2">
+							<div class="col mx-0">
+								<label class="col-12 fs-4">Artefactos
+									<abbr class="text-decoration-none fs-5" 										  
+										  title="Si en la receta utiliza artefactos, seleccionelos aquí, indique minutos e intensidad de uso. Si no se utliza ninguno, pase al siguiente apartado...">
+										<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
+									</abbr>
+								</label>															
+							</div>								
+							<div class="col-auto mx-0">							
+								<button class="btn btn-outline-info align-middle btnArtefactoA py-0" 
+										style="width: 50px; height: 50px;" 
+										onclick="agregaArtefacto(); return false;">
+									<i class="fa fa-plus" aria-hidden="true"></i>
+								</button>	
+							</div>
+						</div>
+	
+						<div class="row" id="cuerpoArtefactos" th:each="artefactoEnUso, iterador : ${receta.artefactosUtilizados}">
+							<div class="col mx-0">
+								<div class="card bg-light p-0 mb-2"
+									 th:id="'artefacto' + ${iterador.index+1}"  
+									 th:name="'artefacto' + ${iterador.index+1}"
+									 th:orden="${iterador.index+1}">
+									<div class="card-body p-1">
+										<div class="row flex-nowrap justify-content-between">
+											<div class="col ms-1">
+												<span class="artefactoTitulo text-secondary fs-6" 
+													  th:name="'artefactoTitulo' + ${iterador.index+1}"										   
+													  th:text="'Artefacto ' + ${iterador.index+1}">
+												</span>
+											</div>
+											<div class="col-auto p-0 m-0">
+												<a 	th:orden="${iterador.index+1}" 
+													th:name="'btnArtefacto'+ ${iterador.index+1}" 
+													th:id="'btnArtefacto'+ ${iterador.index+1}"
+													style="width: auto; height: auto;" 
+													th:class="${#lists.size(receta.artefactosUtilizados)}==1 and ${artefactoEnUso.id}==null ?
+															 'btn btn-link text-danger pt-0 mt-0 me-2 btnArtefacto disabled' : 
+															 'btn btn-link text-danger pt-0 mt-0 me-2 btnArtefacto'"
+													href=""
+													onclick="eliminaArtefacto(this);return false;"
+													th:artefacto="${artefactoEnUso.id}">
+													<i class="fa fa-trash-o" aria-hidden="true"></i>
+												</a>
+											</div>									
+										</div>
+										<fieldset class="artefactoSet">
+											<div class="input-group mb-1">
+												<span class="input-group-text px-2 text-primary fs-6"
+													  style="width: 90px;">Artefacto
+												</span>
+												<select th:orden="${iterador.index+1}" 
+														th:id="'artefactoNombre' + ${iterador.index+1}" 
+														th:name="|artefactosUtilizados[__${iterador.index}__].artefactoId|" 
+														th:class="${artefactoEnUso.artefactoId} == null ? 
+														'form-select text-secondary nombreArtefacto fs-6' : 'form-select nombreArtefacto fs-6'"
+														onchange="buscaArtefacto(this);">
+													<option style="color: rgb(192, 192, 192)" 
+															th:value="0" 
+															disabled="disabled" 
+															th:selected="${artefactoEnUso.artefactoId} == null" 
+															hidden>Elija un artefacto...
+													</option>
+													<option th:id="'NartefactoID'" 
+															th:nombre="'No se utilizan artefactos.'" 
+															th:value="N">No se utilizan artefactos.
+													</option>
+													<option th:each="artefacto : ${artefactos}" class="text-dark"									      	      
+												    		th:id="${artefacto.id} + 'artefactoID'" 
+												    		th:value= "${artefacto.id}" 
+												        	th:text="${artefacto.nombre}" 
+												        	th:nombre="${artefacto.nombre}" 
+												        	th:esHorno="${artefacto.esHorno}"
+												        	th:selected="${artefactoEnUso.artefactoId} == ${artefacto.id}">
+												  	</option>
+												  	<option th:orden="${iterador.index+1}" 
+												  			th:value="A" 
+												  			type="button" 
+												  			class="btn btnModal" 
+												  			data-bs-toggle="modal" 
+												  			data-bs-target="#agregaArtefactoModal" 
+												  			onclick="modalArtefacto(this)">+ Agregar nuevo artefacto...
+												  	</option>
+												</select>
+												<input  type=hidden 
+														class="artefactosUtilizadosEsHorno" 
+														th:name="|artefactosUtilizados[__${iterador.index}__].esHorno|" 
+														th:value="${artefactoEnUso.esHorno}"/>									
+											</div>
+										</fieldset>	
+	
+										<div class="minutosCasillero" 
+											 th:style="${artefactoEnUso.minutosDeUso} == null or ${artefactoEnUso.minutosDeUso} == 0 ? 'display:none;' : ''">
+											 <fieldset class="artefactoSet">
+											 	<div class="input-group">
+													<span class="input-group-text px-2 text-primary fs-6"
+														  style="width: 90px;">Minutos&nbsp;
+														<abbr class="text-decoration-none fs-6" 
+															  title="Indicar minutos de uso del artefacto.">
+															<i class="fa fa-question-circle-o" aria-hidden="true" style="font-size:small;"></i>
+														</abbr>											  
+													</span>
+													<input th:id="'minutosArtefacto' + ${iterador.index+1}" 
+														   th:name="|artefactosUtilizados[__${iterador.index}__].minutosDeUso|"  
+														   type="number" 
+														   class="form-control minutosArtefacto fs-6" 
+														   step="1" 
+														   min="1" 
+														   placeholder="Indique los min. de uso. Ej: 30"
+														   th:value="${artefactoEnUso.minutosDeUso} == 0 ? null : ${artefactoEnUso.minutosDeUso}"/>
+												</div>	   
+											</fieldset>										
+										</div>
+										
+										<div class="intensidadCasillero" 
+											 th:esHorno="${artefactoEnUso.esHorno}"
+											 th:style="${artefactoEnUso.esHorno} == false and ${artefactoEnUso.artefactoId} != null  ? 'display:inline;' : 'display:none;'">
+											 <fieldset  class="esIntensidad artefactoSet" 
+											 			th:disabled="${artefactoEnUso.esHorno} == true or ${artefactoEnUso.artefactoId} == null ? 'disabled'">
+												<div class="input-group mt-1 flex-nowrap">
+													<span class="input-group-text px-2 text-primary"
+														  style="width: 90px;"
+														  title="Intensidad de uso">
+														  <i class="fa fa-signal fs-5 text-center"  aria-hidden="true" style="width: 90px;"></i>
+													</span> 
+													<select th:id="'intensidad'+ ${iterador.index+1}" 
+															th:name="|artefactosUtilizados[__${iterador.index}__].intensidadDeUso|"  
+															th:class="${artefactoEnUso.intensidadDeUso} == null ? 'form-select text-secondary intensidad fs-6' : 'form-select intensidad fs-6'"
+															onchange="cambiaColorSelect(this)">
+														  <option style="color: rgb(192, 192, 192)" value="0" disabled="disabled" 
+														  		  th:selected="${artefactoEnUso.intensidadDeUso} == null" hidden>Elija la intesidad de uso... </option>
+														  <option style="color: black;" value="Muy baja" th:text="'Muy baja'" 
+														  		  th:selected="${artefactoEnUso.intensidadDeUso} == 'Muy baja'">Muy baja</option>
+														  <option style="color: black;" value="Baja" th:text="'Baja'" 
+														  		  th:selected="${artefactoEnUso.intensidadDeUso} == 'Baja'">Baja</option>
+														  <option style="color: black;" value="Media" th:text="'Media'" 
+														  		  th:selected="${artefactoEnUso.intensidadDeUso} == 'Media'">Media</option>
+														  <option style="color: black;" value="Alta" th:text="'Alta'" 
+														  		  th:selected="${artefactoEnUso.intensidadDeUso} == 'Alta'">Alta</option>
+														  <option style="color: black;" value="Muy alta" th:text="'Muy alta'" 
+														  		  th:selected="${artefactoEnUso.intensidadDeUso} == 'Muy alta'">Muy alta</option>
+													</select>
+												</div>
+											</fieldset>										
+										</div>
+										<div class="temperaturaCasillero" 
+											 th:style="${artefactoEnUso.esHorno} == true and ${artefactoEnUso.artefactoId} != null ? 'display:inline;' : 'display:none;'">
+											 <fieldset  class="esHorno artefactoSet" 
+											 			th:disabled="${artefactoEnUso.esHorno} == false or ${artefactoEnUso.artefactoId} == null ? 'disabled'">
+												<div class="input-group flex-nowrap mt-1 ">
+													<span class="input-group-text text-primary" style="width: 90px;" title="Temperatura">
+														<i class="fa fa-thermometer-three-quarters fa-rotate-90 fs-4 text-center" aria-hidden="true" style="width: 90px;"></i>
+													</span> 
+													<input style="width: 80%;" 
+														   th:id="'temperatura'+ ${iterador.index+1}" 
+														   th:name="|artefactosUtilizados[__${iterador.index}__].temperatura|"    
+														   type="number" 
+														   class="form-control temperatura fs-6" 
+														   step="0.001" min="0" 
+														   placeholder="Indicar temperatura. Ej: 180"
+														   th:value="${artefactoEnUso.temperatura} == 0 ? null : ${artefactoEnUso.temperatura}"/>
+													<select style="width: 80px;" 
+															th:id="'unidadTemperatura'+ ${iterador.index+1}" 
+															th:name="|artefactosUtilizados[__${iterador.index}__].unidadDeTemperatura|" 
+															class="form-select fs-6 unidadTemperatura">
+														  <option style="color: rgb(192, 192, 192)" th:value="0" disabled="disabled" hidden>°C o °F... </option>
+														  <option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
+													   			  th:if="${unidad.tipoDeMedida.equals('temperatura')}" 
+													   			  th:value= "${unidad}" th:text="${unidad.simbolo}"
+													  			  th:selected="${artefactoEnUso.unidadDeTemperatura}==${unidad}">
+													   	  </option>
+													</select>
+												</div>
+											</fieldset>
+										</div>								
+									</div>
+								</div>
+							</div>
+						</div>	
+	<!--INSTRUCCIONES---------------------------------------------------------------------------------------------------->
+						<input id="cantidadDeInstrucciones" name="cantidadDeInstrucciones" type="hidden" th:value="${#lists.size(receta.instrucciones)}"/>
+	
+						<div class="row align-items-center pt-0 mt-1 mb-2">
+							<div class="col mx-0">
+								<label class="col-12 fs-4">Instrucciones
+									<abbr class="text-decoration-none fs-5" 										  
+										  title="Escriba aquí, paso a paso, las instrucciones para llevar adelante esta receta (O déjelo en blanco, usted decide)...">
+										<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
+									</abbr>
+								</label>															
+							</div>								
+							<div class="col-auto mx-0">
+								<button class="btn btn-outline-info align-middle btnInstruccionA py-0" 
+										style="width: 50px; height: 50px;" 
+										onclick="agregaPaso(); return false;">
+										<i class="fa fa-plus" aria-hidden="true"></i>
+								</button>
+							</div>
+						</div>
+	
+						<div class="row" id="cuerpoInstrucciones" th:each="instruccion, iterador : ${receta.instrucciones}">
+							<div class="col mx-0">
+								<div class="card bg-light p-0 mb-2"
+									 th:id="'instruccion' + ${iterador.index+1}" 
+									 th:name="'instruccion' + ${iterador.index+1}" 
+									 th:orden="${iterador.index+1}">
+									<div class="card-body p-1">
+										<div class="row flex-nowrap justify-content-between">
+											<div class="col ms-1">
+												<span class="pasoTitulo text-secondary fs-6" 
+													  th:name="'pasoTitulo' + ${iterador.index+1}"										   
+													  th:text="'Paso ' + ${iterador.index+1}">
+												</span>
+											</div>
+											<div class="col-auto p-0 m-0">
+												<a  th:orden="${iterador.index+1}" 
+													th:name="'btnInstruccion' + ${iterador.index+1}" 
+													th:id="'btnInstruccion' + ${iterador.index+1}" 
+													class="btn btn-link text-danger pt-0 mt-0 me-2 btnInstruccion"
+													th:class="${#lists.size(receta.instrucciones)}==1  and ${instruccion.id}==null ? 
+															'btn btn-link text-danger pt-0 mt-0 me-2 btnInstruccion disabled' : 
+															'btn btn-link text-danger pt-0 mt-0 me-2 btnInstruccion'" 
+													href=""
+													onclick="eliminaPaso(this);return false;"
+													th:instruccion="${instruccion.id}" 
+													style="width: auto; height: auto;">
+													<i class="fa fa-trash-o" aria-hidden="true"></i>
+												</a>											
+											</div>									
+										</div>
+										<fieldset class="instruccionesSet">
+											<textarea th:id="'pasoTexto' + ${iterador.index+1}" 
+													  th:name="|instrucciones[__${iterador.index}__].instruccion|"
+													  class="form-control fs-6 pasoTexto" 
+													  form="formulario" 
+													  style="height: 80px;" 
+													  placeholder="Escriba aquí las intrucciones de este paso..."
+													  th:aria-label="'Paso ' + ${iterador.index+1}"
+													  th:text="${instruccion.instruccion}">														
+											</textarea>
+											<input  type=hidden 
+													class="instruccionOrden" 
+													th:name="|instrucciones[__${iterador.index}__].orden|" 
+													th:value="${instruccion.id != null and instruccion.id > 0} ? ${instruccion.orden} : ${iterador.index+1}"/>	
+										</fieldset>					
+									</div>
+								</div>
+							</div>
+						</div>
+	
+	<!--BOTON DE ENVIO DE RECETA---------------------------------------------------------------------------------------------------->
+						<div class="form-group row justify-content-end my-2">
+							<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<input id="agregaRecetaBtn" onclick="verifica(); return false;" type="submit" th:value="${btnText}" class="btn btn-verdeagua col-12 fs-5" />				
+							</div>
+						</div>																
+						<input id="recetaId" name="recetaId" type="hidden" th:field="*{id}"/>						
+					</form>	
+				</div>
+			</div> 
+		</div>
+		<div class="container-fluid row justify-content-center px-0">	
+			<div class="col-9 px-0">
+				<footer th:replace="layout/layout :: footer"></footer>			
+			</div>
+		</div>	
+		
+		<div id="agregaProductoModal" class="modal fade" tabindex="-1" aria-labelledby="agregaProductoModal" aria-hidden="true">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content">						
+					
+					<div class="modal-body">						
+						<div id="productoModal" name="productoModal"></div>
+					</div>
+											
+				</div>
+			</div>
+		</div>
+		
+		<div id="agregaArtefactoModal" class="modal fade" tabindex="-1" aria-labelledby="agregaArtefactoModal" aria-hidden="true">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content">										
+					<div class="modal-body">						
+						<div id="artefactoModal" name="artefactoModal"></div>
+					</div>											
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			$(document).ready(function(){});
+									
+			if($('#porciones').val() == 0){
+				$('#porciones').val(null);
+			}
+			
+		</script>	
+		<script th:src="@{/js/crea-receta.js}"></script>	
+						
+	</body>	
+</html>

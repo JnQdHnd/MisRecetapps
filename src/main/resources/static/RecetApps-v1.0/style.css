@@ -1,0 +1,33 @@
+@font-face {
+  font-family: 'RecetApps';
+  src:  url('fonts/RecetApps.eot?d45t0');
+  src:  url('fonts/RecetApps.eot?d45t0#iefix') format('embedded-opentype'),
+    url('fonts/RecetApps.ttf?d45t0') format('truetype'),
+    url('fonts/RecetApps.woff?d45t0') format('woff'),
+    url('fonts/RecetApps.svg?d45t0#RecetApps') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+i {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'RecetApps' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-RecetarioSolid:before {
+  content: "\e900";
+}
+.icon-cooking-book:before {
+  content: "\e901";
+}

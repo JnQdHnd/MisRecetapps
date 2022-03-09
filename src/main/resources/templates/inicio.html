@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="layout/layout :: head"></head>
+	<body>
+		<header th:replace="layout/layout :: header"></header>	
+		<div class="container-fluid pt-0 pb-1 px-1 m-0 row justify-content-center">
+			<div class="card p-0 m-0 text-center bg-light">
+				<div class="card-header my-0 py-xl-5 py-lg-5 py-4 py-sm-4 py-md-2 fs-1">
+					<div class="row align-middle">
+						<span class="fs-2" th:text="${titulo}"></span>
+					</div>	
+				</div>	
+				<div class="card-body p-0 m-0">
+					<div class="row p-1 m-0">
+						<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 p-1 m-0">
+							<a class="btn btn-secondary text-primary col-12 fs-1" style="padding-top: 20%; padding-bottom: 20%;" type="button" th:href="@{/receta/form}" th:text="${btnCrear}"></a>
+						</div>
+						<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 p-1 m-0">
+							<a class="btn btn-primary col-12 fs-1" style="padding-top: 20%; padding-bottom: 20%;" type="button" th:href="@{/receta/listar}" th:text="${btnVer}"></a>
+						</div>
+					</div>
+				</div>
+			</div> 
+		</div>
+		<footer th:replace="layout/layout :: footer"></footer>
+	</body>
+</html>

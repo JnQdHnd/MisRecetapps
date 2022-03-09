@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head th:replace="layout/layout :: head"></head>
+	<body>	
+		<header th:replace="layout/layout :: header"></header>	
+		<div id="listaArtefactos" class="container-fluid pt-0 pb-1 px-1 m-0">			
+			<div class="card bg-light">			
+				<div class="card-header">
+					<div class="container-fluid ps-1">
+  						<div class="row justify-content-between"> 						
+  							<div class="col-auto">
+								<span class="card-title fw-bold" th:text="${titulo}"></span>									
+							</div> 
+	    					<div id="headersBtns" class="" sec:authorize="hasRole('ROLE_USER')">
+	    						<div class="row justify-content-end text-nowrap flex-nowrap">
+     								<a class="btn btn-primary btnNuevo" th:href="@{/artefacto/form}">Nuevo</a>
+     								<a class="col-auto btn btn-success text-white" th:href="@{/artefacto/listar(format=xlsx)}" th:text="XLS">XLS</a>
+   								</div>
+							</div>
+    					</div>
+  					</div>	
+				</div>
+				<div class="card-body table-responsive m-0 p-0">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="text-nowrap fs-6 align-middle py-3" th:text="Id">Id</th>
+								<th class="text-nowrap fs-6 align-middle py-3" th:text="#{text.artefacto.listar.nombre}">Nombre</th>
+								<th class="text-nowrap fs-6 align-middle py-3" th:text="#{text.artefacto.listar.cantidad}">Consumo(M)</th>
+								<th class="text-nowrap fs-6 align-middle py-3" sec:authorize="hasRole('ROLE_USER')" style="width: 90px;">EDITAR</th>
+								<th class="text-nowrap fs-6 align-middle py-3" sec:authorize="hasRole('ROLE_USER')" style="width: 90px;">ELIMINAR</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="artefacto:${artefactos}">
+								<td class="text-nowrap fs-6 align-middle" th:text="${artefacto.id}" style="text-align:center"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${artefacto.nombre}"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${artefacto.getCantidadFormateada(artefacto.consumoEnergetico)} + ' ' + ${artefacto.unidadDeConsumo.simbolo}"></td>															
+								<td sec:authorize="hasRole('ROLE_USER')" style="text-align:center">
+									 <a class="btn btn-celeste my-1" th:href="@{/artefacto/form/} + ${artefacto.id}" title="Editar" style="width: 70px;">
+									 	<i class="fa fa-pencil fs-5 mx-1" aria-hidden="true"></i>
+									 </a> 
+								</td>
+								<td sec:authorize="hasRole('ROLE_USER')" style="text-align:center">
+									 <a class="btn btn-danger my-1" th:href="@{/artefacto/eliminar/} + ${artefacto.id}" onclick="return confirm('�Seguro de Eliminar?')" title="Eliminar" style="width: 70px;">
+									 	<i class="fa fa-trash fs-5 mx-1" aria-hidden="true"></i>
+									 </a> 
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<nav th:replace="layout/paginator-nav :: paginator"></nav>
+				</div>
+				<div class="card-footer text-nowrap justify-align-center mx-0 px-0">
+					<footer th:replace="layout/layout :: footer"></footer>		
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

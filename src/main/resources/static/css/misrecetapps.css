@@ -1,0 +1,187 @@
+.btn-darkblue { 
+  color: #ffffff; 
+  background-color: #2C3769; 
+  border-color: #2C3769; 
+} 
+ 
+.btn-darkblue:hover, 
+.btn-darkblue:focus, 
+.btn-darkblue:active, 
+.btn-darkblue.active, 
+.open .dropdown-toggle.btn-darkblue { 
+  color: #ffffff; 
+  background-color: #050B38; 
+  border-color: #2C3769; 
+} 
+ 
+.btn-darkblue:active, 
+.btn-darkblue.active, 
+.open .dropdown-toggle.btn-darkblue { 
+  background-image: none; 
+} 
+ 
+.btn-darkblue.disabled, 
+.btn-darkblue[disabled], 
+fieldset[disabled] .btn-darkblue, 
+.btn-darkblue.disabled:hover, 
+.btn-darkblue[disabled]:hover, 
+fieldset[disabled] .btn-darkblue:hover, 
+.btn-darkblue.disabled:focus, 
+.btn-darkblue[disabled]:focus, 
+fieldset[disabled] .btn-darkblue:focus, 
+.btn-darkblue.disabled:active, 
+.btn-darkblue[disabled]:active, 
+fieldset[disabled] .btn-darkblue:active, 
+.btn-darkblue.disabled.active, 
+.btn-darkblue[disabled].active, 
+fieldset[disabled] .btn-darkblue.active { 
+  background-color: #2C3769; 
+  border-color: #2C3769; 
+} 
+ 
+.btn-darkblue.badge { 
+  color: #2C3769; 
+  background-color: #ffffff; 
+}
+
+.btn-celeste { 
+  color: #ffffff; 
+  background-color: #378CDB; 
+  border-color: #1E6DD4; 
+} 
+ 
+.btn-celeste:hover, 
+.btn-celeste:focus, 
+.btn-celeste:active, 
+.btn-celeste.active, 
+.open .dropdown-toggle.btn-celeste { 
+  color: #ffffff; 
+  background-color: #1E6DD4; 
+  border-color: #1E6DD4; 
+} 
+ 
+.btn-celeste:active, 
+.btn-celeste.active, 
+.open .dropdown-toggle.btn-celeste { 
+  background-image: none; 
+} 
+ 
+.btn-celeste.disabled, 
+.btn-celeste[disabled], 
+fieldset[disabled] .btn-celeste, 
+.btn-celeste.disabled:hover, 
+.btn-celeste[disabled]:hover, 
+fieldset[disabled] .btn-celeste:hover, 
+.btn-celeste.disabled:focus, 
+.btn-celeste[disabled]:focus, 
+fieldset[disabled] .btn-celeste:focus, 
+.btn-celeste.disabled:active, 
+.btn-celeste[disabled]:active, 
+fieldset[disabled] .btn-celeste:active, 
+.btn-celeste.disabled.active, 
+.btn-celeste[disabled].active, 
+fieldset[disabled] .btn-celeste.active { 
+  background-color: #378CDB; 
+  border-color: #1E6DD4; 
+} 
+ 
+.btn-celeste .badge { 
+  color: #378CDB; 
+  background-color: #ffffff; 
+}
+
+.btn-verdeagua{ 
+  color: #ffffff; 
+  background-color: #8b6db8; 
+  border-color: #8b6db8; 
+} 
+ 
+.btn-verdeagua:hover, 
+.btn-verdeagua:focus, 
+.btn-verdeagua:active, 
+.btn-verdeagua.active, 
+.open .dropdown-toggle.btn-verdeagua{ 
+  color: #ffffff; 
+  background-color: #7558a1; 
+  border-color: #7956ad; 
+} 
+ 
+.btn-verdeagua:active, 
+.btn-verdeagua.active, 
+.open .dropdown-toggle.btn-verdeagua{ 
+  background-image: none; 
+} 
+ 
+.btn-verdeagua.disabled, 
+.btn-verdeagua[disabled], 
+fieldset[disabled] .btn-verdeagua, 
+.btn-verdeagua.disabled:hover, 
+.btn-verdeagua[disabled]:hover, 
+fieldset[disabled] .btn-verdeagua:hover, 
+.btn-verdeagua.disabled:focus, 
+.btn-verdeagua[disabled]:focus, 
+fieldset[disabled] .btn-verdeagua:focus, 
+.btn-verdeagua.disabled:active, 
+.btn-verdeagua[disabled]:active, 
+fieldset[disabled] .btn-verdeagua:active, 
+.btn-verdeagua.disabled.active, 
+.btn-verdeagua[disabled].active, 
+fieldset[disabled] .btn-verdeagua.active { 
+  background-color: #8b6db8; 
+  border-color: #8b6db8; 
+} 
+ 
+.btn-verdeagua.badge { 
+  color: #8b6db8; 
+  background-color: #ffffff; 
+}
+
+.btn-outline-violetasuave { 
+  color: #563d7c; 
+  background-color: transparent;
+  border-color: transparent;
+} 
+ 
+.btn-outline-violetasuave:hover, 
+.btn-outline-violetasuave:focus, 
+.btn-outline-violetasuave:active, 
+.btn-outline-violetasuave.active, 
+.open .dropdown-toggle.btn-outline-violetasuave { 
+  color: #563d7c; 
+  background-color: #c3b4d9; 
+  border-color: transparent;
+} 
+ 
+.btn-outline-violetasuave:active, 
+.btn-outline-violetasuave.active, 
+.open .dropdown-toggle.btn-outline-violetasuave { 
+  background-image: none; 
+} 
+ 
+.btn-outline-violetasuave.disabled, 
+.btn-outline-violetasuave[disabled], 
+fieldset[disabled] .btn-outline-violetasuave, 
+.btn-outline-violetasuave.disabled:hover, 
+.btn-outline-violetasuave[disabled]:hover, 
+fieldset[disabled] .btn-outline-violetasuave:hover, 
+.btn-outline-violetasuave.disabled:focus, 
+.btn-outline-violetasuave[disabled]:focus, 
+fieldset[disabled] .btn-outline-violetasuave:focus, 
+.btn-outline-violetasuave.disabled:active, 
+.btn-outline-violetasuave[disabled]:active, 
+fieldset[disabled] .btn-outline-violetasuave:active, 
+.btn-outline-violetasuave.disabled.active, 
+.btn-outline-violetasuave[disabled].active, 
+fieldset[disabled] .btn-outline-violetasuave.active { 
+  background-color: transparent;
+  border-color: transparent;
+} 
+ 
+.btn-outline-violetasuave .badge { 
+  color: transparent;
+  background-color: #563d7c; 
+}
+
+.form-mobile{
+	font-size: medium;
+}

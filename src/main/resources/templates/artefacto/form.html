@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head th:replace="layout/layout :: head"></head>
+	
+	<body>
+		<header th:replace="layout/layout :: header"></header>
+		<div class="container-fluid pt-0 pb-1 px-1 m-0 row justify-content-center">
+			<div class="card bg-primary text-white col-lg-10 col-xl-9 px-0"> 
+				<div class="card-header">
+					<div class="col-auto">
+						<span class="card-title fs-3" th:text="${titulo}"></span>									
+					</div>																								
+				</div>			
+				<div class="card-body pt-0 pt-sm-0 pt-md-2 pt-lg-2 pt-xl-2">
+					<form th:action="@{/artefacto/form}" th:object="${artefacto}" method="post" enctype="multipart/form-data">
+						<div class="form-group row justify-content-between mb-1">		 
+							<label class="col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2 fs-5 col-form-label">Nombre:</label>	
+							<div class="col-12 col-sm-12 col-md-12 col-lg col-xl">			
+								<input th:if="${repetido} != true and ${nombreEnBlanco} != true" type="text" th:field="*{nombre}" class="form-control fs-5"/>
+								<input th:if="${repetido} or ${nombreEnBlanco}" type="text" th:field="*{nombre}" class="form-control alert-danger fs-5"/>
+								<small th:if="${repetido} or ${nombreEnBlanco}" class="form-text text-warning fs-6"  th:text="${nombreError}"></small>
+							</div>
+						</div>	
+						
+						<div class="row my-2">		
+							<label class="col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2  fs-5 col-form-label">Consumo:</label>	
+							<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
+								<div class="input-group flex-nowrap">	
+									<input type="number" id="cantidad" style="width: 50%;" step="00.01" 
+										   th:field="*{consumoEnergetico}" placeholder="100" class="form-control text-center fs-5"
+										   th:value="${artefacto.consumoEnergetico} == 0 ? null : ${artefacto.consumoEnergetico}"
+										   th:errorclass="'form-control alert-danger fs-5'"/>								
+									
+									<select id="unidadDeConsumo" name="unidadDeConsumo"
+											style="width: 50%;"  
+											th:class="${artefacto.unidadDeConsumo}==null or ${artefacto.unidadDeConsumo}== 0 ? 'form-select text-secondary fs-5' : 'form-select fs-5'" 
+											th:field="*{unidadDeConsumo}" 
+											onchange="cambiaColorSelect(this)"
+											th:errorclass="'form-select alert-danger fs-5'">
+										<option style="color: rgb(192, 192, 192);" th:value="0" th:selected="${artefacto.unidadDeConsumo} == null" hidden>Elegir unidad de medida...</option>
+										<option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
+										        th:if="${unidad.tipoDeMedida.equals('consumoElectrico') || unidad.tipoDeMedida.equals('consumoGas')}" 
+										        th:value= "${unidad}" th:text="${unidad.simbolo + ' - ' + unidad.nombre}"
+										        th:selected="${unidad} == ${artefacto.unidadDeConsumo}"></option>
+									</select>														
+								</div>
+								<div class="row">
+									<div class="col-6">
+										<small style="width: 50%;" class="form-text text-warning errores fs-6" th:if="${#fields.hasErrors('consumoEnergetico')}" th:errors="*{consumoEnergetico}"></small>
+									</div>
+									<div class="col-6">
+										<small style="width: 50%;"class="form-text text-warning errores fs-6" th:if="${#fields.hasErrors('unidadDeConsumo')}" th:errors="*{unidadDeConsumo}"></small>
+									</div>
+								</div>
+							</div>	
+						</div>	
+						
+						<div class="row my-2">		
+							<label class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 fs-5 col-form-label text-nowrap">Medida de uso:</label>
+							<div class="pt-2 col">
+								<div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 form-check form-check-inline text-nowrap flex-nowrap">
+									<input class="form-check-input fs-5" type="radio" name="esHorno" id="niveles" value="false" th:field="*{esHorno}">
+									<label class="form-check-label fs-5" for="niveles">Niveles&nbsp
+										<abbr class="text-decoration-none" title="Ejemplo: Bajo, Medio, Alto; 1, 2, 3, 4, 5...">
+											<i class="fa fa-question-circle-o" aria-hidden="true"></i>
+										</abbr>
+									</label>
+								</div>
+								<div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 form-check form-check-inline text-nowrap flex-nowrap">
+									<input class="form-check-input fs-5" type="radio" name="esHorno" id="grados" value="true" th:field="*{esHorno}">
+									<label class="form-check-label fs-5" for="grados">Grados °C o °F&nbsp
+										<abbr class="text-decoration-none" title="Ejemplo: Como funciona un horno; 180°C, 240°F...">
+											<i class="fa fa-question-circle-o" aria-hidden="true"></i>
+										</abbr>
+									</label>
+								</div>
+							</div>								
+						</div>					
+						<div class="form-group row justify-content-end mt-4">
+							<div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-10">
+								<input type="submit" th:value="${btnText}" class="btn btn-verdeagua col-12 my-2 fs-4" />				
+							</div>
+						</div>				
+						<input type="hidden" th:field="*{id}"/>						
+					</form>	
+				</div>	
+			</div> 
+		</div>
+		<div class="card-footer text-nowrap justify-align-center mx-0 px-0">
+			<footer th:replace="layout/layout :: footer"></footer>		
+		</div>
+		<script th:if="${artefacto.id}==null" type="text/javascript">
+			$(document).ready(function(){});
+			if($('#cantidad').val() == 0){
+				$('#cantidad').val(null);
+			}
+			if($('#unidadDeConsumo').val() == null || $('#unidadDeConsumo').val() == 0){
+				$('#unidadDeConsumo').val(0);
+			}
+		</script>	
+	</body>	
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<body>
+		<div th:fragment="compraForm"
+			class="container-fluid row justify-content-center px-0 mx-0">
+			<div class="text-primary col-12 px-0 mx-0">
+	
+				<form id="formProducto" th:action="@{/receta/actualizaPrecios}"
+					th:object="${receta}" method="post" enctype="multipart/form-data">
+	
+					<input id="cantidadDeCompras" name="cantidadDeCompras" type="hidden"
+						th:value="${#lists.size(receta.ingredientes)}" />
+	
+					<div id="cuerpoCompra">
+						<div class="row justify-content-between flex-nowrap">
+							<div class="col-12">
+								<div th:each="ingrediente, iterador : ${receta.ingredientes}">
+									<div th:each="producto : ${productos}">
+										<div th:if="${ingrediente.productoId} == ${producto.id}">
+											<div class="ingredienteCompra card row my-2 mx-0 flex-nowrap"
+												th:ingrediente="'ingredienteCompra' + ${iterador.index+1}"
+												th:orden="${iterador.index+1}">
+												<div th:class="'ingrediente' + ${iterador.index+1} + ' col'">
+													<div class="row my-1 flex-nowrap"
+														style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+														<input th:orden="${iterador.index+1}"
+															th:id="'productoCompra' + ${iterador.index+1}"
+															th:name="'productoCompra' + ${iterador.index+1}"
+															class="nombreProducto text-primary fs-5" 
+															th:value="${producto.nombre}"
+															th:title="${producto.nombre}"
+															style="border: none;"/>
+													</div>
+													<div class="row mb-2">
+														<div class="input-group">
+															<span class="input-group-text">$</span> 
+															<input th:orden="${iterador.index+1}"
+																th:id="'productoPrecio' + ${iterador.index+1}"
+																th:name="'productoPrecio' + ${iterador.index+1}"
+																class="productoPrecio compra form-control col text-center fs-6 px-1"
+																th:value="${producto.precio}" /> 
+															<span class="input-group-text px-2 text-center"> lxs </span> 
+															<input th:orden="${iterador.index+1}"
+																th:id="'productoCantidadPresentacion' + ${iterador.index+1}"
+																th:name="'productoCantidadPresentacion' + ${iterador.index+1}"
+																class="productoCantidadPresentacion compra text-center col form-control fs-6 px-1"
+																th:value="${producto.cantidad}" />
+															<select th:id="'productoUnidadDeMedida' + ${iterador.index+1}"
+																class="form-select text-start col-auto px-0 ps-1 fs-6"
+																th:name="'productoUnidadDeMedida' + ${iterador.index+1}"
+																style="max-width: 100px;">
+																<option style="color: rgb(192, 192, 192)" th:value="0"
+																	disabled="disabled" hidden>Elegir unidad de
+																	medida...</option>
+																<option
+																	th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}"
+																	th:if="${unidad.tipoDeMedida.equals(ingrediente.unidadDeMedida.tipoDeMedida)}"
+																	th:text="${unidad.simbolo}" 
+																	th:title="${unidad.nombre}"
+																	th:value="${unidad}"
+																	th:selected="${ingrediente.unidadDeMedida} == ${unidad}">
+																</option>
+															</select>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+	
+					<div class="form-group row justify-content-end mt-3">
+						<div class="col-12">
+							<input type="submit" th:value="'Actualizar precios'"
+								class="btn btn-verdeagua col-12 fs-5"
+								onclick="validaCompra(); return false;" />
+						</div>
+					</div>
+					<div class="escondidos" name="escondidos">
+						<input type="hidden" th:field="*{id}" />
+						<input type="hidden" id="porcionesDesdePrincipal" name="porcionesDesdePrincipal" th:value="${porciones}"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</body>
+	
+</html>

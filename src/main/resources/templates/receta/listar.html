@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	
+	<head th:replace="layout/layout :: head"></head>
+	<body>	
+		<header th:replace="layout/layout :: header"></header>		
+		<div id="listaRecetas" class="container-fluid pt-0 pb-1 px-1 m-0">
+			<div class="card bg-light">
+				<div class="card-header">
+					<div class="container-fluid ps-1">
+	 					<div class="row justify-content-between">	  						
+	 						<div class="col-auto ps-2">
+								<span class="card-title fw-bold" th:text="${titulo}"></span>									
+							</div>									    
+		    				<div id="headersBtns" class="" sec:authorize="hasRole('ROLE_USER')">
+		    					<div class="row justify-content-end text-nowrap flex-nowrap">
+	     							<a class="btn btn-primary btnNuevo" th:href="@{/receta/form}" th:text="'Nueva'">Nueva</a>
+	     							<a class="col-auto btn btn-success text-white" th:href="@{/receta/listar(format=xlsx)}" th:text="XLS">XLS</a>
+	   							</div>
+							</div>
+	    				</div>
+  						<div class="row justify-content-end text-nowrap flex-nowrap">  							
+							<div id="seleccionaListado" class="col-12 btn-group mx-0 ps-2 pe-0 mb-2" role="group">
+								<input type="radio" class="btn-check" name="btnRadio" id="mias" value="mias" autocomplete="off" checked="checked">
+								<label class="btn btn-outline-primary" for="mias" th:text="${tituloMias}">Mías</label>
+								<input type="radio" class="btn-check" name="btnRadio" id="visibles" value="visibles" autocomplete="off">
+								<label class="btn btn-outline-primary" for="visibles" th:text="${tituloVisibles}">Otras</label>
+								<input type="radio" class="btn-check" name="btnRadio" id="favoritas" value="favoritas" autocomplete="off">
+								<label class="btn btn-outline-primary" for="favoritas" th:text="${tituloFavoritas}">Favoritas</label>
+							</div>
+						</div>
+	  				</div>	
+				</div>	
+				<div class="card-body table-responsive m-0 p-0">				
+					<div id="tablaDeRecetas"></div>										
+				</div>
+			</div>
+		</div>	
+		<form id="formVerReceta" th:action="@{/receta/verReceta/}" method="post" enctype="multipart/form-data"></form>	
+		<footer th:replace="layout/layout :: footer"></footer>
+		<script th:src="@{/js/abrir-receta.js}"></script>			
+	</body>
+</html>

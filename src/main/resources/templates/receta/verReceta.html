@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head th:replace="layout/layout :: head"></head>	
+	<body>	
+		<header th:replace="layout/layout :: header"></header>	
+		<div class="container-fluid row justify-content-center px-0 mx-0">		
+			<div class="card border-primary text-primary mx-1 px-0 col contenedorPrincipal" style="max-width: 700px;"> 	
+				<div class="card-header pb-1">
+					<div class="row justify-content-between flex-nowrap">
+						<h3 class="col py-0 mt-2 card-title fs-2 fw-bold text-break" th:text="${receta.nombre}"></h3>
+						<div class="col-auto d-flex align-items-center" >
+							<a class="btn btn-outline-violetasuave py-0 my-1 px-2" th:href="@{'/receta/verReceta/' + ${receta.id}(format=pdf)}" target="_blank"><i class="bi bi-file-earmark-pdf fs-2"></i></a>	
+							<a class="btn btn-outline-violetasuave my-1" th:href="@{/receta/form/} + ${receta.id}"><i class="fa fa-pencil fs-2" aria-hidden="true"></i></a>	
+						</div>	
+					</div>	
+				</div>	
+								
+				<div class="card-body p-0 m-0">				
+					<form id="formulario" th:object="${receta}" method="post" enctype="multipart/form-data">
+						<input type="hidden" id="esNuevo" th:value="${esNuevo}">
+						<input type="hidden" id="costoPorcion" th:value="${costoPorcion}">
+						<input type="hidden" id="costoTotal" th:value="${costoTotal}">								
+						<div class="row justify-content-between flex-nowrap px-0 mx-0 mb-2">											
+							<ul class="list-group list-group-flush mx-0 px-0">
+<!--PORCIONES---------------------------------------------------------------------------------------------------->															
+								<li class="list-group-item">
+									<div class="row justify-content-between flex-nowrap"> 								
+										<div class="col-auto align-bottom mt-1 me-3 text-primary">							
+											<label class="mx-0 fs-4 fw-bold">
+												Porciones:&nbsp;
+											</label>
+										</div>
+										<div class="col-auto ms-3">	
+											<input id="porciones" 
+												   name="porciones" 
+												   type="text" 
+												   step="1" 											   
+												   th:value="${receta.getPorcionesFormateado()}"
+												   th:porcionesOriginales="${receta.getPorcionesFormateado()}"											   
+												   class="form-control text-center text-primary fs-4" 
+												   min="1"																				   
+												   style="width: 120px;"
+												   onblur="calculaPorciones()"/>
+										</div>
+									</div>	 
+								</li>	
+<!--COSTO---------------------------------------------------------------------------------------------------->	
+								<li class="list-group-item">
+									<div class="costoCol col-auto">
+										<div class="row justify-content-between">
+											<div class="col-auto" style="width: 220px">
+												<div class="row justify-content-between flex-nowrap">						
+													<label class="col me-0 text-primary fw-bold text-nowrap fs-6">
+														Costo x porción:
+													</label>
+													<span class="col-auto ms-0 fs-6 costo costoPorcion" th:text="${costoPorcion}"></span>
+												</div>
+												<div class="row justify-content-between flex-nowrap">	
+													<label class="col me-0 text-primary text-nowrap fw-bold fs-6">
+														Costo Total:
+													</label>
+													<span class="col-auto ms-0 fs-6 costo costoTotal" th:text="${costoTotal}"></span>
+												</div>
+											</div>
+											<div class="col-auto">	
+												<button  class="btn btn-outline-violetasuave my-1"
+													data-bs-toggle="modal" 
+											  		data-bs-target="#agregaArtefactoModal"
+											  		title="Carga de compra de ingredientes para actualización del precio."
+											  		onclick="return false;">
+													<i  class="fa fa-shopping-basket fs-4" 
+														aria-hidden="true">
+													</i>
+												</button>
+											</div>
+										</div>	
+									</div>
+								</li>													
+<!--INGREDIENTES---------------------------------------------------------------------------------------------------->													
+								<li class="list-group-item">
+									<div class="row justify-content-between px-0 flex-nowrap">
+										<label class="col-auto fs-4 mb-2 fw-bold text-primary">Ingredientes:&nbsp;</label>															
+									</div>
+									
+									<input id="cantidadDeIngredientes" name="cantidadDeIngredientes" type="hidden" th:value="${#lists.size(receta.ingredientes)}"/>
+									
+									<div id="cuerpoIngredientes">
+										<div class="row justify-content-between flex-nowrap">
+											<div class="col-auto me-1">
+												<div th:each="ingrediente, iterador : ${receta.ingredientes}">
+													<div class="ingrediente row flex-nowrap" 
+														 th:ingrediente="'ingrediente' + ${iterador.index+1}" 
+														 th:orden="${iterador.index+1}">
+														<div class="col-auto" style="width: 20px;">
+															<i class="fa fa-square text-secondary" aria-hidden="true" style="font-size: x-small;"></i>	
+														</div>	
+														<div th:class="'ingrediente' + ${iterador.index+1} + ' col-auto'" 
+															 style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">																		
+															<span th:orden="${iterador.index+1}" 
+																  th:id="'producto' + ${iterador.index+1}" 
+																  th:name="'producto' + ${iterador.index+1}" 
+																  class="nombreProducto fs-5"
+																  th:each="producto : ${productos}"
+																  th:if="${ingrediente.productoId} == ${producto.id}"
+																  th:text="${producto.nombre}"
+																  th:title="${producto.nombre}">													
+															</span>	
+														</div>
+													</div>
+												</div>	
+											</div>
+												
+											<div class="col-auto">
+												<div th:each="ingrediente, iterador : ${receta.ingredientes}">
+													<div class="row justify-content-end flex-nowrap"														 
+														 th:ingrediente="'ingrediente' + ${iterador.index+1}"  
+														 th:orden="${iterador.index+1}">
+														<div th:class="'ingrediente' + ${iterador.index+1} + ' col-auto text-end px-0 mx-0 py-0 my-0'">
+															<span th:id="'cantidadIngrediente' + ${iterador.index+1}" 
+																  th:name="'cantidadIngrediente' + ${iterador.index+1}" 
+																  th:text="${ingrediente.getCantidadFormateado()}"
+																  th:cantidad="${ingrediente.cantidad}"  														
+																  class="cantidadIngrediente fs-5">
+															</span>
+														</div>
+														<div th:class="'ingrediente' + ${iterador.index+1} + ' col-auto px-1 mx-0 py-0'" style="width: 80px;">
+															<select th:id="'unidadDeMedida'+ ${iterador.index+1}" 
+																	th:name="'unidadDeMedida'+ ${iterador.index+1}" 
+																	class="form-select text-primary text-start unidadDeMedida fs-5 mx-0 px-0 my-0 py-0"
+																	th:ingrediente="'ingrediente' + ${iterador.index+1}"
+																	onchange="cambiaUnidad(this)"
+																	style="border: none;">
+																  <option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
+														      			  th:if="${unidad.tipoDeMedida.equals(ingrediente.unidadDeMedida.tipoDeMedida)}" 
+														      			  th:value="${ingrediente.cantidad} * ${ingrediente.unidadDeMedida.cantidadDeLaUnidadDeBase} / ${unidad.cantidadDeLaUnidadDeBase}" 
+														      			  th:text="${unidad.simbolo}" 
+														      			  th:title="${unidad.nombre}"
+														      			  th:selected="${ingrediente.unidadDeMedida} == ${unidad}"
+														      			  th:class="${unidad.simbolo}  + ' unidadDeMedidaOpcion'" 
+														      			  th:cantidadEnEstaUnidad="${ingrediente.cantidad} * ${ingrediente.unidadDeMedida.cantidadDeLaUnidadDeBase} / ${unidad.cantidadDeLaUnidadDeBase}">
+														   		  </option>
+															</select>
+														</div>
+													</div>												
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row mb-2"></div>
+								</li>		
+<!--ARTEFACTOS ---------------------------------------------------------------------------------------------------->								
+								<li th:if="${#lists.isEmpty(receta.artefactosUtilizados)} == false" class="list-group-item">
+									<div class="row px-0">
+										<label class="col-auto fs-4 fw-bold text-primary">
+											Artefactos:&nbsp;											
+										</label>													
+									</div>
+										
+									<input id="cantidadDeArtefactos" name="cantidadDeArtefactos" type="hidden" th:value="${#lists.size(receta.artefactosUtilizados)}"/>
+										
+									<div id="cuerpoArtefactos">			
+										<div class="row">								
+											<div class="col-12 artefacto">											
+												<div th:each="artefactoEnUso, iterador : ${receta.artefactosUtilizados}">
+													<div th:class="${deviceType}=='browser' ? 'row justify-content-between' : ''">
+														<div th:class="${deviceType}=='browser' ? 'col-6' : ''">
+															<div th:class="'artefacto' + ${iterador.index+1} + ' row flex-nowrap'" th:orden="${iterador.index+1}">
+																<div class="col-auto" style="width: 20px;">												
+																	<i class="fa fa-square text-secondary" aria-hidden="true" style="font-size: x-small;"></i>	
+																</div>	
+																<div class="col-auto" style="max-width: 85%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">																		
+																	<span th:orden="${iterador.index+1}" 
+																		  th:id="'artefacto' + ${iterador.index+1}" 
+																		  th:name="'artefacto' + ${iterador.index+1}" 
+																		  class="nombreArtefacto fs-5"
+																		  th:each="artefacto : ${artefactos}"
+																		  th:if="${artefactoEnUso.artefactoId} == ${artefacto.id}"
+																		  th:text="${artefacto.nombre}"
+																		  th:title="${artefacto.nombre}">													
+																	</span>	
+																</div>
+															</div>
+														</div>		
+														<div th:class="${deviceType}=='browser' ? 'col-auto me-2':''">
+															<div th:class="'artefacto' + ${iterador.index+1} + ' row flex-nowrap'" th:orden="${iterador.index+1}">													
+																<div class="col-auto" style="width: 20px;"></div>	
+																<div class="col-auto text-nowrap">													
+																	<span th:id="'minutosDeUso' + ${iterador.index+1}" 
+																		  th:name="'minutosDeUso' + ${iterador.index+1}" 
+																		  th:text="${artefactoEnUso.getCantidadFormateada()}" 														
+																		  class="minutosDeUso fs-5">
+																	</span>
+																	<span th:text="'minutos a&nbsp;'" 														
+																		  class="minutosDeUso fs-5">
+																	</span>
+																</div>
+																<div th:if="${artefactoEnUso.intensidadDeUso} != null" class="col-auto px-0 me-2">
+																	<span class="fs-5" th:text="'intensidad&nbsp;' + ${artefactoEnUso.intensidadDeUso}"></span>
+																</div>
+																<div th:if="${artefactoEnUso.temperatura} != 0" class="col-auto px-0">		
+																	<span class="cantidadTemperatura fs-5" 
+																		  th:text="${artefactoEnUso.getCantidadFormateada(artefactoEnUso.temperatura)}"></span>
+																</div>	
+																<div th:if="${artefactoEnUso.temperatura} != 0" class="col-auto px-0 mx-0">	
+																	<select style="width: 70px; border: none;" 
+																			th:id="'unidadTemperatura'+ ${iterador.index+1}" 
+																			th:name="'unidadTemperatura'+ ${iterador.index+1}" 
+																			class="form-select fs-5 text-primary unidadTemperatura py-0 my-0 px-0 mx-0"
+																			th:artefacto="'artefacto' + ${iterador.index+1}"
+																			onchange="cambiaUnidad(this)">
+																		<option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
+																		        th:if="${unidad.tipoDeMedida.equals('temperatura')}" 
+																		 		th:value= "${unidad.convertirTemperatura(artefactoEnUso.temperatura, artefactoEnUso.unidadDeTemperatura)}" 
+																		 		th:text="${unidad.simbolo}"
+																		 		th:title="${unidad.nombre}"
+																		  		th:selected="${artefactoEnUso.unidadDeTemperatura}==${unidad}"
+																		  		th:cantidadEnEstaUnidad="${unidad.convertirTemperatura(artefactoEnUso.temperatura, artefactoEnUso.unidadDeTemperatura)}">														  		
+																		</option>
+																	</select> 
+																</div>
+															</div>
+														</div>			
+													</div>
+												</div>	
+											</div>
+										</div>
+									</div>
+									<div class="row mb-2"></div>
+								</li>
+<!--INSTRUCCIONES ---------------------------------------------------------------------------------------------------->																
+								<li class="list-group-item">
+									<div class="row px-0 mb-2">
+										<label class="col-auto fs-4 fw-bold text-primary">
+											Instrucciones:&nbsp;											
+										</label>													
+									</div>
+									<input id="cantidadDeInstrucciones" name="cantidadDeInstrucciones" type="hidden" th:value="${#lists.size(receta.instrucciones)}"/>									
+										
+									<div id="cuerpoInstrucciones">
+										<div class="col-auto">
+											<div th:each="instruccion, iterador : ${receta.instrucciones}">			
+												<div class="row mb-3" 
+													 th:id="'instruccion' + ${iterador.index+1}" 
+													 th:name="'instruccion' + ${iterador.index+1}" 
+													 th:orden="${iterador.index+1}">
+													 <div th:if="${#strings.isEmpty(instruccion.instruccion)}" 
+													 	  class="col">
+														<span th:id="'pasoTexto' + ${iterador.index+1}" 
+														   	  th:name="'pasoTexto' + ${iterador.index+1}" 
+														  	  class="pasoTexto text-break fst-italic fs-5"
+														  	  th:aria-label="'Paso ' + ${iterador.index+1}">
+														  	  No hay instrucciones guardadas para realizar esta receta.<br>
+														  	  Si lo desea puede editarla y hacer sus propias anotaciones.														
+														</span>
+													</div>																				
+													<div th:if="${#strings.isEmpty(instruccion.instruccion)} == false" 
+														 class="col-auto">
+														<div class="row">
+															<div class="col-auto" style="width: 20px;">
+																<i class="fa fa-circle text-secondary" aria-hidden="true" style="font-size: x-small;"></i>
+															</div>
+															<div class="col-auto">
+																<span class="pasoTitulo text-primary fs-5 fw-bold" 
+																	  th:name="'pasoTitulo' + ${iterador.index+1}" 
+																	  th:text="'Paso ' + ${iterador.index+1}">
+																</span>
+															</div>
+														</div>	
+														<div class="row flex-nowrap">
+															<div class="col-auto" style="width: 20px;"></div>	
+															<div class="col">
+																<p th:id="'pasoTexto' + ${iterador.index+1}" 
+																   th:name="'pasoTexto' + ${iterador.index+1}" 
+																   class="pasoTexto text-break fs-5"
+																   th:aria-label="'Paso ' + ${iterador.index+1}"
+																   th:text="${instruccion.instruccion}">														
+																</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+<!-- -------------------------------------------------------------------------------------------------------------------------								 -->
+							</ul>	
+						</div>																							
+						<input type="hidden" th:field="*{id}"/>						
+					</form>	
+				</div>
+			</div> 
+		</div>
+		
+		<div id="agregaArtefactoModal" class="modal fade" tabindex="-1" aria-labelledby="agregaArtefactoModal" aria-hidden="true">
+			<div class="modal-dialog modal-xl" style="max-width: 500px;">
+				<div class="modal-content">
+					<div class="modal-header text-primary row justify-content-between">
+	  					<div class="col-auto">
+							<span class="fw-bold fs-4" th:text="'Cargar compra'"></span>
+							<abbr class="text-decoration-none fs-5" 
+								title="Aquí podrá actualizar el precio de la receta, cargando la compra que usted ha realizado de los ingredientes. Para hacerlo deberá indicar la cantidad que viene en la presentación comprada y el precio del producto. Ej: El paquete de harina comprado cuesta $1,50 y viene en una presentación de 1000 gramos. Si desconoce esta información de algún ingrediente, puede dejar la que viene por defecto y completar solo el resto.">
+								<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
+							</abbr>
+						</div>
+						<div class="col-auto">
+							<button type="button" 
+									class="btn" 
+									data-bs-dismiss="modal" 
+									aria-label="Close">
+									<i class="fa fa-times text-primary fs-3" aria-hidden="true"></i>
+							</button>		
+						</div>	
+					</div>	
+					<div class="modal-body pt-0 mt-0">
+						<div th:replace="receta/formCompraModal :: compraForm">
+						</div>
+					</div>										
+				</div>
+			</div>
+		</div>
+		
+		<div class="container-fluid row justify-content-center px-0">	
+			<div class="col-auto px-0">
+				<footer th:replace="layout/layout :: footer"></footer>			
+			</div>
+		</div>	
+		<script th:src="@{//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js}"></script>		
+		<script th:src="@{/js/ver-receta.js}"></script>									
+	</body>	
+</html>

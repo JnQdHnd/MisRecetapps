@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="layout/layout :: head"></head>	
+	<body>
+		<header th:replace="layout/layout :: header"></header>
+		<div class="container-fluid pt-0 pb-1 px-1 m-0 row justify-content-center">
+			<div class="card bg-dark text-white col-lg-10 col-xl-9 px-0"> 	
+				<div class="card-header">
+					<div class="container-fluid mx-0 px-0">
+						<div class="row justify-content-between">
+	  						<div class="col-auto">
+	  							<span class="card-title fs-3" th:text="${titulo}"></span>				
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<form th:action="@{/usuario/form}" th:object="${usuario}" method="post">
+						<div class="form-group row justify-content-between mb-md-2 mb-lg-2 mb-xl-2">			 
+							<label class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3 col-form-label fs-6">Correo electrónico</label>	
+							<div class="col-12 col-sm-12 col-md col-lg col-xl">			
+								<input type="text" th:field="*{email}" class="form-control fs-6" th:errorclass="'form-control alert-danger fs-6'"/>
+								<small class="form-text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+							</div>
+						</div>
+						<div class="form-group row justify-content-between my-md-2 my-lg-2 my-xl-2">			 
+							<label class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3 col-form-label fs-6">Nombre de usuario</label>	
+							<div class="col-12 col-sm-12 col-md col-lg col-xl">			
+								<input type="text" th:field="*{username}" class="form-control fs-6" th:errorclass="'form-control alert-danger fs-6'"/>
+								<small th:if="${#fields.hasErrors('username')}" class="form-text text-danger" th:errors="*{username}"></small>
+							</div>
+						</div>
+						<div class="form-group row justify-content-between my-md-2 my-lg-2 my-xl-2">			 
+							<label class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3 col-form-label fs-6">Contraseña</label>	
+							<div class="col-12 col-sm-12 col-md col-lg col-xl">			
+								<input th:if="${errorEnPassword}==false" name="pass" type="password" th:field="*{password}" class="form-control fs-6" th:errorclass="'form-control alert-danger fs-6'"/>
+								<input th:if="${errorEnPassword}==true" name="pass" type="password" th:field="*{password}" class="form-control alert-danger fs-6" th:errorclass="'form-control alert-danger fs-6'"/>
+								<small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+							</div>
+						</div>						
+						<div class="form-group row justify-content-between my-md-2 my-lg-2 my-xl-2">			 
+							<label class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3 col-form-label fs-6">Repetir contraseña</label>	
+							<div class="col-12 col-sm-12 col-md col-lg col-xl">			
+								<input th:if="${errorEnPassword}==false" name="reiteraPass" type="password" th:field="*{reiteraPassword}" class="form-control fs-6"/>
+								<input th:if="${errorEnPassword}==true" name="reiteraPass" type="password" th:field="*{reiteraPassword}" class="form-control alert-danger fs-6"/>
+								<small th:if="${errorEnPassword}==true" class="form-text text-danger">Las contraseñas deben ser iguales!</small>
+							</div>
+						</div>					
+						<div class="form-group row justify-content-end mt-4">
+							<div class="col-12 col-sm-12 col-md-8 col-lg-9 col-xl-9">
+								<input type="submit" th:value="${btnText}" class="btn btn-secondary col-12 fs-5" />				
+							</div>
+						</div>											
+						<input type="hidden" th:field="*{id}"/>							
+					</form>	
+				</div>
+			</div> 
+		</div>	
+		<footer th:replace="layout/layout :: footer"></footer>	
+	</body>	
+</html>

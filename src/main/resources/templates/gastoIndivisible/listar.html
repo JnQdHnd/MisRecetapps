@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head th:replace="layout/layout :: head"></head>
+	<body>
+		<header th:replace="layout/layout :: header"></header>
+		<div id="listaGastoIndivisible" class="container-fluid pt-0 pb-1 px-1 m-0">
+			<div class="card bg-light">		
+				<div class="card-header">
+					<div class="container-fluid ps-1">
+  						<div class="row justify-content-between">
+  							<div class="col-auto">
+								<span class="card-title fw-bold" th:text="${titulo}"></span>									
+							</div>  
+	    					<div id="headersBtns" class="" sec:authorize="hasRole('ROLE_USER')">
+	    						<div class="row justify-content-end text-nowrap flex-nowrap">
+     								<a class="btn btn-primary btnNuevo" th:href="@{/gastoIndivisible/form}" th:text="'Nuevo'"></a>					
+     								<a class="col-auto btn btn-success text-white" th:href="@{/gastoIndivisible/listar(format=xlsx)}" th:text="XLS"></a>
+   								</div>
+							</div>
+    					</div>
+  					</div>	
+				</div>
+				<div class="card-body table-responsive m-0 p-0">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 5%; text-align:center;" th:text="Id">Id</th>
+								<th class="text-nowrap fs-6 align-middle py-3" th:text="#{text.gastoIndivisible.listar.nombre}">Descripción</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 15%;text-align:center;" th:text="#{text.gastoIndivisible.listar.periodo}" title="Periodo en días">Periodo en D.(P)</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 15%;text-align:center;" th:text="#{text.gastoIndivisible.listar.precio}" title="Precio por periodo">$ x P</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 90px;text-align:center;" sec:authorize="hasRole('ROLE_USER')">EDITAR</th>
+								<th class="text-nowrap fs-6 align-middle py-3" style="width: 90px;text-align:center;" sec:authorize="hasRole('ROLE_USER')">ELIMINAR</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="gastoIndivisible:${gastosIndivisibles}">							
+								<td class="text-nowrap fs-6 align-middle" th:text="${gastoIndivisible.id}" style="text-align:center;"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${gastoIndivisible.nombre}"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${gastoIndivisible.getCantidadFormateada(gastoIndivisible.periodicidadDelPagoEnDias)}" style="text-align:center;"></td>
+								<td class="text-nowrap fs-6 align-middle" th:text="${gastoIndivisible.getPrecioFormateado(gastoIndivisible.costoPorPeriodo)}" style="text-align:center;"></td>							
+								<td sec:authorize="hasRole('ROLE_USER')" style="text-align:center;">
+									 <a class="btn btn-celeste" th:href="@{/gastoIndivisible/form/} + ${gastoIndivisible.id}" title="Editar" style="width: 70px;">
+									 	<i class="fa fa-pencil fs-5 mx-1" aria-hidden="true"></i>
+									 </a> 
+								</td>
+								<td sec:authorize="hasRole('ROLE_USER')" style="text-align:center;">
+									 <a class="btn btn-danger" th:href="@{/gastoIndivisible/eliminar/} + ${gastoIndivisible.id}" onclick="return confirm('¿Seguro de Eliminar?')" title="Eliminar" style="width: 70px;">
+									 	<i class="fa fa-trash fs-5 mx-1" aria-hidden="true"></i>
+									 </a> 
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<nav th:replace="layout/paginator-nav :: paginator"></nav>
+				</div>			
+				<div class="card-footer text-nowrap justify-align-center mx-0 px-0">
+					<footer th:replace="layout/layout :: footer"></footer>		
+				</div>		
+			</div>
+		</div>	
+	</body>
+</html>
+
