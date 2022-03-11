@@ -3,7 +3,7 @@
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	
 	<head th:replace="layout/layout :: head"></head>
-	<body>	
+	<body class="vh-100">	
 		<header th:replace="layout/layout :: header"></header>		
 		<div id="listaRecetas" class="container-fluid pt-0 pb-1 px-1 m-0">
 			<div class="card bg-light">
@@ -38,7 +38,7 @@
 			</div>
 		</div>	
 		<form id="formVerReceta" th:action="@{/receta/verReceta/}" method="post" enctype="multipart/form-data"></form>	
-		<footer th:replace="layout/layout :: footer"></footer>
+		<footer th:replace="layout/layout :: footScripts"></footer>
 		<script th:src="@{/js/abrir-receta.js}"></script>			
 	</body>
 </html>

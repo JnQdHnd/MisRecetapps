@@ -38,5 +38,4 @@ else if(dispositivo == 'mobile'){
 	$('.card-title').addClass('fs-3');
 	$('#headersBtns').addClass('col-12 my-2');
 	$('#headersBtns .btnNuevo').addClass('col mx-2');
-	$('.table').addClass('table-fit table-sm');
 }

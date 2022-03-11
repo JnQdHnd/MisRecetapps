@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -55,6 +56,9 @@ public class Receta implements Serializable {
 	
 	private double costo;
 	
+	@Transient
+	private boolean esFavorita;
+	
 	//METODOS------------------------------------------------------------
 		
 	public Long getId() {
@@ -67,8 +71,7 @@ public class Receta implements Serializable {
 		if(id != null && !id.isBlank() && Long.parseLong(id)>0) {
 			this.id = Long.parseLong(id);
 		}
-	}
-	
+	}	
 	public String getNombre() {
 		return nombre;
 	}
@@ -104,8 +107,7 @@ public class Receta implements Serializable {
 		if(costo != null && !costo.isBlank() && Double.parseDouble(costo)>0) {
 			this.costo = Double.parseDouble(costo);
 		}
-	}
-	
+	}	
 	public double getPorciones() {
 		return porciones;
 	}
@@ -164,8 +166,11 @@ public class Receta implements Serializable {
 			return formato.format(porciones);
 		}
 	}
-	
-	
-	
+	public boolean isEsFavorita() {
+		return esFavorita;
+	}
+	public void setEsFavorita(boolean esFavorita) {
+		this.esFavorita = esFavorita;
+	}
 	
 }

@@ -140,48 +140,12 @@ public class RecetaController {
 			log.info("ACCESO DENEGADO: Hola, NO tienes acceso.");
 		}
 
-		deviceType = identificaDevices.getDevice(device);
+		deviceType = identificaDevices.getDevice(device);		
 		
-		Usuario usuario = usuarioService.findByUsername(authentication.getName());
-		Pageable pageRequest = PageRequest.of(page, 50, Sort.by("nombre").ascending());
-		
-		Set<Receta> recetasFavoritas = usuario.getRecetasFavoritas();		
-		List<Long> recetasFavoritasIds = new ArrayList<>();
-		for(Receta receta:recetasFavoritas) {
-			recetasFavoritasIds.add(receta.getId());
-		}
-		Page<Receta> recetasFavoritasPage = recetaService.findByIdIn(recetasFavoritasIds, pageRequest);
-		PageRender<Receta> pageRenderFavoritas = new PageRender<Receta>("/receta/listar", recetasFavoritasPage);
-
-		Set<Receta> recetasCompratidas = usuario.getRecetasCompartidas();
-		List<Long> recetasCompartidasIds = new ArrayList<>();
-		for(Receta receta:recetasCompratidas) {
-			recetasCompartidasIds.add(receta.getId());
-		}
-		List<Receta> recetasVisibles = recetaService.findAllByEsPublicaTrueOrAutorOrIdIn(authentication.getName(), recetasCompartidasIds);		
-		Page<Receta> recetasVisiblesPage = recetaService.findAllByEsPublicaTrueOrAutorOrIdIn(authentication.getName(), recetasCompartidasIds, pageRequest);
-		PageRender<Receta> pageRenderVisibles = new PageRender<Receta>("/receta/listar", recetasVisiblesPage);
-		
-		List<Receta> recetasMias = recetaService.findAllByAutor(authentication.getName(), Sort.by("nombre").ascending());	
-		Page<Receta> recetasMiasPage = recetaService.findAllByAutor(authentication.getName(), pageRequest);			
-		PageRender<Receta> pageRenderMias = new PageRender<Receta>("/receta/listar", recetasMiasPage);			
-		
-		model.addAttribute("titulo", messageSource.getMessage("text.receta.listar.titulo", null, locale));
-		
-		model.addAttribute("tituloVisibles", messageSource.getMessage("text.receta.listar.titulo.visibles", null, locale));
-		model.addAttribute("recetasVisibles", recetasVisiblesPage);
-		model.addAttribute("pageVisibles", pageRenderVisibles);
-		model.addAttribute("todosRecetasVisibles", recetasVisibles);
-		
-		model.addAttribute("tituloMias", messageSource.getMessage("text.receta.listar.titulo.mias", null, locale));
-		model.addAttribute("recetasMias", recetasMiasPage);
-		model.addAttribute("pageMias", pageRenderMias);
-		model.addAttribute("todosRecetasMias", recetasMias);
-		
+		model.addAttribute("titulo", messageSource.getMessage("text.receta.listar.titulo", null, locale));		
+		model.addAttribute("tituloVisibles", messageSource.getMessage("text.receta.listar.titulo.visibles", null, locale));		
+		model.addAttribute("tituloMias", messageSource.getMessage("text.receta.listar.titulo.mias", null, locale));		
 		model.addAttribute("tituloFavoritas", messageSource.getMessage("text.receta.listar.titulo.favoritas", null, locale));
-		model.addAttribute("recetasFavoritas", recetasFavoritasPage);
-		model.addAttribute("pageFavoritas", pageRenderFavoritas);
-		model.addAttribute("todosRecetasFavoritas", recetasFavoritas);
 		model.addAttribute("deviceType", deviceType);
 		
 		return "receta/listar";
@@ -276,7 +240,7 @@ public class RecetaController {
 		Usuario usuario = usuarioService.findByUsername(authentication.getName());
 		Pageable pageRequest = PageRequest.of(page, 50, Sort.by("nombre").ascending());
 		
-		Set<Receta> recetasFavoritas = usuario.getRecetasFavoritas();		
+		List<Receta> recetasFavoritas = usuario.getRecetasFavoritas();		
 		List<Long> recetasFavoritasIds = new ArrayList<>();
 		for(Receta receta:recetasFavoritas) {
 			recetasFavoritasIds.add(receta.getId());
@@ -328,8 +292,19 @@ public class RecetaController {
 
 		deviceType = identificaDevices.getDevice(device);
 		
+		Usuario usuario = usuarioService.findByUsername(authentication.getName());
+		List<Receta> recetasFavoritas = usuario.getRecetasFavoritas();		
 		List<Receta> todasMisRecetas = recetaService.findAllByAutor(authentication.getName(), Sort.by("nombre").ascending());	
-
+		for(Receta rf : recetasFavoritas) {
+			System.out.println("************comparando favoritas con recetas***********");
+			for(Receta r : todasMisRecetas) {
+				if(r.getId() == rf.getId()) {
+					r.setEsFavorita(true);
+					System.out.println("************es favorita: " + r.getNombre() + " - " + r.isEsFavorita());					
+					break;
+				}
+			}
+		}
 		Pageable pageRequest = PageRequest.of(page, 50, Sort.by("nombre").ascending());
 
 		Page<Receta> misRecetas = recetaService.findAllByAutor(authentication.getName(), pageRequest);			
@@ -679,7 +654,7 @@ public class RecetaController {
 		flash.addFlashAttribute("success", mensajeFlash);		
 		recetaService.save(receta);	
 				
-		return "redirect:/receta/listar";
+		return "redirect:/receta/verReceta/" + receta.getId();
 	}
 	
 	
@@ -1015,5 +990,30 @@ public class RecetaController {
 		System.out.println("costoPorcion: " + costoPorcion);
 		return costoPorcion;
 	}
+
+	@RequestMapping(value = { "/receta/agregaFavorita/{recetaId}", "/browser/receta/agregaFavorita/{recetaId}", "/mobile/agregaFavorita/{recetaId}" }, method = RequestMethod.GET)
+	public String agregaFavorita(Authentication authentication, @PathVariable(name = "recetaId") long recetaId) {
+		System.out.println("************AGREGANDO A FAVORITAS***********");
+		Usuario usuario = usuarioService.findByUsername(authentication.getName());
+		System.out.println("Usuario: " + usuario.getUsername());
+		Receta receta = recetaService.findOne(recetaId);
+		System.out.println("Receta: " + receta.getNombre());
+		usuario.addRecetaFavoritas(receta);
+		usuarioService.saveUser(usuario);
+
+		return "redirect:/receta/listar";
+	}
 	
+	@RequestMapping(value = { "/receta/eliminaFavorita/{recetaId}", "/browser/receta/eliminaFavorita/{recetaId}", "/mobile/eliminaFavorita/{recetaId}" }, method = RequestMethod.GET)
+	public String eliminaFavorita(Authentication authentication, @PathVariable(name = "recetaId") long recetaId) {
+		System.out.println("************ELIMINANDO A FAVORITAS***********");
+		Usuario usuario = usuarioService.findByUsername(authentication.getName());
+		System.out.println("Usuario: " + usuario.getUsername());
+		Receta receta = recetaService.findOne(recetaId);
+		System.out.println("Receta: " + receta.getNombre());
+		usuario.removeRecetaFavoritas(receta);
+		usuarioService.saveUser(usuario);
+
+		return "redirect:/receta/listar";
+	}
 }

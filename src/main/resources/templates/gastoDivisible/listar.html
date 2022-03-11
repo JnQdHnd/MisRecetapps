@@ -54,7 +54,11 @@
 							</tr>
 						</tbody>
 					</table>
-					<nav th:replace="layout/paginator-nav :: paginator"></nav>
+					<div th:if="${page.totalPaginas} > 1" class="row justify-content-center">
+						<div class="col-auto">
+							<nav th:replace="layout/paginator-nav :: paginator"></nav>
+						</div>
+					</div>
 				</div>			
 				<div class="card-footer text-nowrap justify-align-center mx-0 px-0">
 					<footer th:replace="layout/layout :: footer"></footer>		

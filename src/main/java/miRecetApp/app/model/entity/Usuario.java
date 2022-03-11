@@ -70,10 +70,10 @@ public class Usuario implements Serializable {
 	@JoinColumn(name = "usuario_id")
 	private List<Role> roles;
 	
-	@OneToMany(mappedBy="id", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Receta> recetasFavoritas;
+	@OneToMany(targetEntity=Receta.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Receta> recetasFavoritas;
 	
-	@OneToMany(mappedBy="id", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(targetEntity=Receta.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Receta> recetasCompartidas;
 	
 	//METODOS
@@ -142,11 +142,11 @@ public class Usuario implements Serializable {
 		this.reiteraPassword = reiteraPassword;
 	}
     
-	public Set<Receta> getRecetasFavoritas() {
+	public List<Receta> getRecetasFavoritas() {
 		return recetasFavoritas;
 	}
 
-	public void setRecetasFavoritas(Set<Receta> recetasFavoritas) {
+	public void setRecetasFavoritas(List<Receta> recetasFavoritas) {
 		this.recetasFavoritas = recetasFavoritas;
 	}
 	

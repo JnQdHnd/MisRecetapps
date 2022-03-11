@@ -113,6 +113,7 @@ public class UsuarioController {
 			}
 			System.out.println("ErrorEnPasword: " + errorEnPassword);
 			
+			model.addAttribute("deviceType", deviceType);
 			model.addAttribute("errorEnPassword", errorEnPassword);
 			model.addAttribute("titulo", messageSource.getMessage("text.usuario.crear.titulo", null, locale));
 			model.addAttribute("btnText", messageSource.getMessage("text.usuario.crear.btn", null, locale));
@@ -130,7 +131,7 @@ public class UsuarioController {
 				System.out.println(error.getDefaultMessage() + " - " + error.getObjectName() + " - " + error.getCode());
 			}
 			System.out.println("ErrorEnPasword: " + errorEnPassword);
-			
+			model.addAttribute("deviceType", deviceType);
 			model.addAttribute("errorEnPassword", errorEnPassword);
 			model.addAttribute("titulo", messageSource.getMessage("text.usuario.editar.titulo", null, locale));
 			model.addAttribute("btnText", messageSource.getMessage("text.usuario.editar.btn", null, locale));
