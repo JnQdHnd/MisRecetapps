@@ -150,10 +150,9 @@ public class Usuario implements Serializable {
 		this.recetasFavoritas = recetasFavoritas;
 	}
 	
-	 public void addRecetaFavoritas(Receta receta) {
-		 this.recetasFavoritas.add(receta); 
-	 }
-	 
+	public void addRecetaFavoritas(Receta receta) {
+	 this.recetasFavoritas.add(receta); 
+	} 
  
     public void removeRecetaFavoritas(Receta receta) {
         this.recetasFavoritas.remove(receta);

@@ -10,12 +10,16 @@
 					<div class="row justify-content-between flex-nowrap">
 						<h3 class="col py-0 mt-2 card-title fs-2 fw-bold text-break" th:text="${receta.nombre}"></h3>
 						<div class="col-auto d-flex align-items-center" >
-							<a class="btn btn-outline-violetasuave py-0 my-1 px-2" th:href="@{'/receta/verReceta/' + ${receta.id}(format=pdf)}" target="_blank"><i class="bi bi-file-earmark-pdf fs-2"></i></a>	
-							<a class="btn btn-outline-violetasuave my-1" th:href="@{/receta/form/} + ${receta.id}"><i class="fa fa-pencil fs-2" aria-hidden="true"></i></a>	
+							<a class="btn btn-outline-violetasuave py-0 my-1" th:href="@{'/receta/verReceta/' + ${receta.id}(format=pdf)}" target="_blank"><i class="bi bi-file-earmark-pdf fs-2"></i></a>	
+							<a class="btn btn-outline-violetasuave my-1" th:href="@{/receta/form/} + ${receta.id}"><i class="fa fa-pencil fs-2" aria-hidden="true"></i></a>
+							<a  class="btn btn-outline-violetasuave my-1"
+								th:href="${receta.isEsFavorita()} ? @{/receta/ver/eliminaFavorita/} + ${receta.id} : @{/receta/ver/agregaFavorita/} + ${receta.id}"
+								th:title="${receta.esFavorita} ? 'Sacar de favoritas' : 'Agregar a favoritas'">
+								<i th:class="${receta.isEsFavorita()} ? 'fa fa-star fs-2' : 'fa fa-star-o fs-2'" aria-hidden="true"></i>
+							</a>	
 						</div>	
 					</div>	
-				</div>	
-								
+				</div>									
 				<div class="card-body p-0 m-0">				
 					<form id="formulario" th:object="${receta}" method="post" enctype="multipart/form-data">
 						<input type="hidden" id="esNuevo" th:value="${esNuevo}">

@@ -70,13 +70,6 @@ public class RecetaController {
 
 	@Autowired
 	private IRecetaService recetaService;
-	
-	@Autowired
-	private IIngredienteService ingredienteService;
-	@Autowired
-	private IInstruccionService instruccionService;
-	@Autowired
-	private IArtefactoEnUsoService artefactoEnUsoService;
 			
 	@Autowired
 	private IProductoService productoService;
@@ -86,12 +79,6 @@ public class RecetaController {
 	
 	@Autowired
 	private IManoDeObraService manoDeObraService;
-	
-	@Autowired
-	private IGastoDivisibleService gastoDivisibleService;
-	
-	@Autowired
-	private IGastoIndivisibleService gastoIndivisibleService;
 	
 	@Autowired
 	private UsuarioService usuarioService;
@@ -169,23 +156,18 @@ public class RecetaController {
 						 Device device) {
 		
 		SecurityContextHolderAwareRequestWrapper securityContext = new SecurityContextHolderAwareRequestWrapper(request,
-				"ROLE_");
-		
+				"ROLE_");		
 		if (authentication != null) {
 			log.info("Hola, tu username es: ".concat(authentication.getName()));
 		}
-
 		if (securityContext.isUserInRole("ADMIN")) {
 			log.info("ACCESO CONCEDIDO: Hola, " + authentication.getName() + ", tienes acceso.");
 		} else {
 			log.info("ACCESO DENEGADO: Hola, NO tienes acceso.");
 		}
-
 		deviceType = identificaDevices.getDevice(device);
-		
-		Usuario usuario = usuarioService.findByUsername(authentication.getName());
 		Pageable pageRequest = PageRequest.of(page, 50, Sort.by("nombre").ascending());
-
+		Usuario usuario = usuarioService.findByUsername(authentication.getName());
 		Set<Receta> recetasCompratidas = usuario.getRecetasCompartidas();
 		List<Long> recetasCompartidasIds = new ArrayList<>();
 		for(Receta receta:recetasCompratidas) {
@@ -702,11 +684,12 @@ public class RecetaController {
 	}
 	
 	@RequestMapping(value = { "/receta/verReceta/{recetaId}", "/browser/receta/verReceta/{recetaId}", "/mobile/receta/verReceta/{recetaId}"})
-	public String verReceta(@PathVariable(name = "recetaId") long recetaId, 
-						 Model model,
-						 HttpServletRequest request, 
-						 Locale locale, 
-						 Device device) {
+	public String verReceta(@PathVariable(name = "recetaId") long recetaId,
+							Authentication authentication, 
+							Model model,
+							HttpServletRequest request, 
+							Locale locale, 
+							Device device) {
 
 		deviceType = identificaDevices.getDevice(device);
 		
@@ -715,7 +698,13 @@ public class RecetaController {
 		List<Producto> productos = productoService.findAll(Sort.by("nombre").ascending());
 		List<Artefacto> artefactos = artefactoService.findAll(Sort.by("nombre").ascending());
 		
-		Receta receta = recetaService.findOne(recetaId);		
+		Receta receta = recetaService.findOne(recetaId);
+		for(Usuario u:receta.getUsuariosFanaticos()) {
+			if(u.getUsername().equals(authentication.getName())) {
+				receta.setEsFavorita(true);
+				break;
+			}
+		}
 		double costoPorcion = calculaCostoPorcion(receta);
 		double costoTotal = costoPorcion * receta.getPorciones();		
 		costoPorcion = Precision.round(costoPorcion, 2);
@@ -991,29 +980,35 @@ public class RecetaController {
 		return costoPorcion;
 	}
 
-	@RequestMapping(value = { "/receta/agregaFavorita/{recetaId}", "/browser/receta/agregaFavorita/{recetaId}", "/mobile/agregaFavorita/{recetaId}" }, method = RequestMethod.GET)
-	public String agregaFavorita(Authentication authentication, @PathVariable(name = "recetaId") long recetaId) {
+	@RequestMapping(value = { "/receta/agregaFavorita/{recetaId}", "/receta/ver/agregaFavorita/{recetaId}"}, method = RequestMethod.GET)
+	public String agregaFavorita(Authentication authentication, @PathVariable(name = "recetaId") long recetaId, HttpServletRequest request) {
 		System.out.println("************AGREGANDO A FAVORITAS***********");
+		boolean vieneDeVerReceta = false;
+		if(request.getRequestURI().contains("/ver/")) {
+			vieneDeVerReceta = true;
+		}
 		Usuario usuario = usuarioService.findByUsername(authentication.getName());
-		System.out.println("Usuario: " + usuario.getUsername());
 		Receta receta = recetaService.findOne(recetaId);
-		System.out.println("Receta: " + receta.getNombre());
 		usuario.addRecetaFavoritas(receta);
+		receta.addUsuarioFanatico(usuario);
+		recetaService.save(receta);
 		usuarioService.saveUser(usuario);
-
-		return "redirect:/receta/listar";
+		return vieneDeVerReceta ? "redirect:/receta/verReceta/" + recetaId : "redirect:/receta/listar";
 	}
 	
-	@RequestMapping(value = { "/receta/eliminaFavorita/{recetaId}", "/browser/receta/eliminaFavorita/{recetaId}", "/mobile/eliminaFavorita/{recetaId}" }, method = RequestMethod.GET)
-	public String eliminaFavorita(Authentication authentication, @PathVariable(name = "recetaId") long recetaId) {
+	@RequestMapping(value = { "/receta/eliminaFavorita/{recetaId}", "/receta/ver/eliminaFavorita/{recetaId}"}, method = RequestMethod.GET)
+	public String eliminaFavorita(Authentication authentication, @PathVariable(name = "recetaId") long recetaId, HttpServletRequest request) {
 		System.out.println("************ELIMINANDO A FAVORITAS***********");
+		boolean vieneDeVerReceta = false;
+		if(request.getRequestURI().contains("/ver/")) {
+			vieneDeVerReceta = true;
+		}
 		Usuario usuario = usuarioService.findByUsername(authentication.getName());
-		System.out.println("Usuario: " + usuario.getUsername());
 		Receta receta = recetaService.findOne(recetaId);
-		System.out.println("Receta: " + receta.getNombre());
 		usuario.removeRecetaFavoritas(receta);
+		receta.removeUsuarioFanatico(usuario);
+		recetaService.save(receta);
 		usuarioService.saveUser(usuario);
-
-		return "redirect:/receta/listar";
+		return vieneDeVerReceta ? "redirect:/receta/verReceta/" + recetaId : "redirect:/receta/listar";
 	}
 }

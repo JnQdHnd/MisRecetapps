@@ -1,14 +1,10 @@
 package miRecetApp.app.model.view.pdf;
 
 import java.awt.Color;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.view.document.AbstractPdfView;

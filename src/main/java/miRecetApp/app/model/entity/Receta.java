@@ -50,6 +50,9 @@ public class Receta implements Serializable {
 	@OneToMany(targetEntity=Usuario.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Usuario> usuariosAutorizados;
 	
+	@OneToMany(targetEntity=Usuario.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Usuario> usuariosFanaticos;
+	
 	private boolean esPublica;
 	
 	private double porciones;
@@ -172,5 +175,16 @@ public class Receta implements Serializable {
 	public void setEsFavorita(boolean esFavorita) {
 		this.esFavorita = esFavorita;
 	}
-	
+	public List<Usuario> getUsuariosFanaticos() {
+		return usuariosFanaticos;
+	}
+	public void setUsuariosFanaticos(List<Usuario> usuariosFanaticos) {
+		this.usuariosFanaticos = usuariosFanaticos;
+	}	
+	public void addUsuarioFanatico(Usuario usuario) {
+		 this.usuariosFanaticos.add(usuario); 
+	} 	 
+	public void removeUsuarioFanatico(Usuario usuario) {
+		this.usuariosFanaticos.remove(usuario);
+	}	
 }
