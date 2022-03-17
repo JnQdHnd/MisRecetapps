@@ -81,6 +81,7 @@ public class PDFController {
         document.open();
   	
     	Resource resource = resourceLoader.getResource("classpath:Quicksand-VariableFont_wght.ttf");
+    	System.out.println("*********UBICACION************: "+ resource.getURL().getPath());
         
         FontFactory.register(resource.getURL().getPath(), "Quicksand");
 		
