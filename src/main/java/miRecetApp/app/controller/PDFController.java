@@ -73,20 +73,26 @@ public class PDFController {
 	
 	public void export(HttpServletResponse response, Receta receta) throws DocumentException, IOException {
 		
-		System.out.println("TAMAÑO DE LISTADO DE PRODUCTOS" + productoService.findAll().size());
+		System.out.println("TAMAÑO DE LISTADO DE PRODUCTOS: " + productoService.findAll().size());
 		
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
          
         document.open();
   	
-    	Resource resource = resourceLoader.getResource("classpath:static/Quicksand-VariableFont_wght.ttf");
-    	System.out.println("*********UBICACION************: "+ resource.getURL().getPath());
-        
-        FontFactory.register(resource.getURL().getPath(), "Quicksand");
+//    	Resource resource = resourceLoader.getResource("classpath:static/Quicksand-VariableFont_wght.ttf");    
+//      FontFactory.register(resource.getURL().getPath(), "Quicksand");
 		
 		System.out.println("ACTIVADO EL PDF DE RECETA: " + receta.getNombre());
-		Font fontTitulo = FontFactory.getFont("Quicksand", 16, Font.BOLD, new Color(86, 61, 124));
+		
+		String fuenteEnUso = "Calibri";
+		
+		Font fontTitulo = FontFactory.getFont(fuenteEnUso, 16, Font.BOLD, new Color(86, 61, 124));
+		Font fuenteCuerpoTitulo = FontFactory.getFont(fuenteEnUso, 14, Font.BOLD, new Color(86, 61, 124));
+		Font fuenteCuerpoSubtitulo = FontFactory.getFont(fuenteEnUso, 12, Font.BOLD, new Color(86, 61, 124));
+		Font fuenteCuerpo = FontFactory.getFont(fuenteEnUso, 12, Font.NORMAL, Color.DARK_GRAY);
+		Font fuentePunto = FontFactory.getFont(fuenteEnUso, 12, Font.NORMAL, new Color(127, 124, 130));
+		
 		PdfPCell cell = null;
 			
 		PdfPTable tabla1 = new PdfPTable(2);
@@ -116,11 +122,6 @@ public class PDFController {
 		cell.setBorderColorRight(new Color(86, 61, 124));
 		
 		tabla1.addCell(cell);
-		
-		Font fuenteCuerpoTitulo = FontFactory.getFont("Quicksand", 14, Font.BOLD, new Color(86, 61, 124));
-		Font fuenteCuerpoSubtitulo = FontFactory.getFont("Quicksand", 12, Font.BOLD, new Color(86, 61, 124));
-		Font fuenteCuerpo = FontFactory.getFont("Quicksand", 12, Font.NORMAL, Color.DARK_GRAY);
-		Font fuentePunto = FontFactory.getFont("Quicksand", 12, Font.NORMAL, new Color(127, 124, 130));
 		
 		PdfPCell cellCuerpo = null;
 		cellCuerpo = new PdfPCell();
