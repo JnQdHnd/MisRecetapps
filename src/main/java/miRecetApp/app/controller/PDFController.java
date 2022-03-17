@@ -80,13 +80,13 @@ public class PDFController {
          
         document.open();
   	
-    	Resource resource = resourceLoader.getResource("classpath:Quicksand-VariableFont_wght.ttf");
-    	System.out.println("*********UBICACION************: "+ resource.getURL().getPath());
-        
-        FontFactory.register(resource.getURL().getPath(), "Quicksand");
+//    	Resource resource = resourceLoader.getResource("classpath:Quicksand-VariableFont_wght.ttf");
+//    	System.out.println("*********UBICACION************: "+ resource.getURL().getPath());
+//        
+//        FontFactory.register(resource.getURL().getPath(), "Quicksand");
 		
 		System.out.println("ACTIVADO EL PDF DE RECETA: " + receta.getNombre());
-		Font fontTitulo = FontFactory.getFont("Quicksand", 16, Font.BOLD, new Color(86, 61, 124));
+		Font fontTitulo = FontFactory.getFont("Arial", 16, Font.BOLD, new Color(86, 61, 124));
 		PdfPCell cell = null;
 			
 		PdfPTable tabla1 = new PdfPTable(2);
@@ -117,10 +117,10 @@ public class PDFController {
 		
 		tabla1.addCell(cell);
 		
-		Font fuenteCuerpoTitulo = FontFactory.getFont("Quicksand", 14, Font.BOLD, new Color(86, 61, 124));
-		Font fuenteCuerpoSubtitulo = FontFactory.getFont("Quicksand", 12, Font.BOLD, new Color(86, 61, 124));
-		Font fuenteCuerpo = FontFactory.getFont("Quicksand", 12, Font.NORMAL, Color.DARK_GRAY);
-		Font fuentePunto = FontFactory.getFont("Quicksand", 12, Font.NORMAL, new Color(127, 124, 130));
+		Font fuenteCuerpoTitulo = FontFactory.getFont("Arial", 14, Font.BOLD, new Color(86, 61, 124));
+		Font fuenteCuerpoSubtitulo = FontFactory.getFont("Arial", 12, Font.BOLD, new Color(86, 61, 124));
+		Font fuenteCuerpo = FontFactory.getFont("Arial", 12, Font.NORMAL, Color.DARK_GRAY);
+		Font fuentePunto = FontFactory.getFont("Arial", 12, Font.NORMAL, new Color(127, 124, 130));
 		
 		PdfPCell cellCuerpo = null;
 		cellCuerpo = new PdfPCell();
