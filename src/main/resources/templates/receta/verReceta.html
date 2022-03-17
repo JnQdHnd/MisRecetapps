@@ -44,7 +44,7 @@
 									</i>
 								</a>							
 								<a  class="btn btn-outline-violetasuave my-1" 
-									th:href="@{'/receta/verReceta/' + ${receta.id}(format=pdf)}" 
+									th:href="@{/receta/verReceta/exportaPDF/} + ${receta.id}" 
 									target="_blank"
 									title="Exportar a PDF">
 									<i  class="fa fa-file-pdf-o fs-4" 
