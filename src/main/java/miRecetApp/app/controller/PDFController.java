@@ -2,9 +2,12 @@ package miRecetApp.app.controller;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +40,10 @@ import miRecetApp.app.service.IRecetaService;
  */
 @Controller
 public class PDFController {
+	
+	@Autowired
+    ResourceLoader resourceLoader;
+	
 	@Autowired
 	private IProductoService productoService;
 	
@@ -72,12 +79,10 @@ public class PDFController {
         PdfWriter.getInstance(document, response.getOutputStream());
          
         document.open();
+  	
+    	Resource resource = resourceLoader.getResource("classpath:Quicksand-VariableFont_wght.ttf");
         
-        FontFactory.register("Quicksand-VariableFont_wght.ttf");
-		FontFactory.register("Quicksand-Bold.ttf");
-		FontFactory.register("Quicksand-Medium.ttf");
-		FontFactory.register("Quicksand-SemiBold.ttf");
-		FontFactory.register("Quicksand-Regular.ttf");
+        FontFactory.register(resource.getURL().getPath(), "Quicksand");
 		
 		System.out.println("ACTIVADO EL PDF DE RECETA: " + receta.getNombre());
 		Font fontTitulo = FontFactory.getFont("Quicksand", 16, Font.BOLD, new Color(86, 61, 124));
