@@ -39,7 +39,7 @@ public class ArtefactoServiceImplementa implements IArtefactoService {
 	@Transactional(readOnly = true)
 	@Override
 	public Artefacto findByNombre(String term) {
-		return artefactoDao.findByNombreLikeIgnoreCase("%" + term + "%");
+		return artefactoDao.findByNombreLikeIgnoreCase(term);
 	}
 	
 	@Transactional

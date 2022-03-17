@@ -40,7 +40,7 @@ public class ProductoServiceImplementa implements IProductoService {
 	@Transactional(readOnly = true)
 	@Override
 	public Producto findByNombre(String term) {
-		return productoDao.findByNombreLikeIgnoreCase("%" + term + "%");
+		return productoDao.findByNombreLikeIgnoreCase(term);
 	}
 	@Transactional
 	@Override
