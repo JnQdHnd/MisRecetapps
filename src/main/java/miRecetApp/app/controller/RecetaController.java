@@ -168,7 +168,7 @@ public class RecetaController {
 		deviceType = identificaDevices.getDevice(device);
 		Pageable pageRequest = PageRequest.of(page, 50, Sort.by("nombre").ascending());
 		Usuario usuario = usuarioService.findByUsername(authentication.getName());
-		Set<Receta> recetasCompratidas = usuario.getRecetasCompartidas();
+		List<Receta> recetasCompratidas = usuario.getRecetasCompartidas();
 		List<Long> recetasCompartidasIds = new ArrayList<>();
 		for(Receta receta:recetasCompratidas) {
 			recetasCompartidasIds.add(receta.getId());
@@ -989,10 +989,8 @@ public class RecetaController {
 		}
 		Usuario usuario = usuarioService.findByUsername(authentication.getName());
 		Receta receta = recetaService.findOne(recetaId);
-		usuario.addRecetaFavoritas(receta);
 		receta.addUsuarioFanatico(usuario);
 		recetaService.save(receta);
-		usuarioService.saveUser(usuario);
 		return vieneDeVerReceta ? "redirect:/receta/verReceta/" + recetaId : "redirect:/receta/listar";
 	}
 	
@@ -1005,10 +1003,8 @@ public class RecetaController {
 		}
 		Usuario usuario = usuarioService.findByUsername(authentication.getName());
 		Receta receta = recetaService.findOne(recetaId);
-		usuario.removeRecetaFavoritas(receta);
 		receta.removeUsuarioFanatico(usuario);
 		recetaService.save(receta);
-		usuarioService.saveUser(usuario);
 		return vieneDeVerReceta ? "redirect:/receta/verReceta/" + recetaId : "redirect:/receta/listar";
 	}
 }

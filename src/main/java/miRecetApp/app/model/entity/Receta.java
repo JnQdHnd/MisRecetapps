@@ -13,6 +13,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -47,10 +50,16 @@ public class Receta implements Serializable {
 	
 	private String autor;
 	
-	@OneToMany(targetEntity=Usuario.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Usuario> usuariosAutorizados;
+	@ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "recetaCompartida_usuario",
+    joinColumns = @JoinColumn(name = "receta_id"),
+    inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+    private List<Usuario> usuariosAutorizados;
 	
-	@OneToMany(targetEntity=Usuario.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "recetaFavorita_usuario",
+   	joinColumns = @JoinColumn(name = "receta_id"),
+    inverseJoinColumns = @JoinColumn(name = "usuario_id"))
     private List<Usuario> usuariosFanaticos;
 	
 	private boolean esPublica;
@@ -130,10 +139,10 @@ public class Receta implements Serializable {
 		this.esPublica = esPublica;
 	}
 	
-	public Set<Usuario> getUsuariosAutorizados() {
+	public List<Usuario> getUsuariosAutorizados() {
 		return usuariosAutorizados;
 	}
-	public void setUsuariosAutorizados(Set<Usuario> recetasCompartidas) {
+	public void setUsuariosAutorizados(List<Usuario> recetasCompartidas) {
 		this.usuariosAutorizados = recetasCompartidas;
 	}
 	
@@ -183,8 +192,10 @@ public class Receta implements Serializable {
 	}	
 	public void addUsuarioFanatico(Usuario usuario) {
 		 this.usuariosFanaticos.add(usuario); 
+		 usuario.getRecetasFavoritas().add(this);
 	} 	 
 	public void removeUsuarioFanatico(Usuario usuario) {
 		this.usuariosFanaticos.remove(usuario);
+		usuario.getRecetasFavoritas().remove(this);
 	}	
 }

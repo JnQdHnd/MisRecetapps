@@ -6,20 +6,62 @@
 		<header th:replace="layout/layout :: header"></header>	
 		<div class="container-fluid row justify-content-center px-0 mx-0">		
 			<div class="card border-primary text-primary mx-1 px-0 col contenedorPrincipal" style="max-width: 700px;"> 	
-				<div class="card-header pb-1">
-					<div class="row justify-content-between flex-nowrap">
-						<h3 class="col py-0 mt-2 card-title fs-2 fw-bold text-break" th:text="${receta.nombre}"></h3>
-						<div class="col-auto d-flex align-items-center" >
-							<a class="btn btn-outline-violetasuave py-0 my-1" th:href="@{'/receta/verReceta/' + ${receta.id}(format=pdf)}" target="_blank"><i class="bi bi-file-earmark-pdf fs-2"></i></a>	
-							<a class="btn btn-outline-violetasuave my-1" th:href="@{/receta/form/} + ${receta.id}"><i class="fa fa-pencil fs-2" aria-hidden="true"></i></a>
-							<a  class="btn btn-outline-violetasuave my-1"
-								th:href="${receta.isEsFavorita()} ? @{/receta/ver/eliminaFavorita/} + ${receta.id} : @{/receta/ver/agregaFavorita/} + ${receta.id}"
-								th:title="${receta.esFavorita} ? 'Sacar de favoritas' : 'Agregar a favoritas'">
-								<i th:class="${receta.isEsFavorita()} ? 'fa fa-star fs-2' : 'fa fa-star-o fs-2'" aria-hidden="true"></i>
-							</a>	
-						</div>	
-					</div>	
-				</div>									
+				<div class="card-header">
+					<div class="row justify-content-between">
+						<div class="col-auto my-1 ">
+							<span class="fw-bold text-break fs-3" th:text="${receta.nombre}"></span>
+						</div>
+						<div class="col-auto">
+							<button class="btn btn-outline-violetasuave my-1" 
+									type="button"
+									data-bs-toggle="collapse" 
+									data-bs-target="#navbarReceta"
+									aria-controls="navbarReceta" 
+									aria-expanded="false"
+									aria-label="Toggle navigation">
+								<i class="fa fa-bars fs-4" aria-hidden="true"></i>
+							</button>
+						</div>						
+					</div>					
+				</div>	
+				<div id="navbarReceta" class="card-header collapse navbar-collapse py-0 my-0">	
+						<div class="row justify-content-center">
+							<div class="col-auto">					
+								<a  class="btn btn-outline-violetasuave my-1" 
+									th:href="@{/receta/form/} + ${receta.id}"
+									title="Editar receta">
+									<i  class="fa fa-pencil fs-4" 
+										aria-hidden="true" 
+										style="width:25px;">
+									</i>
+								</a>
+								<a  class="btn btn-outline-violetasuave my-1" 
+									th:href="@{/receta/eliminar/} + ${receta.id}" 
+									onclick="return confirm('¿Seguro de Eliminar?')"
+									title="Eliminar receta">
+									<i  class="fa fa-trash-o fs-4" 
+										style="width:25px;">
+									</i>
+								</a>							
+								<a  class="btn btn-outline-violetasuave my-1" 
+									th:href="@{'/receta/verReceta/' + ${receta.id}(format=pdf)}" 
+									target="_blank"
+									title="Exportar a PDF">
+									<i  class="fa fa-file-pdf-o fs-4" 
+										style="width:25px;">
+									</i>
+								</a>								
+								<a  class="btn btn-outline-violetasuave my-1"
+									th:href="${receta.isEsFavorita()} ? @{/receta/ver/eliminaFavorita/} + ${receta.id} : @{/receta/ver/agregaFavorita/} + ${receta.id}"
+									th:title="${receta.esFavorita} ? 'Sacar de favoritas' : 'Agregar a favoritas'">
+									<i  th:class="${receta.isEsFavorita()} ? 'fa fa-star fs-4' : 'fa fa-star-o fs-4'" 
+										aria-hidden="true" 
+										style="width:25px;">
+									</i>
+								</a>
+							</div>
+						</div>
+					</div>										
 				<div class="card-body p-0 m-0">				
 					<form id="formulario" th:object="${receta}" method="post" enctype="multipart/form-data">
 						<input type="hidden" id="esNuevo" th:value="${esNuevo}">

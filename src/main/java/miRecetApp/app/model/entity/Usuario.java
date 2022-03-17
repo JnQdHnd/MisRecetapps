@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -64,17 +65,17 @@ public class Usuario implements Serializable {
 	
 	@NotBlank
 	@Email
-	private String email;
-
+	private String email;	
+	
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "usuario_id")
 	private List<Role> roles;
 	
-	@OneToMany(targetEntity=Receta.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "usuariosFanaticos")
     private List<Receta> recetasFavoritas;
 	
-	@OneToMany(targetEntity=Receta.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private Set<Receta> recetasCompartidas;
+	@ManyToMany(mappedBy = "usuariosAutorizados")
+	private List<Receta> recetasCompartidas;
 	
 	//METODOS
 	
@@ -152,17 +153,19 @@ public class Usuario implements Serializable {
 	
 	public void addRecetaFavoritas(Receta receta) {
 	 this.recetasFavoritas.add(receta); 
+	 receta.getUsuariosFanaticos().add(this);
 	} 
  
     public void removeRecetaFavoritas(Receta receta) {
         this.recetasFavoritas.remove(receta);
+        receta.getUsuariosFanaticos().remove(this);
     }
 
-	public Set<Receta> getRecetasCompartidas() {
+	public List<Receta> getRecetasCompartidas() {
 		return recetasCompartidas;
 	}
 
-	public void setRecetasCompartidas(Set<Receta> recetasCompartidas) {
+	public void setRecetasCompartidas(List<Receta> recetasCompartidas) {
 		this.recetasCompartidas = recetasCompartidas;
 	}
 
