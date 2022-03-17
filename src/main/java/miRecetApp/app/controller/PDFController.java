@@ -65,7 +65,7 @@ public class PDFController {
 		response.setContentType("application/pdf");
 		
 		String headerKey = "Content-Disposition";
-        String headerValue = "inline; filename=MisRecetApps - " + receta.getNombre() + ".pdf";
+        String headerValue = "attachment; filename=MisRecetApps - " + receta.getNombre() + ".pdf";
         response.setHeader(headerKey, headerValue);
         
         export(response, receta);
@@ -79,13 +79,13 @@ public class PDFController {
         PdfWriter.getInstance(document, response.getOutputStream());
          
         document.open();
+        document.addTitle(receta.getNombre());
   	
 //    	Resource resource = resourceLoader.getResource("classpath:static/Quicksand-VariableFont_wght.ttf");    
 //      FontFactory.register(resource.getURL().getPath(), "Quicksand");
 		
-		System.out.println("ACTIVADO EL PDF DE RECETA: " + receta.getNombre());
-		
-		String fuenteEnUso = "Calibri";
+		System.out.println("EXPORTANDO EL PDF DE LA RECETA: " + receta.getNombre());		
+		String fuenteEnUso = FontFactory.HELVETICA;
 		
 		Font fontTitulo = FontFactory.getFont(fuenteEnUso, 16, Font.BOLD, new Color(86, 61, 124));
 		Font fuenteCuerpoTitulo = FontFactory.getFont(fuenteEnUso, 14, Font.BOLD, new Color(86, 61, 124));
