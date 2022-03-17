@@ -58,7 +58,7 @@ public class PDFController {
 		response.setContentType("application/pdf");
 		
 		String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=MisRecetApps - " + receta.getNombre() + ".pdf";
+        String headerValue = "inline; filename=MisRecetApps - " + receta.getNombre() + ".pdf";
         response.setHeader(headerKey, headerValue);
         
         export(response, receta);
