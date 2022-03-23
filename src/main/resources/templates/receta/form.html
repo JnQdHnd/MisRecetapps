@@ -388,11 +388,18 @@
 									 th:orden="${iterador.index+1}">
 									<div class="card-body p-1">
 										<div class="row flex-nowrap justify-content-between">
-											<div class="col ms-1">
-												<span class="pasoTitulo text-secondary fs-6" 
+											<div class="col">
+												<a  th:id="'btnMic' + ${iterador.index+1}"
+													class="btn btn-outline-info align-middle btnMic py-0 px-1"													
+													href=""
+													onclick="recibirVoz(this); return false;"
+													style="display: none;">
+													<i class="bi bi-mic fs-6 iMic" aria-hidden="true"></i>
+												</a>
+												<span class="pasoTitulo text-secondary fs-6 ms-1" 
 													  th:name="'pasoTitulo' + ${iterador.index+1}"										   
 													  th:text="'Paso ' + ${iterador.index+1}">
-												</span>
+												</span>												
 											</div>
 											<div class="col-auto p-0 m-0">
 												<a  th:orden="${iterador.index+1}" 
@@ -410,7 +417,7 @@
 												</a>											
 											</div>									
 										</div>
-										<fieldset class="instruccionesSet">
+										<fieldset class="instruccionesSet">											
 											<textarea th:id="'pasoTexto' + ${iterador.index+1}" 
 													  th:name="|instrucciones[__${iterador.index}__].instruccion|"
 													  class="form-control fs-6 pasoTexto" 
@@ -470,14 +477,12 @@
 		</div>
 		
 		<script type="text/javascript">
-			$(document).ready(function(){});
-									
+			$(document).ready(function(){});									
 			if($('#porciones').val() == 0){
 				$('#porciones').val(null);
-			}
-			
+			}			
 		</script>	
-		<script th:src="@{/js/crea-receta.js}"></script>	
-						
+		<script th:src="@{/js/crea-receta.js}"></script>
+		<script th:src="@{/js/voz-a-texto.js}"></script>						
 	</body>	
 </html>

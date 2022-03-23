@@ -237,7 +237,8 @@ function agregaPaso() {
 	$('#' + nuevoId + ' .pasoTexto').val(null);
 	$('#' + nuevoId + ' .btnInstruccion').attr('name', 'btnInstruccion' + numPaso);
 	$('#' + nuevoId + ' .btnInstruccion').attr('id', 'btnInstruccion' + numPaso);
-	$('#' + nuevoId + ' .btnInstruccion').attr('orden', numPaso);		
+	$('#' + nuevoId + ' .btnInstruccion').attr('orden', numPaso);	
+	$('#' + nuevoId + ' .btnMic').attr('id', 'btnMic' + numPaso);	
 	$('#cantidadDeInstrucciones').val(numPaso);	
 	if(numPaso > 1){
 		$('.btnInstruccion').removeClass('disabled');
@@ -280,6 +281,7 @@ function eliminaPaso(esteBtn) {
 			$('#instruccion' + i + ' .btnInstruccion').attr('orden', i);
 			$('#instruccion' + i + ' .btnInstruccion').attr('id', 'btnInstruccion' + i);
 			$('#instruccion' + i + ' .btnInstruccion').attr('name', 'btnInstruccion' + i);
+			$('#instruccion' + i + ' .btnMic').attr('id', 'btnMic' + i);
 			i++
 			index++
 		});
