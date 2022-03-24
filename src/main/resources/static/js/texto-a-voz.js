@@ -114,10 +114,6 @@ function seleccionaPasoReproduce(){
 	console.log('texto: ' + texto);
 	var u = new SpeechSynthesisUtterance();
  	u.text = texto;
+ 	u.lang = 'es-ES';
 	speechSynthesis.speak(u);	
-}
-
-recognition.onspeechend = function() {
-  recognition.stop();
-  console.log('Recepción detenida');
 }
