@@ -37,9 +37,9 @@ var recognition = new SpeechRecognition();
 //recognition.grammars = speechRecognitionList;
 recognition.continuous = true;
 recognition.lang = 'es-ES';
-
 var reproduciendo = false;
-document.body.onclick = function() {
+
+document.body.onclick = function () {
 	if(reproduciendo == false){
 		recognition.start();
 		reproduciendo = true;
@@ -51,10 +51,26 @@ document.body.onclick = function() {
 		console.log('Recepción detenida');
 	}  		
 }
+
+function comenzarDetener() {
+	if(reproduciendo == false){
+		recognition.start();
+		reproduciendo = true;
+		console.log('Recepción comenzada');
+	}
+	else{
+		recognition.stop();
+		reproduciendo = false;
+		console.log('Recepción detenida');
+	}  		
+}
+
 var num = 1;
 var instruccionSeleccionada
-
+var cantidad = 0;
 recognition.onresult = function(event) {
+	recognition.continuous = true;
+	$('.visor').text('RESULTADO ' + cantidad++);
 	if (event.results.length > 0) {
     	instruccionSeleccionada = event.results[event.resultIndex][0].transcript.trim(); 
     }
