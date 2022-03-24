@@ -64,6 +64,7 @@ recognition.onresult = function(event) {
 		instruccionSeleccionada = instruccionSeleccionada.replace('.', '').toLowerCase(); 
 	}
 	console.log('Intruccion seleccionada: ' + instruccionSeleccionada);
+	$('.visor').text('Intruccion seleccionada: ' + instruccionSeleccionada);
 	switch(instruccionSeleccionada)
     {
         case 'comenzar':
