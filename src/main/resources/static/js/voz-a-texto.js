@@ -22,7 +22,6 @@ if(getBrowserInfo().includes('Chrome') || getBrowserInfo().includes('Edg')){
 	$('.btnMic').show();
 }
 
-
 var SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition
 var SpeechGrammarList = window.SpeechGrammarList || webkitSpeechGrammarList
 var SpeechRecognitionEvent = window.SpeechRecognitionEvent || webkitSpeechRecognitionEvent
@@ -75,7 +74,7 @@ recognition.onresult = function(event) {
 	for (var i = event.resultIndex; i < event.results.length; ++i) {
       	if (event.results[i].isFinal) {
 			if(getBrowserInfo().includes('Edg')){
-				texto += event.results[i][0].transcript;
+				texto += ' ' + event.results[i][0].transcript;
 			}
 			else{
 				if(i == 0){
@@ -97,7 +96,7 @@ recognition.onresult = function(event) {
   	
 }
 
-recognition.onspeechend = function() {
-  recognition.stop();
-  console.log('Intervalo en recepción de voz para pasar a texto.');
-}
+//recognition.onspeechend = function() {
+//  recognition.stop();
+//  console.log('Intervalo en recepción de voz para pasar a texto.');
+//}
