@@ -30,11 +30,11 @@ for(let i = 0; i<cantidadDeInstrucciones; i++){
 	var titulo = 'paso ' + num;
 	instrucciones.push(titulo);
 }
-var grammar = '#JSGF V1.0; grammar pasos; public <paso> = comenzar | siguiente | anterior | previa | previo | repetir | detener | ' + instrucciones.join(' | ') + ' ;'
+//var grammar = '#JSGF V1.0; grammar pasos; public <paso> = comenzar | siguiente | anterior | previa | previo | repetir | detener | ' + instrucciones.join(' | ') + ' ;'
 var recognition = new SpeechRecognition();
-var speechRecognitionList = new SpeechGrammarList();
-speechRecognitionList.addFromString(grammar, 1);
-recognition.grammars = speechRecognitionList;
+//var speechRecognitionList = new SpeechGrammarList();
+//speechRecognitionList.addFromString(grammar, 1);
+//recognition.grammars = speechRecognitionList;
 recognition.continuous = true;
 recognition.lang = 'es-ES';
 
@@ -55,10 +55,8 @@ var num = 1;
 var instruccionSeleccionada
 
 recognition.onresult = function(event) {
-	for (var i = event.resultIndex; i < event.results.length; ++i) {
-      	if (event.results[i].isFinal) {
-			instruccionSeleccionada = event.results[i][0].transcript.trim();					
-      	}
+	if (event.results.length > 0) {
+    	instruccionSeleccionada = event.results[event.resultIndex][0].transcript.trim(); 
     }
 	if(getBrowserInfo().includes('Edg')){
 		instruccionSeleccionada = instruccionSeleccionada.replace('.', '').toLowerCase(); 
@@ -116,5 +114,5 @@ function seleccionaPasoReproduce(){
 	var u = new SpeechSynthesisUtterance();
  	u.text = texto;
  	u.lang = 'es-ES';
-	speechSynthesis.speak(u);	
+	speechSynthesis.speak(u);
 }
