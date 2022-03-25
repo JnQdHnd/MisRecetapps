@@ -96,7 +96,7 @@ recognition.onresult = function(event) {
   	
 }
 
-recognition.onspeechend = function() {
-  recognition.stop();
+recognition.onend = function() {
+  recognition.start();
   console.log('Intervalo en recepción de voz para pasar a texto.');
 }

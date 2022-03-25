@@ -24,18 +24,18 @@ var SpeechGrammarList = window.SpeechGrammarList || webkitSpeechGrammarList
 var SpeechRecognitionEvent = window.SpeechRecognitionEvent || webkitSpeechRecognitionEvent
 
 var cantidadDeInstrucciones = $('#cantidadDeInstrucciones').val();
-var instrucciones = [];
-for(let i = 0; i<cantidadDeInstrucciones; i++){
-	var num = i + 1;
-	var titulo = 'paso ' + num;
-	instrucciones.push(titulo);
-}
+//var instrucciones = [];
+//for(let i = 0; i<cantidadDeInstrucciones; i++){
+//	var num = i + 1;
+//	var titulo = 'paso ' + num;
+//	instrucciones.push(titulo);
+//}
 //var grammar = '#JSGF V1.0; grammar pasos; public <paso> = comenzar | siguiente | anterior | previa | previo | repetir | detener | ' + instrucciones.join(' | ') + ' ;'
 var recognition = new SpeechRecognition();
 //var speechRecognitionList = new SpeechGrammarList();
 //speechRecognitionList.addFromString(grammar, 1);
 //recognition.grammars = speechRecognitionList;
-recognition.continuous = true;
+recognition.continuous = false;
 recognition.lang = 'es-ES';
 var reproduciendo = false;
 
@@ -66,17 +66,18 @@ function comenzarDetener() {
 }
 
 var num = 1;
-var instruccionSeleccionada
-var cantidad = 0;
+var instruccionSeleccionada;
+var texto = '';
+
+recognition.onspeechend = function() {
+	console.log('PARARON DE HABLAR');
+}
+
 recognition.onresult = function(event) {
-	recognition.continuous = true;
-	$('.visor').text('RESULTADO ' + cantidad++);
 	if (event.results.length > 0) {
-    	instruccionSeleccionada = event.results[event.resultIndex][0].transcript.trim(); 
+    	instruccionSeleccionada = event.results[event.resultIndex][0].transcript;
+    	instruccionSeleccionada = instruccionSeleccionada.replace('.', '').toLowerCase().trim();
     }
-	if(getBrowserInfo().includes('Edg')){
-		instruccionSeleccionada = instruccionSeleccionada.replace('.', '').toLowerCase(); 
-	}
 	console.log('Intruccion seleccionada: ' + instruccionSeleccionada);
 	$('.visor').text('Intruccion seleccionada: ' + instruccionSeleccionada);
 	switch(instruccionSeleccionada)
@@ -107,12 +108,14 @@ recognition.onresult = function(event) {
         	break;
         case 'detener': 
         	recognition.stop();
-        	break;
+        	reproduciendo = false;
+        	break;        	
     }	
 }
 
 function seleccionaPasoReproduce(){
-	var texto
+	reproduciendo = false;
+	texto = '';
 	var idPasoTexto = '#pasoTexto' + num;
 	console.log('idPasoTexto: ' + idPasoTexto);
 	if(num > cantidadDeInstrucciones){
@@ -130,5 +133,14 @@ function seleccionaPasoReproduce(){
 	var u = new SpeechSynthesisUtterance();
  	u.text = texto;
  	u.lang = 'es-ES';
+ 	u.onend = function() {recognition.start(); reproduciendo = true;}
 	speechSynthesis.speak(u);
+}
+
+recognition.onend = function() {
+	if(reproduciendo){
+		recognition.start();
+		$('.visor').text('Reiniciando tras pausa involuntaria');
+		console.log('Reiniciando tras pausa involuntaria');
+	}  
 }
