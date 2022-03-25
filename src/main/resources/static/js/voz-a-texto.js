@@ -32,14 +32,13 @@ recognition.continuous = true;
 recognition.lang = 'es-ES';
 var textoBase = '';
 var texto = '';
-var recibiendo;
+var recibiendo = false;
 
 function recibirVoz(esteBoton) {
 	if(recibiendo){
 		console.log('Esta grabando. Cancelando grabación en curso...');
 		recognition.stop();
 		recibiendo = false;
-		$('.btnMic').attr('onclick', 'recibirVoz(this); return false;');
  		$('.iMic').addClass('bi-mic').removeClass('bi-mic-fill').removeClass('text-danger');
   		texto = '';
 	}
@@ -47,16 +46,15 @@ function recibirVoz(esteBoton) {
 		recibiendo = true;
 		console.log('Recibiendo: ' + recibiendo);
 		recognition.start();
-		$(esteBoton).attr('onclick', 'detenerVoz(this); return false;');
 	 	var id = $(esteBoton).attr('id');
 	 	var num = id.substr(id.length - 1);
 		diagnostic = $('#pasoTexto' + num);
 		textoBase = diagnostic.val();
 		$('#' + id + ' i').addClass('bi-mic-fill').removeClass('bi-mic').addClass('text-danger');
 		console.log('Comienza recepción de voz para pasar a texto.');
-	}
-	
+	}	
 }
+
 function detenerVoz(esteBoton) {
 	recibiendo = false;
 	recognition.stop();
