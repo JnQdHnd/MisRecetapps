@@ -74,7 +74,7 @@ recognition.onresult = function(event) {
 				texto += ' ' + event.results[i][0].transcript;
 			}
 			else{
-				if(i == 0){
+				if(texto == ''){
 					texto += event.results[i][0].transcript;
 				}
 				else{
