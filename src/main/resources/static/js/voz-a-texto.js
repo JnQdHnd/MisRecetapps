@@ -38,7 +38,6 @@ function recibirVoz(esteBoton) {
 	if(recibiendo){
 		console.log('Esta grabando. Cancelando grabación en curso...');
 		recognition.stop();
-		recognition.continuous = false;
 		recibiendo = false;
 		$('.btnMic').attr('onclick', 'recibirVoz(this); return false;');
  		$('.iMic').addClass('bi-mic').removeClass('bi-mic-fill').removeClass('text-danger');
@@ -47,7 +46,6 @@ function recibirVoz(esteBoton) {
 	else{
 		recibiendo = true;
 		console.log('Recibiendo: ' + recibiendo);
-		recognition.continuous = true;
 		recognition.start();
 		$(esteBoton).attr('onclick', 'detenerVoz(this); return false;');
 	 	var id = $(esteBoton).attr('id');
@@ -61,7 +59,6 @@ function recibirVoz(esteBoton) {
 }
 function detenerVoz(esteBoton) {
 	recibiendo = false;
-	recognition.continuous = false;
 	recognition.stop();
 	$(esteBoton).attr('onclick', 'recibirVoz(this); return false;');
   	var id = $(esteBoton).attr('id');
@@ -92,11 +89,12 @@ recognition.onresult = function(event) {
 	}
 	else{
 		diagnostic.val(textoBase + texto.charAt(0).toUpperCase() + texto.slice(1) + '. ');
-	}
-  	
+	}  	
 }
 
 recognition.onend = function() {
-  recognition.start();
-  console.log('Intervalo en recepción de voz para pasar a texto.');
+	if(recibiendo){
+		recognition.start();
+  		console.log('Reiniciando tras interrupción involuntaria.');
+	}
 }
