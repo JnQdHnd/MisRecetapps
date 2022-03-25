@@ -39,8 +39,6 @@ function recibirVoz(esteBoton) {
 		console.log('Esta grabando. Cancelando grabación en curso...');
 		recognition.stop();
 		recibiendo = false;
- 		$('.iMic').addClass('bi-mic').removeClass('bi-mic-fill').removeClass('text-danger');
-  		texto = '';
 	}
 	else{
 		recibiendo = true;
@@ -95,4 +93,8 @@ recognition.onend = function() {
 		recognition.start();
   		console.log('Reiniciando tras interrupción involuntaria.');
 	}
+	else {
+		$('.iMic').addClass('bi-mic').removeClass('bi-mic-fill').removeClass('text-danger');
+  		texto = '';
+	}	
 }
