@@ -437,8 +437,9 @@
 											</div>
 										</div>
 										<div class="col-3 ms-0 ps-0">
-											<input type="file" accept="image/*" capture="environment"/>
-											<video th:id="'pasoFoto' + ${iterador.index+1}" 
+											<button class="btn btn-primary" onclick="sacaFoto(this)"></button>
+											<input hidden type="file" class="captura" accept="image/*" capture="environment" />
+											<video hidden th:id="'pasoFoto' + ${iterador.index+1}" 
 												 th:name="'pasoFoto' + ${iterador.index+1}"	
 												 src="" 
 												 class="img-fluid rounded-end"></video> 
@@ -491,7 +492,12 @@
 			$(document).ready(function(){});									
 			if($('#porciones').val() == 0){
 				$('#porciones').val(null);
-			}			
+			}
+			
+			function sacaFoto(boton) {
+				$(boton).next('.captura').trigger( "click" );
+				console.log($(boton).next('input').attr('class'));
+			}
 		</script>	
 		<script th:src="@{/js/crea-receta.js}"></script>
 		<script th:src="@{/js/voz-a-texto.js}"></script>						
