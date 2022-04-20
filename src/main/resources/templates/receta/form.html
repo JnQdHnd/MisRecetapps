@@ -386,52 +386,63 @@
 									 th:id="'instruccion' + ${iterador.index+1}" 
 									 th:name="'instruccion' + ${iterador.index+1}" 
 									 th:orden="${iterador.index+1}">
-									<div class="card-body p-1">
-										<div class="row flex-nowrap justify-content-between">
-											<div class="col">
-												<a  th:id="'btnMic' + ${iterador.index+1}"
-													class="btn btn-outline-info align-middle btnMic py-0 px-1"													
-													href=""
-													onclick="recibirVoz(this); return false;"
-													style="display: none;">
-													<i class="bi bi-mic fs-6 iMic" aria-hidden="true"></i>
-												</a>
-												<span class="pasoTitulo text-secondary fs-6 ms-1" 
-													  th:name="'pasoTitulo' + ${iterador.index+1}"										   
-													  th:text="'Paso ' + ${iterador.index+1}">
-												</span>												
+									 <div class="row">
+										 <div class="col-9">
+											 <div class="card-body p-1">
+												<div class="row flex-nowrap justify-content-between">
+													<div class="col">
+														<a  th:id="'btnMic' + ${iterador.index+1}"
+															class="btn btn-outline-info align-middle btnMic py-0 px-1"													
+															href=""
+															onclick="recibirVoz(this); return false;"
+															style="display: none;">
+															<i class="bi bi-mic fs-6 iMic" aria-hidden="true"></i>
+														</a>
+														<span class="pasoTitulo text-secondary fs-6 ms-1" 
+															  th:name="'pasoTitulo' + ${iterador.index+1}"										   
+															  th:text="'Paso ' + ${iterador.index+1}">
+														</span>												
+													</div>
+													<div class="col-auto p-0 m-0">
+														<a  th:orden="${iterador.index+1}" 
+															th:name="'btnInstruccion' + ${iterador.index+1}" 
+															th:id="'btnInstruccion' + ${iterador.index+1}" 
+															class="btn btn-link text-danger pt-0 mt-0 me-2 btnInstruccion"
+															th:class="${#lists.size(receta.instrucciones)}==1  and ${instruccion.id}==null ? 
+																	'btn btn-link text-danger pt-0 mt-0 me-2 btnInstruccion disabled' : 
+																	'btn btn-link text-danger pt-0 mt-0 me-2 btnInstruccion'" 
+															href=""
+															onclick="eliminaPaso(this);return false;"
+															th:instruccion="${instruccion.id}" 
+															style="width: auto; height: auto;">
+															<i class="fa fa-trash-o" aria-hidden="true"></i>
+														</a>											
+													</div>									
+												</div>
+												<fieldset class="instruccionesSet">											
+													<textarea th:id="'pasoTexto' + ${iterador.index+1}" 
+															  th:name="|instrucciones[__${iterador.index}__].instruccion|"
+															  class="form-control fs-6 pasoTexto" 
+															  form="formulario" 
+															  style="height: 80px;" 
+															  placeholder="Escriba aquí las intrucciones de este paso..."
+															  th:aria-label="'Paso ' + ${iterador.index+1}"
+															  th:text="${instruccion.instruccion}">														
+													</textarea>
+													<input  type=hidden 
+															class="instruccionOrden" 
+															th:name="|instrucciones[__${iterador.index}__].orden|" 
+															th:value="${instruccion.id != null and instruccion.id > 0} ? ${instruccion.orden} : ${iterador.index+1}"/>	
+												</fieldset>					
 											</div>
-											<div class="col-auto p-0 m-0">
-												<a  th:orden="${iterador.index+1}" 
-													th:name="'btnInstruccion' + ${iterador.index+1}" 
-													th:id="'btnInstruccion' + ${iterador.index+1}" 
-													class="btn btn-link text-danger pt-0 mt-0 me-2 btnInstruccion"
-													th:class="${#lists.size(receta.instrucciones)}==1  and ${instruccion.id}==null ? 
-															'btn btn-link text-danger pt-0 mt-0 me-2 btnInstruccion disabled' : 
-															'btn btn-link text-danger pt-0 mt-0 me-2 btnInstruccion'" 
-													href=""
-													onclick="eliminaPaso(this);return false;"
-													th:instruccion="${instruccion.id}" 
-													style="width: auto; height: auto;">
-													<i class="fa fa-trash-o" aria-hidden="true"></i>
-												</a>											
-											</div>									
 										</div>
-										<fieldset class="instruccionesSet">											
-											<textarea th:id="'pasoTexto' + ${iterador.index+1}" 
-													  th:name="|instrucciones[__${iterador.index}__].instruccion|"
-													  class="form-control fs-6 pasoTexto" 
-													  form="formulario" 
-													  style="height: 80px;" 
-													  placeholder="Escriba aquí las intrucciones de este paso..."
-													  th:aria-label="'Paso ' + ${iterador.index+1}"
-													  th:text="${instruccion.instruccion}">														
-											</textarea>
-											<input  type=hidden 
-													class="instruccionOrden" 
-													th:name="|instrucciones[__${iterador.index}__].orden|" 
-													th:value="${instruccion.id != null and instruccion.id > 0} ? ${instruccion.orden} : ${iterador.index+1}"/>	
-										</fieldset>					
+										<div class="col-3 ms-0 ps-0">
+											<input type="file" accept="image/*" capture="environment"/>
+											<video th:id="'pasoFoto' + ${iterador.index+1}" 
+												 th:name="'pasoFoto' + ${iterador.index+1}"	
+												 src="" 
+												 class="img-fluid rounded-end"></video> 
+										</div>
 									</div>
 								</div>
 							</div>

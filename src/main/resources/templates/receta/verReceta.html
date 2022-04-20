@@ -276,10 +276,28 @@
 								</li>
 <!--INSTRUCCIONES ---------------------------------------------------------------------------------------------------->																
 								<li class="list-group-item">
-									<div class="row px-0 mb-2">
-										<label class="col-auto fs-4 fw-bold text-primary">
+									<div class="row justify-content-between px-0 mb-2 flex-nowrap">
+										<label class="col-auto fs-4 fw-bold text-primary" style="width: 180px;">
 											Instrucciones:&nbsp;											
-										</label>													
+										</label>				
+										<span class="col-auto fst-italic fs-6 text-info visor pb-0 pt-1" 
+											  style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span>
+										<div class="col-auto text-end" style="width: 180px;">									
+											<button class="btn btn-outline-violetasuave py-0"												
+											  		title="Reproduce instrucciones por comando de voz."
+											  		onclick="comenzarDetener(); return false;">
+													<i  id="asistenteDeVoz" class="bi bi-megaphone fs-4" 
+													   	aria-hidden="true">
+													</i>												
+											</button>	
+											<button class="btn btn-outline-violetasuave me-3 p-0 pb-0 pt-1 px-1"
+													data-bs-toggle="modal" 
+											  		data-bs-target="#instruccionesModal"
+											  		onclick="return false;">
+												<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
+											</button>									
+										</div>
+																							
 									</div>
 									<input id="cantidadDeInstrucciones" name="cantidadDeInstrucciones" type="hidden" th:value="${#lists.size(receta.instrucciones)}"/>									
 										
@@ -299,7 +317,6 @@
 														  	  No hay instrucciones guardadas para realizar esta receta.<br>
 														  	  Si lo desea puede editarla y hacer sus propias anotaciones.														
 														</span>
-														<span class="fst-italic fs-6 text-secondary visor"></span>
 													</div>																				
 													<div th:if="${#strings.isEmpty(instruccion.instruccion)} == false" 
 														 class="col-auto">
@@ -324,8 +341,7 @@
 																   th:text="${instruccion.instruccion}">														
 																</p>
 															</div>															
-														</div>
-														<span class="fst-italic fs-6 text-secondary visor"></span>
+														</div>														
 													</div>
 												</div>
 											</div>
@@ -342,8 +358,9 @@
 		</div>
 		
 		<div id="agregaArtefactoModal" class="modal fade" tabindex="-1" aria-labelledby="agregaArtefactoModal" aria-hidden="true">
-			<div class="modal-dialog modal-xl" style="max-width: 500px;">
-				<div class="modal-content">
+		<div class="row justify-content-center">
+			<div class="modal-dialog modal-xl" >
+				<div class="modal-content" style="max-width: 500px;">
 					<div class="modal-header text-primary row justify-content-between">
 	  					<div class="col-auto">
 							<span class="fw-bold fs-4" th:text="'Cargar compra'"></span>
@@ -367,6 +384,45 @@
 					</div>										
 				</div>
 			</div>
+		</div>
+		</div>
+		<div id="instruccionesModal" class="modal fade" tabindex="-1" aria-labelledby="instruccionesModal" aria-hidden="true">
+		<div class="row justify-content-center">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content" style="max-width: 500px;">
+					<div class="modal-header text-primary row justify-content-between">
+	  					<div class="col-auto">
+							<span class="fw-bold fs-5 ms-3">
+								<i  class="bi bi-megaphone-fill fs-5 me-4" aria-hidden="true"></i>Asistente de voz
+							</span>
+						</div>
+						<div class="col-auto">
+							<button type="button" 
+									class="btn" 
+									data-bs-dismiss="modal" 
+									aria-label="Close">
+									<i class="fa fa-times text-primary fs-3" aria-hidden="true"></i>
+							</button>		
+						</div>	
+					</div>	
+					<div class="modal-body pt-0 mt-0">
+						<p class="fs-6 mx-3 mt-3">
+							Haciendo click en el megafono activará 
+							el reproductor de voz para el dictado de instrucciones. 
+							Una vez activado, podrá solicitar que se le dicten los pasos de la receta,
+							mediante las siguientes <b>palabras claves</b>:														
+						</p>
+						<ul>
+					      	<li class="mb-2"><b>Comenzar</b><br><small><i>Comenzará el dictado por el Paso 1.</i></small></li>
+					    	<li class="mb-2"><b>Siguiente</b><br><small><i>Pasará al siguiente paso de la receta.</i></small></li>
+					      	<li class="mb-2"><b>Anterior / Previo / Previa</b><br><small><i>Volverá al paso previamente explicado.</i></small></li>
+					      	<li class="mb-2"><b>Repetir</b><br><small><i>Repetirá las instrucciones del último paso explicado.</i></small></li>
+					      	<li class="mb-2"><b>Detener</b><br><small><i>Desactivará el reconocimiento de voz.</i></small></li>
+					    </ul>
+					</div>										
+				</div>
+			</div>
+		</div>
 		</div>
 		
 		<div class="container-fluid row justify-content-center px-0">	

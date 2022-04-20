@@ -34,6 +34,8 @@ public class Instruccion implements Serializable {
 	
 	private Long orden;
 	
+	private String foto;
+	
 	//METODOS ----------------------------------------------
 	
 	public Long getId() {
@@ -69,5 +71,15 @@ public class Instruccion implements Serializable {
 			this.orden = Long.parseLong(orden);
 		}		
 	}
+
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+	
+	
 
 }

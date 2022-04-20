@@ -39,28 +39,31 @@ recognition.continuous = false;
 recognition.lang = 'es-ES';
 var reproduciendo = false;
 
-document.body.onclick = function () {
-	if(reproduciendo == false){
-		recognition.start();
-		reproduciendo = true;
-		console.log('Recepción comenzada');
-	}
-	else{
-		recognition.stop();
-		reproduciendo = false;
-		console.log('Recepción detenida');
-	}  		
-}
+//document.body.onclick = function () {
+//	if(reproduciendo == false){
+//		recognition.start();
+//		reproduciendo = true;
+//		console.log('Recepción comenzada');
+//	}
+//	else{
+//		recognition.stop();
+//		reproduciendo = false;
+//		console.log('Recepción detenida');
+//	}  		
+//}
 
 function comenzarDetener() {
 	if(reproduciendo == false){
 		recognition.start();
 		reproduciendo = true;
+		$('#asistenteDeVoz').removeClass("bi bi-megaphone").addClass("bi bi-megaphone-fill").addClass("text-danger");
 		console.log('Recepción comenzada');
 	}
 	else{
 		recognition.stop();
 		reproduciendo = false;
+		$('#asistenteDeVoz').addClass("bi bi-megaphone").removeClass("bi bi-megaphone-fill").removeClass("text-danger");
+		$('.visor').text('');
 		console.log('Recepción detenida');
 	}  		
 }
@@ -79,7 +82,7 @@ recognition.onresult = function(event) {
     	instruccionSeleccionada = instruccionSeleccionada.replace('.', '').toLowerCase().trim();
     }
 	console.log('Intruccion seleccionada: ' + instruccionSeleccionada);
-	$('.visor').text('Intruccion seleccionada: ' + instruccionSeleccionada);
+	$('.visor').text('...' + instruccionSeleccionada + '...');
 	switch(instruccionSeleccionada)
     {
         case 'comenzar':
@@ -107,8 +110,7 @@ recognition.onresult = function(event) {
         	seleccionaPasoReproduce();
         	break;
         case 'detener': 
-        	recognition.stop();
-        	reproduciendo = false;
+        	comenzarDetener();
         	break;        	
     }	
 }
@@ -140,7 +142,7 @@ function seleccionaPasoReproduce(){
 recognition.onend = function() {
 	if(reproduciendo){
 		recognition.start();
-		$('.visor').text('Reiniciando tras pausa involuntaria');
+		$('.visor').text('...recibiendo...');
 		console.log('Reiniciando tras pausa involuntaria');
 	}  
 }
