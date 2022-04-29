@@ -1,5 +1,10 @@
 package miRecetApp.app.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -11,6 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -38,6 +44,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import miRecetApp.app.model.entity.Artefacto;
@@ -549,7 +557,8 @@ public class RecetaController {
 						  BindingResult result, 
 						  Model model, 
 						  RedirectAttributes flash,
-						  HttpServletRequest request, 
+						  HttpServletRequest request,
+						  MultipartHttpServletRequest multipartRequest,
 						  Locale locale,
 						  Authentication authentication) {	
 		
@@ -620,6 +629,14 @@ public class RecetaController {
 			}
 		}	
 		int cantidadDeInstrucciones = Integer.parseInt(request.getParameter("cantidadDeInstrucciones"));
+		for(int i = 0; i < cantidadDeInstrucciones;) {
+			System.out.println("CICLO DE GUARDADO DE FOTOS");
+			Instruccion instruccion = receta.getInstrucciones().get(i); 
+			i++;
+			MultipartFile foto = multipartRequest.getFile("pasoFoto" + i);
+			System.out.println("Se ha recuperado la fot del request multipart: " + foto.isEmpty());
+			guardaFoto(foto, instruccion);
+		}
 		int instruccionesEnReceta = receta.getInstrucciones().size();
 		if(cantidadDeInstrucciones < instruccionesEnReceta) {
 			System.out.println("---------Hay mas Instrucciones en la Receta que los enviados en el Request----------");
@@ -1007,4 +1024,34 @@ public class RecetaController {
 		recetaService.save(receta);
 		return vieneDeVerReceta ? "redirect:/receta/verReceta/" + recetaId : "redirect:/receta/listar";
 	}
+	
+	public void guardaFoto(MultipartFile foto, Instruccion instruccion) {
+		if(!foto.isEmpty()) {
+			System.out.println("INSTRUCCION " + instruccion.getOrden() + ": GUARDANDO FOTO.");
+			if(instruccion.getFoto() !=null
+			   && instruccion.getFoto().length() > 0) {				
+				Path rootPath = Paths.get("fotos").resolve(instruccion.getFoto()).toAbsolutePath();
+				log.info("rootPath FOTO A REEMPLAZAR: " + rootPath);
+				File archivo = rootPath.toFile();				
+				if(archivo.exists() && archivo.canRead()) {
+					archivo.delete();
+					System.out.println("Imagen ELIMINADA");
+				}
+			}			
+			String uniqueNameFile = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename();			
+			Path rootPath = Paths.get("fotos").resolve(uniqueNameFile);	
+			Path rootAbsolutePath = rootPath.toAbsolutePath();			
+			log.info("rootPath: " + rootPath);
+			log.info("rootAbsolutPath: " + rootAbsolutePath);			
+			try {				
+				Files.copy(foto.getInputStream(), rootAbsolutePath);
+				instruccion.setFoto(uniqueNameFile);
+			} catch (IOException e) {				
+				e.printStackTrace();
+			}
+		}
+		else {
+			System.out.println("INSTRUCCION " + instruccion.getOrden() + ": NO HAY FOTO PARA GUARDAR.");
+		}		
+	}	
 }

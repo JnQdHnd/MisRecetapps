@@ -235,6 +235,10 @@ function agregaPaso() {
 	$('#' + nuevoId + ' .pasoTexto').attr('aria-label', 'Paso ' + numPaso);
 	$('#' + nuevoId + ' .pasoTexto').text(null);
 	$('#' + nuevoId + ' .pasoTexto').val(null);
+	$('#' + nuevoId + ' .captura').attr('name', 'pasoFoto' + numPaso);
+	$('#' + nuevoId + ' .captura').attr('id', 'pasoFoto' + numPaso);
+	$('#' + nuevoId + ' .captura').val(null);
+	$('#' + nuevoId + ' .recuadroFoto').hide();
 	$('#' + nuevoId + ' .btnInstruccion').attr('name', 'btnInstruccion' + numPaso);
 	$('#' + nuevoId + ' .btnInstruccion').attr('id', 'btnInstruccion' + numPaso);
 	$('#' + nuevoId + ' .btnInstruccion').attr('orden', numPaso);	
@@ -276,6 +280,9 @@ function eliminaPaso(esteBtn) {
 			$('#instruccion' + i + ' .pasoTitulo').attr('name', 'pasoTitulo' + i);
 			$('#instruccion' + i + ' .pasoTitulo').text('Paso ' + i);
 			$('#instruccion' + i + ' .pasoTexto').attr('name', 'instrucciones['+ index +'].instruccion');
+			$('#instruccion' + i + ' .pasoTexto').attr('id', 'pasoTexto' + i);
+			$('#instruccion' + i + ' .captura').attr('id', 'pasoFoto' + i);
+			$('#instruccion' + i + ' .captura').attr('name', 'pasoFoto' + i);
 			$('#instruccion' + i + ' .instruccionOrden').attr('name', 'instrucciones['+ index +'].orden');
 			$('#instruccion' + i + ' .instruccionOrden').val(i);
 			$('#instruccion' + i + ' .btnInstruccion').attr('orden', i);
