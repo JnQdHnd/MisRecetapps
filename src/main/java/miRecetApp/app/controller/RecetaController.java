@@ -2,6 +2,7 @@ package miRecetApp.app.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,16 +29,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +71,7 @@ import miRecetApp.app.service.IInstruccionService;
 import miRecetApp.app.service.IManoDeObraService;
 import miRecetApp.app.service.IProductoService;
 import miRecetApp.app.service.IRecetaService;
+import miRecetApp.app.service.IUploadFileService;
 import miRecetApp.app.service.implementation.IdentificaDevice;
 import miRecetApp.app.service.implementation.UsuarioService;
 import miRecetApp.app.util.paginator.PageRender;
@@ -78,6 +84,9 @@ public class RecetaController {
 
 	@Autowired
 	private IRecetaService recetaService;
+	
+	@Autowired
+	private IUploadFileService uploadFileService;
 			
 	@Autowired
 	private IProductoService productoService;
@@ -1053,5 +1062,20 @@ public class RecetaController {
 		else {
 			System.out.println("INSTRUCCION " + instruccion.getOrden() + ": NO HAY FOTO PARA GUARDAR.");
 		}		
-	}	
+	}
+	
+	@GetMapping(value = "/fotos/{filename:.+}")
+	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
+
+		Resource recurso = null;
+
+		try {
+			recurso = uploadFileService.load(filename);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
+				.body(recurso);
+	}
 }

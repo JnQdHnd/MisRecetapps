@@ -277,7 +277,7 @@
 <!--INSTRUCCIONES ---------------------------------------------------------------------------------------------------->																
 								<li class="list-group-item">
 									<div class="row justify-content-between px-0 mb-2 flex-nowrap">
-										<label class="col-auto fs-4 fw-bold text-primary" style="width: 180px;">
+										<label class="col-auto fs-4 fw-bold text-primary" style="width: 190px;">
 											Instrucciones:&nbsp;											
 										</label>				
 										<span class="col-auto fst-italic fs-6 text-info visor pb-0 pt-1" 
@@ -340,6 +340,16 @@
 																   th:aria-label="'Paso ' + ${iterador.index+1}"
 																   th:text="${instruccion.instruccion}">														
 																</p>
+															</div>															
+														</div>
+														<div class="row flex-nowrap">
+															<div class="col-auto" style="width: 20px;"></div>	
+															<div class="col">
+																<img th:if="${#strings.length(instruccion.foto) > 0}" 
+																	 class="card-img" 
+																	 style="max-width: 100%;" 
+																	 th:src="@{/fotos/} + ${instruccion.foto}" 
+																	 th:alt="${instruccion.foto}">				
 															</div>															
 														</div>														
 													</div>
