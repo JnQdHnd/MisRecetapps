@@ -256,7 +256,11 @@
 												        	th:esHorno="${artefacto.esHorno}"
 												        	th:selected="${artefactoEnUso.artefactoId} == ${artefacto.id}">
 												  	</option>
-												</select>
+												</select>												
+												<input  type=hidden 
+														class="artefactosUtilizadosEsHorno" 
+														th:name="|artefactosUtilizados[__${iterador.index}__].esHorno|" 
+														th:value="${artefactoEnUso.esHorno}"/>
 												<a  class="input-group-text text-secondary text-decoration-none agregaArtefactoModal"	
 													th:orden="${iterador.index+1}"	  		  
 													style="width: auto; height: auto;"
@@ -266,11 +270,7 @@
 													data-bs-target="#agregaArtefactoModal"
 													title="Si el artefacto no está en lista, puede agregarlo haciendo click aquí...">
 													<i class="fa fa-plus" aria-hidden="true"></i>
-												</a>
-												<input  type=hidden 
-														class="artefactosUtilizadosEsHorno" 
-														th:name="|artefactosUtilizados[__${iterador.index}__].esHorno|" 
-														th:value="${artefactoEnUso.esHorno}"/>									
+												</a>									
 											</div>
 										</fieldset>	
 	
