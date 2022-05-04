@@ -343,9 +343,8 @@
 															</div>															
 														</div>
 														<div class="row flex-nowrap">
-															<div class="col-auto" style="width: 20px;"></div>	
 															<div class="col">
-																<img th:if="${#strings.length(instruccion.foto) > 0}" 
+																<img th:if="${instruccion.foto} != null" 
 																	 class="card-img" 
 																	 style="max-width: 100%;" 
 																	 th:src="@{/fotos/} + ${instruccion.foto}" 

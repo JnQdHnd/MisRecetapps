@@ -642,8 +642,13 @@ public class RecetaController {
 			System.out.println("CICLO DE GUARDADO DE FOTOS");
 			Instruccion instruccion = receta.getInstrucciones().get(i); 
 			i++;
-			MultipartFile foto = multipartRequest.getFile("pasoFoto" + i);
-			System.out.println("Se ha recuperado la fot del request multipart: " + foto.isEmpty());
+			String contieneFoto = request.getParameter("contieneFoto" + i);
+			if(contieneFoto.equals("false") && instruccion.getFoto() != null && instruccion.getFoto().length() > 0) {
+				uploadFileService.delete(instruccion.getFoto());
+				instruccion.setFoto(null);
+			}
+			MultipartFile foto = multipartRequest.getFile("pasoFoto" + i);			
+			System.out.println("Se ha recuperado la foto del request multipart: " + !foto.isEmpty());
 			guardaFoto(foto, instruccion);
 		}
 		int instruccionesEnReceta = receta.getInstrucciones().size();

@@ -438,25 +438,33 @@
 															th:value="${instruccion.id != null and instruccion.id > 0} ? ${instruccion.orden} : ${iterador.index+1}"/>	
 																
 											</div>										
-											<div class="col-12 col-sm-12 col-md-auto col-lg-auto col-xl-auto px-0 ms-md-1 ms-lg-1 ms-xl-1 recuadroFoto" style="display: none;">											
-												<div class="d-flex justify-content-end">
-													<canvas class="img-fluid rounded canvas"
-													 		height="160"	
-													 		width="300"											 													 		
-													 		style="background-color:#ffedff; border: 1px solid; border-color: #d0d1d3;"
-													 		data-bs-toggle="modal"
-															data-bs-target="#gestionaFotoModal"
-													 		onclick="modalFoto(this); return false;">
-													</canvas> 
+											<div class="col-12 px-0 recuadroFoto" style="display: none;">											
+												<div class="card-img d-flex justify-content-center"
+													 style="background-color:#ffedff; 
+													 		border: 1px solid; 
+													 	    border-color: #d0d1d3; 
+													 	    background-size: contain;">
+													<img class="imagen"		
+														 width="auto"
+														 height="160"								 					
+													 	 th:src="${instruccion.foto} != null ? @{/fotos/} + ${instruccion.foto}"												 		
+													 	 data-bs-toggle="modal"
+														 data-bs-target="#gestionaFotoModal"
+													 	 onclick="modalFoto(this); return false;"/>
 													<input  th:id="'pasoFoto' + ${iterador.index+1}" 
 														    th:name="'pasoFoto' + ${iterador.index+1}"													  
 													 		type="file" 
 													 		class="captura" 
 													 		accept="image/*" 
-													 		capture="environment" 
+													 		capture="environment"
 													 		hidden/>
+													 <input type="hidden"
+													 		th:id="'contieneFoto' + ${iterador.index+1}" 
+														    th:name="'contieneFoto' + ${iterador.index+1}"
+														    class="contieneFoto"
+														    th:value="${instruccion.foto} != null">															 
 												</div> 		
-											</div>										
+											</div>									
 										</fieldset>
 									</div>	
 								</div>
@@ -521,11 +529,14 @@
 					<div class="modal-body pt-0 mt-0">
 						<div class="row justify-content-center mt-3">
 							<div class="col-12">
-								<canvas id="canvasModal"
-										class="col-12 img-fluid rounded canvasModal"											 		
-								 		style="background-color: white; border: 1px solid; border-color: #d0d1d3;"
-								 		width="766">
-								</canvas>
+								<img id="canvasModal"
+									 class="col-12 img-fluid rounded canvasModal"											 		
+								 	 style="background-color: white; 
+								 	        border: 1px solid; 
+								 	 	    border-color: #d0d1d3; 
+								 	 	    background-size: contain;"
+								 	 width="100%"
+								 	 height="auto"/>
 							</div>
 						</div>
 					</div>
