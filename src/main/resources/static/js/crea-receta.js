@@ -42,6 +42,7 @@ function modalArtefacto(artefacto){
 function buscaUnidad(producto) {
 	if($(producto).val()=='A'){
 		console.log('Activa AGREGA PRODUCTO')
+		modalProducto(producto);
 		$(producto).attr('class', 'form-select text-secondary producto');
 	}
 	else{
@@ -62,6 +63,7 @@ function buscaArtefacto(artefacto) {
 	if($(artefacto).val()=='A'){
 		console.log('Activa AGREGA ARTEFACTO')
 		$(artefacto).removeClass('text-dark').addClass('text-secondary');
+		modalArtefacto(this);
 	}
 	else{
 		console.log('Cambio en artefacto')

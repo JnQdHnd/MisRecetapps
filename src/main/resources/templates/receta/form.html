@@ -125,11 +125,9 @@
 												<option th:orden="${iterador.index+1}" 
 														th:value="A"
 														type="button" 
-														class="btn btnModal" 
+														class="btn btnModal agregaProductoModal" 
 														data-bs-toggle="modal"
-														data-bs-target="#agregaProductoModal"
-														onclick="modalProducto(this)">
-														+ Agregar nuevo	producto...
+														data-bs-target="#agregaProductoModal">+ Agregar nuevo producto...
 												</option>
 											</select>
 										</div>
@@ -258,10 +256,9 @@
 												  	<option th:orden="${iterador.index+1}" 
 												  			th:value="A" 
 												  			type="button" 
-												  			class="btn btnModal" 
+												  			class="btn btnModal agregaArtefactoModal" 
 												  			data-bs-toggle="modal" 
-												  			data-bs-target="#agregaArtefactoModal" 
-												  			onclick="modalArtefacto(this)">+ Agregar nuevo artefacto...
+												  			data-bs-target="#agregaArtefactoModal">+ Agrega nuevo artefacto...
 												  	</option>
 												</select>
 												<input  type=hidden 
