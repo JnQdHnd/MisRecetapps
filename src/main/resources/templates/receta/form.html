@@ -122,14 +122,17 @@
 														th:text="${producto.nombre}"
 														th:selected="${ingrediente.productoId} == ${producto.id}">
 												</option>
-												<option th:orden="${iterador.index+1}" 
-														th:value="A"
-														type="button" 
-														class="btn btnModal agregaProductoModal" 
-														data-bs-toggle="modal"
-														data-bs-target="#agregaProductoModal">+ Agregar nuevo producto...
-												</option>
 											</select>
+											<a  class="input-group-text text-secondary text-decoration-none agregaProductoModal"	
+												th:orden="${iterador.index+1}"	  		  
+												style="width: auto; height: auto;"
+												href=""
+												onclick="modalProducto(this);return false;"
+												data-bs-toggle="modal"
+												data-bs-target="#agregaProductoModal"
+												title="Si el producto no está en lista, puede agregarlo haciendo click aquí...">
+												<i class="fa fa-plus" aria-hidden="true"></i>
+											</a>
 										</div>
 	
 										<div class="input-group">
@@ -253,14 +256,17 @@
 												        	th:esHorno="${artefacto.esHorno}"
 												        	th:selected="${artefactoEnUso.artefactoId} == ${artefacto.id}">
 												  	</option>
-												  	<option th:orden="${iterador.index+1}" 
-												  			th:value="A" 
-												  			type="button" 
-												  			class="btn btnModal agregaArtefactoModal" 
-												  			data-bs-toggle="modal" 
-												  			data-bs-target="#agregaArtefactoModal">+ Agrega nuevo artefacto...
-												  	</option>
 												</select>
+												<a  class="input-group-text text-secondary text-decoration-none agregaArtefactoModal"	
+													th:orden="${iterador.index+1}"	  		  
+													style="width: auto; height: auto;"
+													href=""
+													onclick="modalArtefacto(this);return false;"
+													data-bs-toggle="modal"
+													data-bs-target="#agregaArtefactoModal"
+													title="Si el artefacto no está en lista, puede agregarlo haciendo click aquí...">
+													<i class="fa fa-plus" aria-hidden="true"></i>
+												</a>
 												<input  type=hidden 
 														class="artefactosUtilizadosEsHorno" 
 														th:name="|artefactosUtilizados[__${iterador.index}__].esHorno|" 
@@ -424,7 +430,7 @@
 															  th:name="|instrucciones[__${iterador.index}__].instruccion|"
 															  class="form-control fs-6 pasoTexto" 
 															  form="formulario" 
-															  style="height: 160px;" 
+															  style="height: 120px;" 
 															  placeholder="Escriba aquí las intrucciones de este paso..."
 															  th:aria-label="'Paso ' + ${iterador.index+1}"
 															  th:text="${instruccion.instruccion}">														
