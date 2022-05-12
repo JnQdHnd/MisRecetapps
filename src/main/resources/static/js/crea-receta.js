@@ -145,6 +145,7 @@ function agregaIngrediente() {
 	$('#' + nuevoId + ' .btnIngrediente').attr('id', 'btnIngrediente' + numIngrediente);
 	$('#' + nuevoId + ' .btnIngrediente').attr('name', 'btnIngrediente' + numIngrediente);
 	$('#' + nuevoId + ' .btnIngrediente').attr('orden', numIngrediente);
+	$('#' + nuevoId + ' .agregaProductoModal').attr('orden', numIngrediente);
 	$('#' + nuevoId + ' .btnIngrediente').attr('ingrediente', 0);
 	$('#' + nuevoId + ' .producto').val(0);
 	$('#' + nuevoId + ' .cantidadIngrediente').val(null);
@@ -201,7 +202,8 @@ function eliminaIngrediente(esteBtn) {
 			$('#ingrediente' + i + ' .ingredienteTitulo').text('Ingrediente ' + i);
 			$('#ingrediente' + i + ' .btnIngrediente').attr('id', 'btnIngrediente' + i);
 			$('#ingrediente' + i + ' .btnIngrediente').attr('name', 'btnIngrediente' + i);
-			$('#ingrediente' + i + ' .btnIngrediente').attr('orden', i);	
+			$('#ingrediente' + i + ' .btnIngrediente').attr('orden', i);
+			$('#ingrediente' + i + ' .agregaProductoModal').attr('orden', i);	
 			i++
 			index++
 		});	

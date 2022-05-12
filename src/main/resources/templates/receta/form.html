@@ -275,7 +275,7 @@
 										</fieldset>	
 	
 										<div class="minutosCasillero" 
-											 th:style="${artefactoEnUso.minutosDeUso} == null or ${artefactoEnUso.minutosDeUso} == 0 ? 'display:none;' : ''">
+											 th:style="${artefactoEnUso.artefactoId} == null or ${artefactoEnUso.artefactoId} == 0 ? 'display:none;' : ''">
 											 <fieldset class="artefactoSet">
 											 	<div class="input-group">
 													<span class="input-group-text px-2 text-primary fs-6"
@@ -564,6 +564,8 @@
 		</script>	
 		<script th:src="@{/js/crea-receta.js}"></script>
 		<script th:src="@{/js/voz-a-texto.js}"></script>	
-		<script th:src="@{/js/agrega-foto.js}"></script>						
+		<script th:src="@{/js/agrega-foto.js}"></script>
+		<script th:src="@{/js/modernizr-browser.js}"></script>	
+		<script th:src="@{/js/modernizr-speech.js}"></script>						
 	</body>	
 </html>

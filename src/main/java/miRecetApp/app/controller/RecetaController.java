@@ -686,6 +686,17 @@ public class RecetaController {
 		
 		Receta receta = obtieneRecetaProvisoria(request);
 		
+		if(nombreProductoNotNull) {
+			Ingrediente ingrediente = new Ingrediente();
+			ingrediente.setProductoId(producto.getId());
+			receta.getIngredientes().add(ingrediente);
+		}
+		else {
+			ArtefactoEnUso a = new ArtefactoEnUso();
+			a.setArtefactoId(artefacto.getId());
+			receta.getArtefactosUtilizados().add(a);
+		}
+		
 		model.addAttribute("receta", receta);
 		return "redirect:/receta/itemIncorporado";
 	}

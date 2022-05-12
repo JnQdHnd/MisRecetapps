@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-	<head th:replace="layout/layout :: head"></head>
 	<script th:src="@{/js/crea-receta.js}"></script>
 	
 	<body>
@@ -105,9 +104,7 @@
 					</form>	
 				</div>
 			</div> 
-		</div>
-		
-		<div th:replace="layout/layout :: footScripts"></div>		
+		</div>	
 		
 		<script th:if="${artefacto.id}==null" type="text/javascript">
 			$(document).ready(function(){});
