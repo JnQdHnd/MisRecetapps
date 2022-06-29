@@ -10,18 +10,27 @@
 						<th class="text-nowrap fs-6 align-middle py-3" style="width:auto; text-align: center;" title="Favoritas"><i class="fa fa-star" aria-hidden="true"></i></th>
 						<th th:if="${deviceType == 'browser'}" class="text-nowrap fs-6 align-middle py-3" style="width: 12%;" th:text="#{text.receta.listar.autor}">Autor</th>
 						<th th:if="${deviceType == 'browser'}" class="text-nowrap fs-6 align-middle py-3" style="width: 12%; text-align: center;" th:text="#{text.receta.listar.esPublica}">Es pública</th>
+						<th class="text-nowrap fs-6 align-middle py-3 ingredienteTitulo" style="width: 12%;  text-align: center; display: none"><i  class="fa fa-shopping-basket" aria-hidden="true"></i></th>
 						<th th:if="${deviceType == 'browser'}" class="text-nowrap fs-6 align-middle py-3" style="width: 90px; text-align: center;" sec:authorize="hasRole('ROLE_USER')">EDITAR</th>
 						<th th:if="${deviceType == 'browser'}" class="text-nowrap fs-6 align-middle py-3" style="width: 90px; text-align: center;" sec:authorize="hasRole('ROLE_USER')">ELIMINAR</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="receta:${recetasMias}" th:recetaId="${receta.id}" onclick="enviarRecetaId(this)">
+					<tr class="recetaId" th:each="receta:${recetasMias}" 
+						th:recetaId="${receta.id}" 
+						th:tienePreparaciones="${#lists.size(receta.preparaciones)}" 
+						th:cantidadDeIngredientes="${#lists.size(receta.ingredientes)}" 
+						recetaFiltrada="false" 
+						onclick="enviarRecetaId(this)">
 						<td class="text-nowrap fs-6 align-middle text-primary py-3" style="text-align: center;">
 							<i class="fa fa-eye mx-2" aria-hidden="true"></i>
+							<div class="idProducto" th:each="ingrediente:${receta.ingredientes}" th:value="${ingrediente.productoId}" hidden></div>
+							<div class="preparacion" th:each="preparacion:${receta.preparaciones}" th:value="${preparacion.recetaId}" hidden></div>
 						</td>
 						<td class="text-nowrap fs-6 align-middle py-3" th:text="${receta.nombre}"></td>
 						<td class="text-nowrap fs-6 align-middle py-3" style="width:auto; text-align: center;">
-							<a  class="btn btn-link"
+							<a  class="btn btn-link esFavorita"
+								th:esFavorita="${receta.isEsFavorita()}"
 								th:href="${receta.isEsFavorita()} ? @{/receta/eliminaFavorita/} + ${receta.id} : @{/receta/agregaFavorita/} + ${receta.id}"
 								th:title="${receta.esFavorita} ? 'Sacar de favoritas' : 'Agregar a favoritas'">
 								<i th:class="${receta.isEsFavorita()} ? 'fa fa-star' : 'fa fa-star-o'" aria-hidden="true"></i>
@@ -29,20 +38,20 @@
 						</td>
 						<td th:if="${deviceType == 'browser'}" class="text-nowrap fs-6 align-middle py-3" th:text="${receta.autor}"></td>
 						<td th:if="${deviceType == 'browser'}" class="text-nowrap fs-6 align-middle py-3" th:text="${receta.esPublica} ? 'Sí' : 'No'" style="text-align: center;">Sí</td>
-	
-						<td th:if="${deviceType == 'browser'}" sec:authorize="hasRole('ROLE_USER')" style="text-align:center">
-							<a class="btn btn-celeste" th:href="@{/receta/form/} + ${receta.id}" title="Editar" style="width: 70px;">
+						<td class="text-nowrap fs-6 align-middle py-3 ingredienteData" th:text="'0'" style="text-align: center; display: none"></td>
+						<td th:if="${deviceType == 'browser'}" sec:authorize="hasRole('ROLE_USER')" style="text-align:center;">
+							<a class="btn btn-celeste mt-2" th:href="@{/receta/form/} + ${receta.id}" title="Editar" style="width: 70px;">
 								<i class="fa fa-pencil fs-5 mx-1" aria-hidden="true"></i>
 							</a>
 						</td>
 						<td th:if="${deviceType == 'browser'}" sec:authorize="hasRole('ROLE_USER')" style="text-align:center">
-							<a class="btn btn-danger"
+							<a class="btn btn-danger mt-2"
 							th:href="@{/receta/eliminar/} + ${receta.id}"
 							onclick="return confirm('¿Seguro de Eliminar?')"
 							title="Eliminar" style="width: 70px;">
 								<i class="fa fa-trash fs-5 mx-1" aria-hidden="true"></i>
 							</a>
-						</td>
+						</td>						
 					</tr>
 				</tbody>
 			</table>

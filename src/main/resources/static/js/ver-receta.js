@@ -153,8 +153,7 @@ function calculaPorciones() {
 			var cantidadEnEstaUnidadOriginal = parseFloat($(this).val());
 			var nuevaCantidad = cantidadFinal * cantidadEnEstaUnidadOriginal / cantidadOriginal;
 			$(this).val(nuevaCantidad);
-		});
-		
+		});		
 		var nuevoCostoTotal = costoPorcion * porciones;
 		$('.costoTotal').text(formatearAMoneda(nuevoCostoTotal));		
 	});
@@ -210,7 +209,10 @@ function validaCompra(){
 	console.log('**************VALIDANDO COMPRA***********');
 	var errorEnPrecio = false;
 	var errorEnCantidad = false;
-	$('#porcionesDesdePrincipal').val($('#porciones').val());
+	var porciones = $('#porciones').val();
+	$('#porcionesDesdePrincipal').val(porciones);
+	console.log('porciones: ' + porciones);
+	console.log('porcionesDesdePrincipal: ' + $('#porcionesDesdePrincipal').val());
 	$("#cuerpoCompra .productoPrecio").each(function() {
 		$(this).removeClass('alert-danger');
 		var precio = $(this).val().replace(',','.');

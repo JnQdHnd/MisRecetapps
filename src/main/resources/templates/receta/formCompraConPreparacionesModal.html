@@ -5,18 +5,18 @@
 			class="container-fluid row justify-content-center px-0 mx-0">
 			<div class="text-primary col-12 px-0 mx-0">
 	
-				<form id="formProducto" th:action="@{/receta/actualizaPrecios}"
+				<form id="formProducto" th:action="@{/receta/actualizaPreciosConPreparaciones}"
 					th:object="${receta}" method="post" enctype="multipart/form-data">
 	
 					<input id="cantidadDeCompras" name="cantidadDeCompras" type="hidden"
-						th:value="${#lists.size(receta.ingredientes)}" />
+						th:value="${#lists.size(ingredientesSinRepetir)}" />
 	
 					<div id="cuerpoCompra">
 						<div class="row justify-content-between flex-nowrap">
 							<div class="col-12">
-								<div th:each="ingrediente, iterador : ${receta.ingredientes}">
+								<div th:each="ingrediente, iterador : ${ingredientesSinRepetir}">
 									<div th:each="producto : ${productos}">
-										<div th:if="${ingrediente.productoId} == ${producto.id}">
+										<div th:if="${ingrediente} == ${producto.id}">
 											<div class="ingredienteCompra card row my-2 mx-0 flex-nowrap"
 												th:ingrediente="'ingredienteCompra' + ${iterador.index+1}"
 												th:orden="${iterador.index+1}">
@@ -54,11 +54,11 @@
 																	medida...</option>
 																<option
 																	th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}"
-																	th:if="${unidad.tipoDeMedida.equals(ingrediente.unidadDeMedida.tipoDeMedida)}"
+																	th:if="${unidad.tipoDeMedida.equals(producto.unidadDeMedida.tipoDeMedida)}"
 																	th:text="${unidad.simbolo}" 
 																	th:title="${unidad.nombre}"
 																	th:value="${unidad}"
-																	th:selected="${ingrediente.unidadDeMedida} == ${unidad}">
+																	th:selected="${producto.unidadDeMedida} == ${unidad}">
 																</option>
 															</select>
 														</div>

@@ -7,27 +7,28 @@
 			<div class="card px-0 mx-1 border-primary text-primary" style="max-width: 700px;"> 	
 				<div class="card-header py-2">
 					<div class="row justify-content-start align-middle text-nowrap flex-nowrap">
-						<span class="fs-3 fw-bold" th:text="${titulo}"></span>
+						<span class="fs-3 fw-bold" th:text="${esRecetaConPreparaciones} ? ${receta.preparacionEnRecetaNombre} + ' - Incorpora preparación...': ${titulo}"></span>
 					</div>	
 				</div>			
 				<div class="card-body pt-1 mt-0 px-2 mx-1">
-					<form id="formulario" th:action="@{/receta/form}" th:object="${receta}" method="post" enctype="multipart/form-data">
-						<input type="hidden" id="esNuevo" th:value="${esNuevo}">
+					<form id="formulario" th:action="${esRecetaConPreparaciones} ? @{/receta/formPreparaciones} : @{/receta/form}" th:object="${receta}" method="post" enctype="multipart/form-data">
+						<input type="hidden" name="esNuevo" id="esNuevo" th:value="${esNuevo}">
 						<input type="hidden" id="seHaCreadoItem" th:value="${seHaCreadoItem}">
-	<!--NOMBE---------------------------------------------------------------------------------------------------->											
+						<input th:if="${esRecetaConPreparaciones and esNuevo  == false}" type="hidden" name="indexPreparacion" id="indexPreparacion" th:value="${indexPreparacion}">
+						<!--NOMBE---------------------------------------------------------------------------------------------------->											
 						<div class="row">
 							<div class="col-12">
 								<div class="form-group row justify-content-between mb-1">							
 									<label class="col-12 mx-0 fs-4">Título</label>
 									<span class="col-12 text-primary mt-0 pb-0 mb-2 mx-0" style="font-size: small;">Vamos a darle un nombre a tu deliciosa preparación...</span>
-									<div class="col-12 m-0">	
+									<div class="col-12 m-0">											
 										<input id="nombre" name="nombre" type="text" th:field="*{nombre}" class="form-control fs-6"/>
 										<small id="errorNombre" class="form-text text-danger" th:text="#{NotBlank.receta.nombre}" style="display: none"></small>
 									</div>	 
 								</div>
 							</div>
 						</div>
-	<!--PORCIONES---------------------------------------------------------------------------------------------------->								
+						<!--PORCIONES---------------------------------------------------------------------------------------------------->								
 						<div class="row">
 							<div class="col" style="min-width: 180px;">
 								<div class="form-group row justify-content-between mb-1">							
@@ -46,8 +47,7 @@
 								</div>
 							</div>						
 						</div>							
-	<!--INGREDIENTES---------------------------------------------------------------------------------------------------->
-	
+						<!--INGREDIENTES---------------------------------------------------------------------------------------------------->
 						<input id="cantidadDeIngredientes" name="cantidadDeIngredientes"
 							type="hidden" th:value="${#lists.size(receta.ingredientes)}" />	
 						<div class="row">
@@ -174,10 +174,8 @@
 									</div>
 								</div>
 							</div>
-						</div>
-	
-	<!--ARTEFACTOS---------------------------------------------------------------------------------------------------->	
-	
+						</div>	
+						<!--ARTEFACTOS---------------------------------------------------------------------------------------------------->	
 						<input id="cantidadDeArtefactos" name="cantidadDeArtefactos" type="hidden" th:value="${#lists.size(receta.artefactosUtilizados)}"/>
 	
 						<div class="row align-items-center pt-0 mt-1 mb-2">
@@ -362,7 +360,7 @@
 								</div>
 							</div>
 						</div>	
-	<!--INSTRUCCIONES---------------------------------------------------------------------------------------------------->
+						<!--INSTRUCCIONES---------------------------------------------------------------------------------------------------->
 						<input id="cantidadDeInstrucciones" name="cantidadDeInstrucciones" type="hidden" th:value="${#lists.size(receta.instrucciones)}"/>
 	
 						<div class="row align-items-center pt-0 mt-1 mb-2">
@@ -474,13 +472,13 @@
 							</div>
 						</div>
 	
-	<!--BOTON DE ENVIO DE RECETA---------------------------------------------------------------------------------------------------->
+						<!--BOTON DE ENVIO DE RECETA---------------------------------------------------------------------------------------------------->
 						<div class="form-group row justify-content-end my-2">
 							<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 								<input id="agregaRecetaBtn" onclick="verifica(); return false;" type="submit" th:value="${btnText}" class="btn btn-verdeagua col-12 fs-5" />				
 							</div>
 						</div>																
-						<input id="recetaId" name="recetaId" type="hidden" th:field="*{id}"/>						
+						<input id="recetaId" name="recetaId" type="hidden" th:field="*{id}"/>				
 					</form>	
 				</div>
 			</div> 

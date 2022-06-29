@@ -530,7 +530,7 @@ function verifica() {
 	});		
 	
 	if ($('#cantidadDeInstrucciones').val() == 1) {
-		if($('#pasoTexto1').val() == 0){
+		if($('#pasoTexto1').val() == 0 && $('#pasoFoto1').get(0).files.length === 0){
 			$('.instruccionesSet').addClass("aDesactivar");
 		}
 	}
@@ -543,7 +543,7 @@ function verifica() {
 			console.log('INSTRUCCION VAL: ' + $('#' + id + ' .pasoTitulo').val());
 			console.log('ID: ' + id);	
 			
-			var pasoNulo = $('#' + id + ' .pasoTexto').val() == 0;
+			var pasoNulo = $('#' + id + ' .pasoTexto').val() == 0 && $('#' + id + ' .captura').get(0).files.length === 0;
 			
 			console.log('pasoNulo: ' + pasoNulo);
 			

@@ -5,7 +5,7 @@
 	<body>	
 		<header th:replace="layout/layout :: header"></header>	
 		<div class="container-fluid row justify-content-center px-0 mx-0">		
-			<div class="card border-primary text-primary mx-1 px-0 col contenedorPrincipal" style="max-width: 700px;"> 	
+			<div class="card border-primary text-primary mx-1 px-0 col contenedorPrincipal mb-1" style="max-width: 700px;"> 	
 				<div class="card-header">
 					<div class="row justify-content-between">
 						<div class="col-auto my-1 ">
@@ -25,43 +25,43 @@
 					</div>					
 				</div>	
 				<div id="navbarReceta" class="card-header collapse navbar-collapse py-0 my-0">	
-						<div class="row justify-content-center">
-							<div class="col-auto">					
-								<a  class="btn btn-outline-violetasuave my-1" 
-									th:href="@{/receta/form/} + ${receta.id}"
-									title="Editar receta">
-									<i  class="fa fa-pencil fs-4" 
-										aria-hidden="true" 
-										style="width:25px;">
-									</i>
-								</a>
-								<a  class="btn btn-outline-violetasuave my-1" 
-									th:href="@{/receta/eliminar/} + ${receta.id}" 
-									onclick="return confirm('¿Seguro de Eliminar?')"
-									title="Eliminar receta">
-									<i  class="fa fa-trash-o fs-4" 
-										style="width:25px;">
-									</i>
-								</a>							
-								<a  class="btn btn-outline-violetasuave my-1" 
-									th:href="@{/receta/verReceta/exportaPDF/} + ${receta.id}" 
-									target="_blank"
-									title="Exportar a PDF">
-									<i  class="fa fa-file-pdf-o fs-4" 
-										style="width:25px;">
-									</i>
-								</a>								
-								<a  class="btn btn-outline-violetasuave my-1"
-									th:href="${receta.isEsFavorita()} ? @{/receta/ver/eliminaFavorita/} + ${receta.id} : @{/receta/ver/agregaFavorita/} + ${receta.id}"
-									th:title="${receta.esFavorita} ? 'Sacar de favoritas' : 'Agregar a favoritas'">
-									<i  th:class="${receta.isEsFavorita()} ? 'fa fa-star fs-4' : 'fa fa-star-o fs-4'" 
-										aria-hidden="true" 
-										style="width:25px;">
-									</i>
-								</a>
-							</div>
+					<div class="row justify-content-center">
+						<div class="col-auto">					
+							<a  class="btn btn-outline-violetasuave my-1" 
+								th:href="@{/receta/form/} + ${receta.id}"
+								title="Editar receta">
+								<i  class="fa fa-pencil fs-4" 
+									aria-hidden="true" 
+									style="width:25px;">
+								</i>
+							</a>
+							<a  class="btn btn-outline-violetasuave my-1" 
+								th:href="@{/receta/eliminar/} + ${receta.id}" 
+								onclick="return confirm('¿Seguro de Eliminar?')"
+								title="Eliminar receta">
+								<i  class="fa fa-trash-o fs-4" 
+									style="width:25px;">
+								</i>
+							</a>							
+							<a  class="btn btn-outline-violetasuave my-1" 
+								th:href="@{/receta/verReceta/exportaPDF/} + ${receta.id}" 
+								target="_blank"
+								title="Exportar a PDF">
+								<i  class="fa fa-file-pdf-o fs-4" 
+									style="width:25px;">
+								</i>
+							</a>								
+							<a  class="btn btn-outline-violetasuave my-1"
+								th:href="${receta.isEsFavorita()} ? @{/receta/ver/eliminaFavorita/} + ${receta.id} : @{/receta/ver/agregaFavorita/} + ${receta.id}"
+								th:title="${receta.esFavorita} ? 'Sacar de favoritas' : 'Agregar a favoritas'">
+								<i  th:class="${receta.isEsFavorita()} ? 'fa fa-star fs-4' : 'fa fa-star-o fs-4'" 
+									aria-hidden="true" 
+									style="width:25px;">
+								</i>
+							</a>
 						</div>
-					</div>										
+					</div>
+				</div>										
 				<div class="card-body p-0 m-0">				
 					<form id="formulario" th:object="${receta}" method="post" enctype="multipart/form-data">
 						<input type="hidden" id="esNuevo" th:value="${esNuevo}">
@@ -209,8 +209,8 @@
 										<div class="row">								
 											<div class="col-12 artefacto">											
 												<div th:each="artefactoEnUso, iterador : ${receta.artefactosUtilizados}">
-													<div th:class="${deviceType}=='browser' ? 'row justify-content-between' : ''">
-														<div th:class="${deviceType}=='browser' ? 'col-6' : ''">
+													<div class="row justify-content-between">
+														<div class="col-auto">
 															<div th:class="'artefacto' + ${iterador.index+1} + ' row flex-nowrap'" th:orden="${iterador.index+1}">
 																<div class="col-auto" style="width: 20px;">												
 																	<i class="fa fa-square text-secondary" aria-hidden="true" style="font-size: x-small;"></i>	
@@ -228,9 +228,8 @@
 																</div>
 															</div>
 														</div>		
-														<div th:class="${deviceType}=='browser' ? 'col-auto me-2':''">
-															<div th:class="'artefacto' + ${iterador.index+1} + ' row flex-nowrap'" th:orden="${iterador.index+1}">													
-																<div class="col-auto" style="width: 20px;"></div>	
+														<div class="col-auto">
+															<div th:class="'artefacto' + ${iterador.index+1} + ' row flex-nowrap'" th:orden="${iterador.index+1}">
 																<div class="col-auto text-nowrap">													
 																	<span th:id="'minutosDeUso' + ${iterador.index+1}" 
 																		  th:name="'minutosDeUso' + ${iterador.index+1}" 
@@ -282,7 +281,7 @@
 										</label>				
 										<span class="col-auto fst-italic fs-6 text-info visor pb-0 pt-1" 
 											  style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span>
-										<div class="col-auto text-end" style="width: 180px;">									
+										<div class="col-auto text-end me-0" style="width: 130px;">									
 											<button class="btn btn-outline-violetasuave py-0 reproduceTexto"												
 											  		title="Reproduce instrucciones por comando de voz."
 											  		onclick="comenzarDetener(); return false;"
@@ -305,12 +304,28 @@
 										
 									<div id="cuerpoInstrucciones">
 										<div class="col-auto">
+											<div th:if="${#lists.size(receta.instrucciones)} == 0">
+												<div class="row mb-2" 
+													 th:id="'instruccion1'" 
+													 th:name="'instruccion1'" 
+													 th:orden="'1'">
+													 <div class="col">
+														<span th:id="'pasoTexto1'" 
+														   	  th:name="'pasoTexto1'" 
+														  	  class="pasoTexto text-break fst-italic fs-5"
+														  	  th:aria-label="''">
+														  	  No hay instrucciones guardadas para realizar esta receta.<br>
+														  	  Si lo desea puede editarla y hacer sus propias anotaciones.														
+														</span>
+													</div>
+												</div>							
+											</div>
 											<div th:each="instruccion, iterador : ${receta.instrucciones}">			
 												<div class="row mb-3" 
 													 th:id="'instruccion' + ${iterador.index+1}" 
 													 th:name="'instruccion' + ${iterador.index+1}" 
 													 th:orden="${iterador.index+1}">
-													 <div th:if="${#strings.isEmpty(instruccion.instruccion)}" 
+													 <div th:if="${#strings.isEmpty(instruccion.instruccion)} and ${#strings.isEmpty(instruccion.foto)}" 
 													 	  class="col">
 														<span th:id="'pasoTexto' + ${iterador.index+1}" 
 														   	  th:name="'pasoTexto' + ${iterador.index+1}" 
@@ -320,21 +335,20 @@
 														  	  Si lo desea puede editarla y hacer sus propias anotaciones.														
 														</span>
 													</div>																				
-													<div th:if="${#strings.isEmpty(instruccion.instruccion)} == false" 
+													<div th:if="${#strings.isEmpty(instruccion.instruccion)} == false or ${#strings.isEmpty(instruccion.foto)} == false" 
 														 class="col-auto">
 														<div class="row">
 															<div class="col-auto" style="width: 20px;">
-																<i class="fa fa-circle text-secondary" aria-hidden="true" style="font-size: x-small;"></i>
+																<i class="fa fa-square text-secondary" aria-hidden="true" style="font-size: x-small;"></i>
 															</div>
 															<div class="col-auto">
-																<span class="pasoTitulo text-primary fs-5 fw-bold" 
+																<span class="pasoTitulo text-secondary fs-5 fw-bold" 
 																	  th:name="'pasoTitulo' + ${iterador.index+1}" 
 																	  th:text="'Paso ' + ${iterador.index+1}">
 																</span>
 															</div>
 														</div>	
-														<div class="row flex-nowrap">
-															<div class="col-auto" style="width: 20px;"></div>	
+														<div class="row flex-nowrap">	
 															<div class="col">
 																<p th:id="'pasoTexto' + ${iterador.index+1}" 
 																   th:name="'pasoTexto' + ${iterador.index+1}" 
@@ -344,10 +358,9 @@
 																</p>
 															</div>															
 														</div>
-														<div class="row flex-nowrap">
+														<div th:if="${instruccion.foto} != null" class="row flex-nowrap">
 															<div class="col">
-																<img th:if="${instruccion.foto} != null" 
-																	 class="card-img" 
+																<img class="card-img" 
 																	 style="max-width: 100%;" 
 																	 th:src="@{/fotos/} + ${instruccion.foto}" 
 																	 th:alt="${instruccion.foto}">				
@@ -365,83 +378,84 @@
 						<input type="hidden" th:field="*{id}"/>						
 					</form>	
 				</div>
+				<div class="card-footer">
+					<div class="container-fluid row justify-content-center px-0">	
+						<div class="col-auto px-0">
+							<footer th:replace="layout/layout :: footer"></footer>			
+						</div>
+					</div>
+				</div>
 			</div> 
 		</div>
 		
 		<div id="agregaArtefactoModal" class="modal fade" tabindex="-1" aria-labelledby="agregaArtefactoModal" aria-hidden="true">
-		<div class="row justify-content-center">
-			<div class="modal-dialog modal-xl" >
-				<div class="modal-content" style="max-width: 500px;">
-					<div class="modal-header text-primary row justify-content-between">
-	  					<div class="col-auto">
-							<span class="fw-bold fs-4" th:text="'Cargar compra'"></span>
-							<abbr class="text-decoration-none fs-5" 
-								title="Aquí podrá actualizar el precio de la receta, cargando la compra que usted ha realizado de los ingredientes. Para hacerlo deberá indicar la cantidad que viene en la presentación comprada y el precio del producto. Ej: El paquete de harina comprado cuesta $1,50 y viene en una presentación de 1000 gramos. Si desconoce esta información de algún ingrediente, puede dejar la que viene por defecto y completar solo el resto.">
-								<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
-							</abbr>
-						</div>
-						<div class="col-auto">
-							<button type="button" 
-									class="btn" 
-									data-bs-dismiss="modal" 
-									aria-label="Close">
-									<i class="fa fa-times text-primary fs-3" aria-hidden="true"></i>
-							</button>		
+			<div class="row justify-content-center">
+				<div class="modal-dialog modal-xl" >
+					<div class="modal-content" style="max-width: 500px;">
+						<div class="modal-header text-primary row justify-content-between">
+		  					<div class="col-auto">
+								<span class="fw-bold fs-4" th:text="'Cargar compra'"></span>
+								<abbr class="text-decoration-none fs-5" 
+									title="Aquí podrá actualizar el precio de la receta, cargando la compra que usted ha realizado de los ingredientes. Para hacerlo deberá indicar la cantidad que viene en la presentación comprada y el precio del producto. Ej: El paquete de harina comprado cuesta $1,50 y viene en una presentación de 1000 gramos. Si desconoce esta información de algún ingrediente, puede dejar la que viene por defecto y completar solo el resto.">
+									<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
+								</abbr>
+							</div>
+							<div class="col-auto">
+								<button type="button" 
+										class="btn" 
+										data-bs-dismiss="modal" 
+										aria-label="Close">
+										<i class="fa fa-times text-primary fs-3" aria-hidden="true"></i>
+								</button>		
+							</div>	
 						</div>	
-					</div>	
-					<div class="modal-body pt-0 mt-0">
-						<div th:replace="receta/formCompraModal :: compraForm">
-						</div>
-					</div>										
+						<div class="modal-body pt-0 mt-0">
+							<div th:replace="receta/formCompraModal :: compraForm">
+							</div>
+						</div>										
+					</div>
 				</div>
 			</div>
-		</div>
 		</div>
 		<div id="instruccionesModal" class="modal fade" tabindex="-1" aria-labelledby="instruccionesModal" aria-hidden="true">
-		<div class="row justify-content-center">
-			<div class="modal-dialog modal-xl">
-				<div class="modal-content" style="max-width: 500px;">
-					<div class="modal-header text-primary row justify-content-between">
-	  					<div class="col-auto">
-							<span class="fw-bold fs-5 ms-3">
-								<i  class="bi bi-megaphone-fill fs-5 me-4" aria-hidden="true"></i>Asistente de voz
-							</span>
-						</div>
-						<div class="col-auto">
-							<button type="button" 
-									class="btn" 
-									data-bs-dismiss="modal" 
-									aria-label="Close">
-									<i class="fa fa-times text-primary fs-3" aria-hidden="true"></i>
-							</button>		
+			<div class="row justify-content-center">
+				<div class="modal-dialog modal-xl">
+					<div class="modal-content" style="max-width: 500px;">
+						<div class="modal-header text-primary row justify-content-between">
+		  					<div class="col-auto">
+								<span class="fw-bold fs-5 ms-3">
+									<i  class="bi bi-megaphone-fill fs-5 me-4" aria-hidden="true"></i>Asistente de voz
+								</span>
+							</div>
+							<div class="col-auto">
+								<button type="button" 
+										class="btn" 
+										data-bs-dismiss="modal" 
+										aria-label="Close">
+										<i class="fa fa-times text-primary fs-3" aria-hidden="true"></i>
+								</button>		
+							</div>	
 						</div>	
-					</div>	
-					<div class="modal-body pt-0 mt-0">
-						<p class="fs-6 mx-3 mt-3">
-							Haciendo click en el megafono activará 
-							el reproductor de voz para el dictado de instrucciones. 
-							Una vez activado, podrá solicitar que se le dicten los pasos de la receta,
-							mediante las siguientes <b>palabras claves</b>:														
-						</p>
-						<ul>
-							<li class="mb-2"><b>Todo</b><br><small><i>Comenzará el dictado de la receta completa.</i></small></li>
-					      	<li class="mb-2"><b>Comenzar</b><br><small><i>Comenzará el dictado por el Paso 1.</i></small></li>
-					    	<li class="mb-2"><b>Siguiente</b><br><small><i>Pasará al siguiente paso de la receta.</i></small></li>
-					      	<li class="mb-2"><b>Anterior / Previo / Previa</b><br><small><i>Volverá al paso previamente explicado.</i></small></li>
-					      	<li class="mb-2"><b>Repetir</b><br><small><i>Repetirá las instrucciones del último paso explicado.</i></small></li>
-					      	<li class="mb-2"><b>Detener</b><br><small><i>Desactivará el reconocimiento de voz.</i></small></li>
-					    </ul>
-					</div>										
+						<div class="modal-body pt-0 mt-0">
+							<p class="fs-6 mx-3 mt-3">
+								Haciendo click en el megafono activará 
+								el reproductor de voz para el dictado de instrucciones. 
+								Una vez activado, podrá solicitar que se le dicten los pasos de la receta,
+								mediante las siguientes <b>palabras claves</b>:														
+							</p>
+							<ul>
+								<li class="mb-2"><b>Todo</b><br><small><i>Comenzará el dictado de la receta completa.</i></small></li>
+						      	<li class="mb-2"><b>Comenzar</b><br><small><i>Comenzará el dictado por el Paso 1.</i></small></li>
+						    	<li class="mb-2"><b>Siguiente</b><br><small><i>Pasará al siguiente paso de la receta.</i></small></li>
+						      	<li class="mb-2"><b>Anterior / Previo / Previa</b><br><small><i>Volverá al paso previamente explicado.</i></small></li>
+						      	<li class="mb-2"><b>Repetir</b><br><small><i>Repetirá las instrucciones del último paso explicado.</i></small></li>
+						      	<li class="mb-2"><b>Detener</b><br><small><i>Desactivará el reconocimiento de voz.</i></small></li>
+						    </ul>
+						</div>										
+					</div>
 				</div>
 			</div>
 		</div>
-		</div>
-		
-		<div class="container-fluid row justify-content-center px-0">	
-			<div class="col-auto px-0">
-				<footer th:replace="layout/layout :: footer"></footer>			
-			</div>
-		</div>	
 		<script th:src="@{//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js}"></script>		
 		<script th:src="@{/js/ver-receta.js}"></script>
 		<script th:src="@{/js/modernizr-browser.js}"></script>	

@@ -5,8 +5,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,16 +34,16 @@ public class Receta implements Serializable {
 	@NotBlank
 	private String nombre;
 	
-	@OneToMany(targetEntity=Ingrediente.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity=Ingrediente.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Ingrediente> ingredientes;
 	
-	@OneToMany(targetEntity=ArtefactoEnUso.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity=ArtefactoEnUso.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ArtefactoEnUso> artefactosUtilizados;
 	
 	@OneToMany(targetEntity=ManoDeObraCocinando.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ManoDeObraCocinando> manoDeObra;
 	
-	@OneToMany(targetEntity=Instruccion.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity=Instruccion.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Instruccion> instrucciones;
 	
 	private String autor;
@@ -62,6 +60,9 @@ public class Receta implements Serializable {
     inverseJoinColumns = @JoinColumn(name = "usuario_id"))
     private List<Usuario> usuariosFanaticos;
 	
+	@OneToMany(targetEntity=Preparacion.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Preparacion> preparaciones;
+	
 	private boolean esPublica;
 	
 	private double porciones;
@@ -71,14 +72,22 @@ public class Receta implements Serializable {
 	@Transient
 	private boolean esFavorita;
 	
+	private String preparacionEnRecetaNombre;
+	
 	//METODOS------------------------------------------------------------
-		
+	
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public void cleanId() {
+		this.id = null;
+	}
+	
 	public void setId(String id) {
 		if(id != null && !id.isBlank() && Long.parseLong(id)>0) {
 			this.id = Long.parseLong(id);
@@ -197,5 +206,30 @@ public class Receta implements Serializable {
 	public void removeUsuarioFanatico(Usuario usuario) {
 		this.usuariosFanaticos.remove(usuario);
 		usuario.getRecetasFavoritas().remove(this);
-	}	
+	}
+	public List<Preparacion> getPreparaciones() {
+		return preparaciones;
+	}
+	public void setPreparaciones(List<Preparacion> preparaciones) {
+		this.preparaciones = preparaciones;
+	}
+
+	public String getPreparacionEnRecetaNombre() {
+		return preparacionEnRecetaNombre;
+	}
+
+	public void setPreparacionEnRecetaNombre(String preparacionEnRecetaNombre) {
+		this.preparacionEnRecetaNombre = preparacionEnRecetaNombre;
+	}
+	
+	public String simplificaNombreDePreparacion() {
+		String soloNombrePreparacion = "";
+		if(preparacionEnRecetaNombre != null && !preparacionEnRecetaNombre.isEmpty()) {
+			System.out.println("SIMPLIFICANDO NOMBRE DE PREPARACION");
+			String aEliminar = " (en " + preparacionEnRecetaNombre + ")";
+			soloNombrePreparacion = nombre.replace(aEliminar, "");
+			System.out.println("soloNombrePreparacion: " + soloNombrePreparacion);			
+		}
+		return soloNombrePreparacion;
+	}
 }

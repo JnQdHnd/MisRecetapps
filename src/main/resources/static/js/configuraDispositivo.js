@@ -8,7 +8,7 @@ var dispositivo = $('#dispositivo').attr('dispositivo');
 console.log('Configurando vista en: ' + dispositivo);
 if(dispositivo == 'browser'){
 	console.log('Configurando vista en BROWSER')
-	$('#logoTituloInicio').addClass('fs-4');
+	$('.logoTituloInicio').addClass('fs-4');
 	$('#navbarNav').addClass('justify-content-between');
 	$("#navbarNav a").each(function() {
 		$(this).addClass('fs-6');

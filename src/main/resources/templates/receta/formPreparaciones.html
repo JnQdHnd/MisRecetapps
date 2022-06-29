@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="layout/layout :: head"></head>
+	<body>
+		<header th:replace="layout/layout :: header"></header>	
+		<div class="container-fluid pt-0 pb-1 px-1 m-0 row justify-content-center">				
+			<div class="card px-0 mx-1 border-primary text-primary" style="max-width: 700px;"> 	
+				<div class="card-header py-2">
+					<div class="row justify-content-start align-middle text-nowrap flex-nowrap">
+						<span class="fs-3 fw-bold" th:text="${titulo}"></span>
+					</div>	
+				</div>			
+				<div class="card-body pt-1 mt-0 px-2 mx-1">
+					<form id="formulario" th:action="@{/receta/gestionaPreparaciones}" th:object="${recetaConPreparaciones}" method="post" enctype="multipart/form-data">
+						<input type="hidden" id="esNuevo" th:value="${esNuevo}">
+						<input type="hidden" id="tienePreparaciones" name="tienePreparaciones" th:value="${tienePreparaciones}">
+						<!--NOMBE---------------------------------------------------------------------------------------------------->											
+						<div class="row">
+							<div class="col-12">
+								<div class="form-group row justify-content-between mb-1">							
+									<label class="col-12 mx-0 fs-4">Título</label>
+									<span class="col-12 text-primary mt-0 pb-0 mb-2 mx-0" style="font-size: small;">Vamos a darle un nombre a tu deliciosa preparación...</span>
+									<div class="col-12 m-0">	
+										<input id="nombre" name="nombre" type="text" th:field="*{nombre}" class="form-control fs-6"/>
+										<small id="errorNombre" class="form-text text-danger" th:text="#{NotBlank.recetaConPreparaciones.nombre}" style="display: none"></small>
+									</div>	 
+								</div>
+							</div>
+						</div>
+						<!--PORCIONES---------------------------------------------------------------------------------------------------->								
+						<div class="row">
+							<div class="col" style="min-width: 180px;">
+								<div class="form-group row justify-content-between mb-1">							
+									<label class="col-12 mx-0 fs-4">Porciones</label>
+									<span class="col-12 text-primary mt-0 pb-0 mb-2 mx-0 text-nowrap" style="font-size: small;">¿Cuántos platos serviremos?</span>
+									<div class="col-12 mx-0">	
+										<input id="porciones" 
+											   name="porciones" 
+											   type="number" 
+											   step="1" 											   
+											   th:field="*{porciones}"											   
+											   class="form-control fs-6" 
+											   min="1"/>
+										<small id="errorPorciones" class="form-text text-danger" th:text="#{NotBlank.recetaConPreparaciones.porciones}" style="display: none"></small>
+									</div>	 
+								</div>
+							</div>						
+						</div>							
+						<!--PREPARACIONES---------------------------------------------------------------------------------------------------->
+						<input id="cantidadDePreparaciones" name="cantidadDePreparaciones"
+							type="hidden" th:value="${#lists.size(recetaConPreparaciones.preparaciones)}" />	
+						<div class="row">
+							<div class="col mx-0">
+								<div class="row">
+									<label class="col-12 fs-4">Preparaciones</label>
+								</div>
+								<div class="row">
+									<span class="col-12 text-primary mt-0 mb-1 pb-1 "
+										style="font-size: small;">Elije una preparación, si no está en la lista dale un nombre para crearla...</span>
+								</div>
+							</div>
+							<div class="col-auto mx-0">							
+								<button class="btn btn-outline-info align-middle btnIngredienteA mt-2 mb-1 py-0"
+										style="width: 50px; height: 45px;"
+										onclick="agregaPreparacion(); return false;">
+									<i class="fa fa-plus" aria-hidden="true"></i>
+								</button>
+							</div>
+						</div>
+						<div class="row" id="cuerpoPreparaciones" th:each="preparacion, iterador : *{preparaciones}">
+							<div class="col mx-0">
+								<div th:class="${preparacionAGestionar > iterador.index} ? 'card p-0 mb-2' : 'card bg-light p-0 mb-2'" 
+									 th:id="'preparacion' + ${iterador.index+1}" 
+									 th:name="'preparacion' + ${iterador.index+1}" 
+									 th:orden="${iterador.index+1}"
+									 th:style="${preparacionAGestionar > iterador.index} ? 'background: #f7edff;'">
+									<div class="card-body  p-1">
+										<div class="row flex-nowrap justify-content-between">
+											<div class="col ms-1">
+												<span class="preparacionTitulo text-secondary fs-6" 
+													  th:name="'preparacionTitulo' + ${iterador.index+1}"										   
+													  th:text="'Preparacion ' + ${iterador.index+1}">
+												</span>
+												<i th:if="${preparacionAGestionar > iterador.index}" class="ms-2 bi bi-check-circle text-info preparacionCheck"></i>
+											</div>
+											<div class="col-auto p-0 m-0">
+												<a  th:orden="${iterador.index+1}"
+													th:name="'btnPreparacion'+${iterador.index+1}"
+													th:id="'btnPreparacion'+${iterador.index+1}"
+													th:class="${#lists.size(recetaConPreparaciones.preparaciones)}==1 ? 
+															  'btn btn-link text-danger btnPreparacion pt-0 mt-0 me-2 disabled' :
+															  'btn btn-link text-danger btnPreparacion pt-0 mt-0 me-2'"		  		  
+													style="width: auto; height: auto;"
+													href=""
+													onclick="eliminaPreparacion(this);return false;"
+													th:preparacion="${preparacion.id}">
+													<i class="fa fa-trash-o" aria-hidden="true"></i>
+												</a>
+											</div>									
+										</div>
+										<div th:style="${preparacionAGestionar > iterador.index} ? 'display: none'" class="input-group mb-1 casilleroSelectInput">
+											<select
+												style="display: inline;"
+												th:orden="${iterador.index+1}"
+												th:id="'recetaPreparacion' + ${iterador.index+1}"
+												th:name="|preparaciones[__${iterador.index}__].recetaId|"
+												onchange="cambiaColor(this);return false;"
+												th:class="${preparacion.recetaId} == null ? 'form-select text-secondary recetaPreparacionSelect  fs-6' : 'form-select recetaPreparacionSelect fs-6'">
+												<option style="color: rgb(192, 192, 192)" th:value="0"
+													disabled="disabled"
+													th:selected="${preparacion.recetaId} == null or ${preparacion.recetaId} == 0 or ${preparacion.recetaId} == -1" hidden>
+													Elegir preparación...
+												</option>
+												<option th:each="receta : ${recetas}"
+														class="text-dark opcionReceta"
+														th:id="${receta.id} + 'recetaID'"
+														th:value="${receta.id}"
+														th:text="${receta.nombre}"
+														th:selected="${preparacion.recetaId} == ${receta.id}">
+												</option>
+											</select>
+											<input
+												th:id="'recetaPreparacionInput' + ${iterador.index+1}"
+												th:name="'recetaPreparacionInput' + ${iterador.index+1}"
+												style="display: none"
+												th:orden="${iterador.index+1}"
+												class="form-control rounded-start recetaPreparacionInput fs-6"
+												type="text"/>
+											<a  class="input-group-text text-secondary text-decoration-none recetaNueva"	
+												th:orden="${iterador.index+1}"	  		  
+												style="width: auto; height: auto;"
+												href=""
+												data-bs-toggle="modal"
+												data-bs-target="#agregaRecetaModal"
+												onclick="recetaNueva(this); return false;"
+												th:estadoActivo="${preparacionAGestionar > iterador.index} ? 'complete' : 'select'"
+												title="Si la preparación no está en lista, puede agregarla haciendo click aquí...">
+												<i class="bi bi-file-earmark-plus icono" aria-hidden="true"></i>
+											</a>											
+										</div>
+										<div th:if="${preparacionAGestionar > iterador.index}" class="input-group mb-1 casilleroComplete">
+											<input
+												class="form-control rounded-start recetaPreparacionComplete fs-6"
+												type="text"												
+												th:value="${preparacionesProvisorias.get(iterador.index).nombre}"
+												readonly="readonly"/>
+											<a  th:if="${preparacionAGestionar > iterador.index}"
+												class="input-group-text text-info text-decoration-none recetaNueva"	
+												th:orden="${iterador.index+1}"	  		  
+												style="width: auto; height: auto;"
+												href=""
+												onclick="editaPreparacion(this); return false;"
+												estadoActivo="complete"
+												title="Aquí puede editar la preparación que ha cargado a la receta...">
+												<i class="bi bi-pencil icono" aria-hidden="true"></i>
+											</a>											
+										</div>																			
+									</div>
+								</div>
+							</div>
+						</div>	
+						<!--BOTON SIGUIENTE PASO---------------------------------------------------------------------------------------------------->
+						<div class="form-group row justify-content-end my-2">
+							<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+								<input id="agregaRecetaBtn" onclick="verifica(); return false;" type="submit" th:value="${btnText}" class="btn btn-verdeagua col-12 fs-5" />				
+							</div>
+						</div>																
+						<input id="recetaId" name="recetaId" type="hidden" th:field="*{id}"/>
+						<input id="preparacionAGestionar" name="preparacionAGestionar" type="hidden" th:value="${preparacionAGestionar}"/>						
+					</form>	
+				</div>
+			</div> 
+		</div>
+		
+		<div id="agregaRecetaModal" class="modal fade" tabindex="-1" aria-labelledby="agregaRecetaModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header justify-content-between">
+		  				<div class="col-auto">
+							<span class="fw-bold fs-5 text-primary" th:text="'Nueva preparacion'"></span>
+						</div>						
+						<div class="col-auto">
+							<button type="button" 
+									class="btn btnCloseModal" 
+									data-bs-dismiss="modal" 
+									aria-label="Close">
+									<i class="fa fa-times text-primary fs-5" aria-hidden="true"></i>
+							</button>		
+						</div>	
+					</div>	
+					<div class="modal-body pt-0 mt-0">
+						<div class="row justify-content-center mt-3">
+							<div class="col-12">
+								<input
+									class="form-control recetaPreparacionInputModal fs-6"
+									type="text"/>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-end">
+						<div class="col-auto">
+							<a class="btn btn-verdeagua fs-6 btnModal" 
+							   onclick="agregaRecetaEnListado(this); return false;"
+							   href=""
+							   orden="">Siguiente...
+							</a>
+						</div>
+					</div>										
+				</div>
+			</div>
+		</div>
+		
+		<div class="container-fluid row justify-content-center px-0">	
+			<div class="col-9 px-0">
+				<footer th:replace="layout/layout :: footer"></footer>			
+			</div>
+		</div>
+	
+		<script type="text/javascript">
+			$(document).ready(function(){});									
+			if($('#porciones').val() == 0){
+				$('#porciones').val(null);
+			}			
+		</script>
+		<script th:src="@{/js/crea-receta-preparaciones.js}"></script>					
+	</body>	
+</html>

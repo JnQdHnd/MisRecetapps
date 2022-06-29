@@ -15,17 +15,63 @@
 							</div>									    
 		    				<div id="headersBtns" class="" sec:authorize="hasRole('ROLE_USER')">
 		    					<div class="row justify-content-end text-nowrap flex-nowrap">
-	     							<a class="btn btn-primary btnNuevo" th:href="@{/receta/form}" th:text="'Nueva'">Nueva</a>
+	     							<a class="btn btn-primary btnNuevo" th:href="@{/receta/inicio}" th:text="'Nueva'">Nueva</a>
 	     							<a class="col-auto btn btn-success text-white" th:href="@{/receta/listar(format=xlsx)}" th:text="XLS">XLS</a>
+	     							<button class="col-auto btn btn-outline-success ms-2" 
+											type="button"
+											data-bs-toggle="collapse" 
+											data-bs-target="#navbarSeleccionaIngredeintes"
+											aria-controls="navbarSeleccionaIngredeintes" 
+											aria-expanded="false"
+											aria-label="Toggle navigation">
+										<i class="fa fa-search" aria-hidden="true"></i>
+										<span class="fw-bold" th:text="' x '"></span>
+										<i  class="fa fa-shopping-basket" aria-hidden="true"></i>
+									</button>
 	   							</div>
-							</div>
+							</div>							
+	    				</div>
+	    				<div class="row ps-2">
+		    				<div id="navbarSeleccionaIngredeintes" class="collapse navbar-collapse col card mx-0 px-0 my-2">
+				    			<div id="seleccionaIngredientes" class="input-group card-header px-2">
+				    				<span class="input-group-text px-2 text-primary fs-6"
+									      style="width: 90px;">Producto
+									</span>
+					    			<select	class="form-select text-secondary selectorDeIngrediente fs-6"
+											onchange="cambiaColorSelect(this);">
+										<option style="color: rgb(192, 192, 192)" th:value="0"
+											disabled="disabled"
+											selected="true"
+											hidden>
+											Elegir producto...
+										</option>
+										<option th:each="producto : ${productos}"
+												class="text-dark opcionProducto"
+												th:id="${producto.id}"
+												th:value="${producto.id}"
+												th:text="${producto.nombre}">
+										</option>
+									</select>
+									<a  class="input-group-text text-secondary text-decoration-none filtraPorProducto"		  
+										style="width: auto; height: auto;"
+										href=""
+										onclick="filtraPorProducto(this); return false;"
+										title="Incorpora producto a la lista de filtrado...">
+										<i class="fa fa-plus" aria-hidden="true"></i>
+									</a>
+								</div>
+				    			<div class="card-body col-12 listadoProductosFiltro py-1" style="display: none">
+					    			<div class="row" id="productosParaFiltro">			    			
+					    			</div>
+				    			</div>
+		    				</div>
 	    				</div>
   						<div class="row justify-content-end text-nowrap flex-nowrap">  							
-							<div id="seleccionaListado" class="col-12 btn-group mx-0 ps-2 pe-0 mb-2" role="group">
+							<div id="seleccionaListado" class="col-12 btn-group mx-0 ps-2 pe-0 mb-2" role="group" soloFavoritas="false">
 								<input type="radio" class="btn-check" name="btnRadio" id="mias" value="mias" autocomplete="off" checked="checked">
 								<label class="btn btn-outline-primary" for="mias" th:text="${tituloMias}">Mías</label>
-								<input type="radio" class="btn-check" name="btnRadio" id="visibles" value="visibles" autocomplete="off">
-								<label class="btn btn-outline-primary" for="visibles" th:text="${tituloVisibles}">Otras</label>
+<!-- 							<input type="radio" class="btn-check" name="btnRadio" id="visibles" value="visibles" autocomplete="off"> -->
+<!-- 							<label class="btn btn-outline-primary" for="visibles" th:text="${tituloVisibles}">Otras</label>          -->
 								<input type="radio" class="btn-check" name="btnRadio" id="favoritas" value="favoritas" autocomplete="off">
 								<label class="btn btn-outline-primary" for="favoritas" th:text="${tituloFavoritas}">Favoritas</label>
 							</div>
@@ -39,6 +85,7 @@
 		</div>	
 		<form id="formVerReceta" th:action="@{/receta/verReceta/}" method="post" enctype="multipart/form-data"></form>	
 		<footer th:replace="layout/layout :: footScripts"></footer>
-		<script th:src="@{/js/abrir-receta.js}"></script>			
+		<script th:src="@{/js/abrir-receta.js}"></script>
+		<script th:src="@{/js/filtrar-recetas.js}"></script>			
 	</body>
 </html>

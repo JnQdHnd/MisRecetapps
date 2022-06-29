@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head th:replace="layout/layout :: head"></head>	
+	<body>	
+		<header th:replace="layout/layout :: header"></header>	
+		<div class="container-fluid row justify-content-center px-0 mx-0">		
+			<div class="card border-primary text-primary mx-1 px-0 col contenedorPrincipal mb-1" style="max-width: 700px;"> 	
+				<div class="card-header">
+					<div class="row justify-content-between">
+						<div class="col-auto my-1 ">
+							<span class="fw-bold text-break fs-2" th:text="${receta.nombre}"></span>
+						</div>
+						<div class="col-auto">
+							<button class="btn btn-outline-violetasuave my-1" 
+									type="button"
+									data-bs-toggle="collapse" 
+									data-bs-target="#navbarReceta"
+									aria-controls="navbarReceta" 
+									aria-expanded="false"
+									aria-label="Toggle navigation">
+								<i class="fa fa-bars fs-3" aria-hidden="true"></i>
+							</button>
+						</div>						
+					</div>					
+				</div>	
+				<div id="navbarReceta" class="card-header collapse navbar-collapse py-0 my-0">	
+					<div class="row justify-content-center">
+						<div class="col-auto">					
+							<a  class="btn btn-outline-violetasuave my-1" 
+								th:href="@{/receta/form/} + ${receta.id}"
+								title="Editar receta">
+								<i  class="fa fa-pencil fs-4" 
+									aria-hidden="true" 
+									style="width:25px;">
+								</i>
+							</a>
+							<a  class="btn btn-outline-violetasuave my-1" 
+								th:href="@{/receta/eliminar/} + ${receta.id}" 
+								onclick="return confirm('¿Seguro de Eliminar?')"
+								title="Eliminar receta">
+								<i  class="fa fa-trash-o fs-4" 
+									style="width:25px;">
+								</i>
+							</a>							
+							<a  class="btn btn-outline-violetasuave my-1" 
+								th:href="@{/receta/verReceta/exportaPDF/} + ${receta.id}" 
+								target="_blank"
+								title="Exportar a PDF">
+								<i  class="fa fa-file-pdf-o fs-4" 
+									style="width:25px;">
+								</i>
+							</a>								
+							<a  class="btn btn-outline-violetasuave my-1"
+								th:href="${receta.isEsFavorita()} ? @{/receta/ver/eliminaFavorita/} + ${receta.id} : @{/receta/ver/agregaFavorita/} + ${receta.id}"
+								th:title="${receta.esFavorita} ? 'Sacar de favoritas' : 'Agregar a favoritas'">
+								<i  th:class="${receta.isEsFavorita()} ? 'fa fa-star fs-4' : 'fa fa-star-o fs-4'" 
+									aria-hidden="true" 
+									style="width:25px;">
+								</i>
+							</a>
+						</div>
+					</div>
+				</div>										
+				<div class="card-body p-0 m-0">				
+					<form id="formulario" th:object="${receta}" method="post" enctype="multipart/form-data">
+						<input type="hidden" id="esNuevo" th:value="${esNuevo}">
+						<input type="hidden" id="costoPorcion" th:value="${costoPorcion}">
+						<input type="hidden" id="costoTotal" th:value="${costoTotal}">								
+						<div class="row justify-content-between flex-nowrap px-0 mx-0 mb-2">											
+							<ul class="list-group list-group-flush mx-0 px-0">
+<!--PORCIONES---------------------------------------------------------------------------------------------------->															
+								<li class="list-group-item">
+									<div class="row justify-content-between flex-nowrap"> 								
+										<div class="col-auto align-bottom mt-1 me-3 text-primary">							
+											<label class="mx-0 fs-3 fw-bold">
+												Porciones:&nbsp;
+											</label>
+										</div>
+										<div class="col-auto ms-3">	
+											<input id="porciones" 
+												   name="porciones" 
+												   type="text" 
+												   step="1" 											   
+												   th:value="${receta.getPorcionesFormateado()}"
+												   th:porcionesOriginales="${receta.getPorcionesFormateado()}"											   
+												   class="form-control text-center text-primary fs-4" 
+												   min="1"																				   
+												   style="width: 120px;"
+												   onblur="calculaPorciones()"/>
+										</div>
+									</div>	 
+								</li>	
+<!--COSTO---------------------------------------------------------------------------------------------------->	
+								<li class="list-group-item">
+									<div class="costoCol col-auto">
+										<div class="row justify-content-between">
+											<div class="col-auto" style="width: 220px">
+												<div class="row justify-content-between flex-nowrap">						
+													<label class="col me-0 text-primary fw-bold text-nowrap fs-6">
+														Costo x porción:
+													</label>
+													<span class="col-auto ms-0 fs-6 costo costoPorcion" th:text="${costoPorcion}"></span>
+												</div>
+												<div class="row justify-content-between flex-nowrap">	
+													<label class="col me-0 text-primary text-nowrap fw-bold fs-6">
+														Costo Total:
+													</label>
+													<span class="col-auto ms-0 fs-6 costo costoTotal" th:text="${costoTotal}"></span>
+												</div>
+											</div>
+											<div class="col-auto">	
+												<button  class="btn btn-outline-violetasuave my-1"
+													data-bs-toggle="modal" 
+											  		data-bs-target="#cargaCompraModal"
+											  		title="Carga de compra de ingredientes para actualización del precio."
+											  		onclick="return false;">
+													<i  class="fa fa-shopping-basket fs-4" 
+														aria-hidden="true">
+													</i>
+												</button>
+											</div>
+										</div>	
+									</div>
+								</li>	
+<!--PREPARACIONES---------------------------------------------------------------------------------------------------->								
+								<li class="list-group-item mx-0 px-0">
+									<div class="row justify-content-between px-0 flex-nowrap">
+										<label class="col-auto fs-3 mb-2 fw-bold text-primary ms-3">Preparaciones:&nbsp;</label>															
+									</div>									
+									<input id="cantidadDePreparaciones" name="cantidadDePreparaciones" type="hidden" th:value="${#lists.size(receta.preparaciones)}"/>
+									<div id="cuerpoPreparaciones">	
+										<div th:each="preparacion, iterador : ${preparaciones}">
+											<ul class="list-group list-group-flush mx-0 px-0 my-0 py-0">
+												<li class="list-group-item my-0 py-0">
+													<div class="preparacion row flex-nowrap">
+														<div class="col-auto pt-2" style="width: 20px;">
+															<i class="fa fa-circle text-info" aria-hidden="true" style="font-size: x-small;"></i>	
+														</div>	
+														<span class="col fw-bold text-break text-primary fs-4 pt-1" th:text="${preparacion.simplificaNombreDePreparacion}"></span>
+														<div class="col-auto pt-0 mt-0">
+															<button class="btn btn-outline-violetasuave m-1" 
+																	type="button"
+																	data-bs-toggle="collapse" 
+																	th:data-bs-target="'#navbarPreparacion' + ${iterador.index+1}"
+																	th:aria-controls="'navbarPreparacion' + ${iterador.index+1}" 
+																	aria-expanded="false"
+																	aria-label="Toggle navigation">
+																<i class="fa fa-bars fs-5 text-info" aria-hidden="true"></i>
+															</button>	
+														</div>											
+													</div>
+													<div th:id="'navbarPreparacion' + ${iterador.index+1}" class="collapse navbar-collapse py-0 my-0">											
+										<!--INGREDIENTES---------------------------------------------------------------------------------------------------->																							
+														<ul class="list-group list-group-flush mx-0 px-0">
+															<li class="list-group-item">
+																<div class="row justify-content-between px-0 flex-nowrap">
+																	<label class="col-auto fs-5 mb-2 fw-bold text-primary">Ingredientes:&nbsp;</label>															
+																</div>
+																
+																<input id="cantidadDeIngredientes" name="cantidadDeIngredientes" type="hidden" th:value="${#lists.size(preparacion.ingredientes)}"/>
+																
+																<div id="cuerpoIngredientes">
+																	<div class="row justify-content-between flex-nowrap">
+																		<div class="col-auto me-1">
+																			<div th:each="ingrediente, iterador : ${preparacion.ingredientes}">
+																				<div class="ingrediente row flex-nowrap" 
+																					 th:ingrediente="${preparacion.id} + 'ingrediente' + ${iterador.index+1}" 
+																					 th:orden="${iterador.index+1}">
+																					<div class="col-auto" style="width: 20px;">
+																						<i class="fa fa-square text-secondary" aria-hidden="true" style="font-size: x-small;"></i>	
+																					</div>	
+																					<div th:class="${preparacion.id} + 'ingrediente' + ${iterador.index+1} + ' col-auto'" 
+																						 style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">																		
+																						<span th:orden="${iterador.index+1}" 
+																							  th:id="${preparacion.id} + 'producto' + ${iterador.index+1}" 
+																							  th:name="${preparacion.id} + 'producto' + ${iterador.index+1}" 
+																							  class="nombreProducto fs-5"
+																							  th:each="producto : ${productos}"
+																							  th:if="${ingrediente.productoId} == ${producto.id}"
+																							  th:text="${producto.nombre}"
+																							  th:title="${producto.nombre}">													
+																						</span>	
+																					</div>
+																				</div>
+																			</div>	
+																		</div>
+																			
+																		<div class="col-auto">
+																			<div th:each="ingrediente, iterador : ${preparacion.ingredientes}">
+																				<div class="row justify-content-end flex-nowrap"														 
+																					 th:ingrediente="${preparacion.id} + 'ingrediente' + ${iterador.index+1}"  
+																					 th:orden="${iterador.index+1}">
+																					<div th:class="${preparacion.id} + 'ingrediente' + ${iterador.index+1} + ' col-auto text-end px-0 mx-0 py-0 my-0'">
+																						<span th:id="${preparacion.id} + 'cantidadIngrediente' + ${iterador.index+1}" 
+																							  th:name="${preparacion.id} + 'cantidadIngrediente' + ${iterador.index+1}" 
+																							  th:text="${ingrediente.getCantidadFormateado()}"
+																							  th:cantidad="${ingrediente.cantidad}"  														
+																							  class="cantidadIngrediente fs-5">
+																						</span>
+																					</div>
+																					<div th:class="${preparacion.id} + 'ingrediente' + ${iterador.index+1} + ' col-auto px-1 mx-0 py-0'" style="width: 80px;">
+																						<select th:id="${preparacion.id} + 'unidadDeMedida'+ ${iterador.index+1}" 
+																								th:name="${preparacion.id} + 'unidadDeMedida'+ ${iterador.index+1}" 
+																								class="form-select text-primary text-start unidadDeMedida fs-5 mx-0 px-0 my-0 py-0"
+																								th:ingrediente="${preparacion.id} + 'ingrediente' + ${iterador.index+1}"
+																								onchange="cambiaUnidad(this)"
+																								style="border: none;">
+																							  <option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
+																					      			  th:if="${unidad.tipoDeMedida.equals(ingrediente.unidadDeMedida.tipoDeMedida)}" 
+																					      			  th:value="${ingrediente.cantidad} * ${ingrediente.unidadDeMedida.cantidadDeLaUnidadDeBase} / ${unidad.cantidadDeLaUnidadDeBase}" 
+																					      			  th:text="${unidad.simbolo}" 
+																					      			  th:title="${unidad.nombre}"
+																					      			  th:selected="${ingrediente.unidadDeMedida} == ${unidad}"
+																					      			  th:class="${unidad.simbolo}  + ' unidadDeMedidaOpcion'" 
+																					      			  th:cantidadEnEstaUnidad="${ingrediente.cantidad} * ${ingrediente.unidadDeMedida.cantidadDeLaUnidadDeBase} / ${unidad.cantidadDeLaUnidadDeBase}">
+																					   		  </option>
+																						</select>
+																					</div>
+																				</div>												
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="row mb-2"></div>
+															</li>		
+															<!--ARTEFACTOS ---------------------------------------------------------------------------------------------------->								
+															<li th:if="${#lists.isEmpty(preparacion.artefactosUtilizados)} == false" class="list-group-item">
+																<div class="row px-0">
+																	<label class="col-auto fs-5 fw-bold text-primary">
+																		Artefactos:&nbsp;											
+																	</label>													
+																</div>
+																	
+																<input id="cantidadDeArtefactos" name="cantidadDeArtefactos" type="hidden" th:value="${#lists.size(preparacion.artefactosUtilizados)}"/>
+																	
+																<div id="cuerpoArtefactos">			
+																	<div class="row">								
+																		<div class="col-12 artefacto">											
+																			<div th:each="artefactoEnUso, iterador : ${preparacion.artefactosUtilizados}">
+																				<div class="row justify-content-between">
+																					<div class="col-auto">
+																						<div th:class="${preparacion.id} + 'artefacto' + ${iterador.index+1} + ' row flex-nowrap'" th:orden="${iterador.index+1}">
+																							<div class="col-auto" style="width: 20px;">												
+																								<i class="fa fa-square text-secondary" aria-hidden="true" style="font-size: x-small;"></i>	
+																							</div>	
+																							<div class="col-auto" style="max-width: 85%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">																		
+																								<span th:orden="${iterador.index+1}" 
+																									  th:id="${preparacion.id} + 'artefacto' + ${iterador.index+1}" 
+																									  th:name="${preparacion.id} + 'artefacto' + ${iterador.index+1}" 
+																									  class="nombreArtefacto fs-5"
+																									  th:each="artefacto : ${artefactos}"
+																									  th:if="${artefactoEnUso.artefactoId} == ${artefacto.id}"
+																									  th:text="${artefacto.nombre}"
+																									  th:title="${artefacto.nombre}">													
+																								</span>	
+																							</div>
+																						</div>
+																					</div>		
+																					<div class="col-auto">
+																						<div th:class="${preparacion.id} + 'artefacto' + ${iterador.index+1} + ' row flex-nowrap'" th:orden="${iterador.index+1}">
+																							<div class="col-auto text-nowrap">													
+																								<span th:id="${preparacion.id} + 'minutosDeUso' + ${iterador.index+1}" 
+																									  th:name="${preparacion.id} + 'minutosDeUso' + ${iterador.index+1}" 
+																									  th:text="${artefactoEnUso.getCantidadFormateada()}" 														
+																									  class="minutosDeUso fs-5">
+																								</span>
+																								<span th:text="'minutos a&nbsp;'" 														
+																									  class="minutosDeUso fs-5">
+																								</span>
+																							</div>
+																							<div th:if="${artefactoEnUso.intensidadDeUso} != null" class="col-auto px-0 me-2">
+																								<span class="fs-5" th:text="'intensidad&nbsp;' + ${artefactoEnUso.intensidadDeUso}"></span>
+																							</div>
+																							<div th:if="${artefactoEnUso.temperatura} != 0" class="col-auto px-0">		
+																								<span class="cantidadTemperatura fs-5" 
+																									  th:text="${artefactoEnUso.getCantidadFormateada(artefactoEnUso.temperatura)}"></span>
+																							</div>	
+																							<div th:if="${artefactoEnUso.temperatura} != 0" class="col-auto px-0 mx-0">	
+																								<select style="width: 70px; border: none;" 
+																										th:id="${preparacion.id} + 'unidadTemperatura'+ ${iterador.index+1}" 
+																										th:name="${preparacion.id} + 'unidadTemperatura'+ ${iterador.index+1}" 
+																										class="form-select fs-5 text-primary unidadTemperatura py-0 my-0 px-0 mx-0"
+																										th:artefacto="${preparacion.id} + 'artefacto' + ${iterador.index+1}"
+																										onchange="cambiaUnidad(this)">
+																									<option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
+																									        th:if="${unidad.tipoDeMedida.equals('temperatura')}" 
+																									 		th:value= "${unidad.convertirTemperatura(artefactoEnUso.temperatura, artefactoEnUso.unidadDeTemperatura)}" 
+																									 		th:text="${unidad.simbolo}"
+																									 		th:title="${unidad.nombre}"
+																									  		th:selected="${artefactoEnUso.unidadDeTemperatura}==${unidad}"
+																									  		th:cantidadEnEstaUnidad="${unidad.convertirTemperatura(artefactoEnUso.temperatura, artefactoEnUso.unidadDeTemperatura)}">														  		
+																									</option>
+																								</select> 
+																							</div>
+																						</div>
+																					</div>			
+																				</div>
+																			</div>	
+																		</div>
+																	</div>
+																</div>
+																<div class="row mb-2"></div>
+															</li>
+															<!--INSTRUCCIONES ---------------------------------------------------------------------------------------------------->																
+															<li class="list-group-item">
+																<div class="row justify-content-between px-0 mb-2 flex-nowrap">
+																	<label class="col-auto fs-5 fw-bold text-primary" style="width: 190px;">
+																		Instrucciones:&nbsp;											
+																	</label>				
+																	<span class="col-auto fst-italic fs-6 text-info visor pb-0 pt-1" 
+																		  style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span>
+																	<div class="col-auto text-end me-0" style="width: 130px;">									
+																		<button class="btn btn-outline-violetasuave py-0 reproduceTexto"												
+																		  		title="Reproduce instrucciones por comando de voz."
+																		  		onclick="comenzarDetener(); return false;"
+																		  		style="display: none;">
+																				<i  id="asistenteDeVoz" class="bi bi-megaphone fs-4" 
+																				   	aria-hidden="true">
+																				</i>												
+																		</button>	
+																		<button class="btn btn-outline-violetasuave me-3 p-0 pb-0 pt-1 px-1 megafonoInstrucciones"
+																				data-bs-toggle="modal" 
+																		  		data-bs-target="#instruccionesModal"
+																		  		onclick="return false;"
+																		  		style="display: none;">
+																			<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
+																		</button>									
+																	</div>
+																														
+																</div>
+																<input id="cantidadDeInstrucciones" name="cantidadDeInstrucciones" type="hidden" th:value="${#lists.size(preparacion.instrucciones)}"/>									
+																	
+																<div id="cuerpoInstrucciones">
+																	<div class="col-auto">
+																		<div th:if="${#lists.size(preparacion.instrucciones)} == 0">
+																			<div class="row mb-3" 
+																				 th:id="${preparacion.id} + 'instruccion1'" 
+																				 th:name="${preparacion.id} + 'instruccion1'" 
+																				 th:orden="'1'">
+																				 <div class="col">
+																					<span th:id="${preparacion.id} + 'pasoTexto1'" 
+																					   	  th:name="${preparacion.id} + 'pasoTexto1'" 
+																					  	  class="pasoTexto text-break fst-italic fs-5"
+																					  	  th:aria-label="''">
+																					  	  No hay instrucciones guardadas para realizar esta preparacion.<br>
+																					  	  Si lo desea puede editarla y hacer sus propias anotaciones.														
+																					</span>
+																				</div>
+																			</div>							
+																		</div>
+																		<div th:each="instruccion, iterador : ${preparacion.instrucciones}">			
+																			<div class="row mb-2" 
+																				 th:id="${preparacion.id} + 'instruccion' + ${iterador.index+1}" 
+																				 th:name="${preparacion.id} + 'instruccion' + ${iterador.index+1}" 
+																				 th:orden="${iterador.index+1}">
+																				 <div th:if="${#strings.isEmpty(instruccion.instruccion)} and ${#strings.isEmpty(instruccion.foto)}" 
+																				 	  class="col">
+																					<span th:id="${preparacion.id} + 'pasoTexto' + ${iterador.index+1}" 
+																					   	  th:name="${preparacion.id} + 'pasoTexto' + ${iterador.index+1}" 
+																					  	  class="pasoTexto text-break fst-italic fs-5"
+																					  	  th:aria-label="'Paso ' + ${iterador.index+1}">
+																					  	  No hay instrucciones guardadas para realizar esta preparacion.<br>
+																					  	  Si lo desea puede editarla y hacer sus propias anotaciones.														
+																					</span>
+																				</div>																				
+																				<div th:if="${#strings.isEmpty(instruccion.instruccion)} == false or ${#strings.isEmpty(instruccion.foto)} == false" 
+																					 class="col-auto">
+																					<div class="row">
+																						<div class="col-auto" style="width: 20px;">
+																							<i class="fa fa-square text-secondary" aria-hidden="true" style="font-size: x-small;"></i>
+																						</div>
+																						<div class="col-auto">
+																							<span class="pasoTitulo text-secondary fs-5 fw-bold" 
+																								  th:name="${preparacion.id} + 'pasoTitulo' + ${iterador.index+1}" 
+																								  th:text="'Paso ' + ${iterador.index+1}">
+																							</span>
+																						</div>
+																					</div>	
+																					<div class="row flex-nowrap">	
+																						<div class="col">
+																							<p th:id="${preparacion.id} + 'pasoTexto' + ${iterador.index+1}" 
+																							   th:name="${preparacion.id} + 'pasoTexto' + ${iterador.index+1}" 
+																							   class="pasoTexto text-break fs-5"
+																							   th:aria-label="'Paso ' + ${iterador.index+1}"
+																							   th:text="${instruccion.instruccion}">														
+																							</p>
+																						</div>															
+																					</div>
+																					<div th:if="${instruccion.foto} != null" class="row flex-nowrap">
+																						<div class="col">
+																							<img class="card-img" 
+																								 style="max-width: 100%;" 
+																								 th:src="@{/fotos/} + ${instruccion.foto}" 
+																								 th:alt="${instruccion.foto}">				
+																						</div>															
+																					</div>														
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</li>
+														</ul>
+													</div>
+												</li>
+											</ul>	
+										</div>										
+									</div>
+								</li>				
+<!-- -------------------------------------------------------------------------------------------------------------------------								 -->
+							</ul>	
+						</div>																							
+						<input type="hidden" th:field="*{id}"/>						
+					</form>	
+				</div>
+				<div class="card-footer">
+					<div class="container-fluid row justify-content-center px-0">	
+						<div class="col-auto px-0">
+							<footer th:replace="layout/layout :: footer"></footer>			
+						</div>
+					</div>
+				</div>
+			</div> 
+		</div>
+		
+		<div id="cargaCompraModal" class="modal fade" tabindex="-1" aria-labelledby="cargaCompraModal" aria-hidden="true">
+			<div class="row justify-content-center">
+				<div class="modal-dialog modal-xl" >
+					<div class="modal-content" style="max-width: 500px;">
+						<div class="modal-header text-primary row justify-content-between">
+		  					<div class="col-auto">
+								<span class="fw-bold fs-4" th:text="'Cargar compra'"></span>
+								<abbr class="text-decoration-none fs-5" 
+									title="Aquí podrá actualizar el precio de la receta, cargando la compra que usted ha realizado de los ingredientes. Para hacerlo deberá indicar la cantidad que viene en la presentación comprada y el precio del producto. Ej: El paquete de harina comprado cuesta $1,50 y viene en una presentación de 1000 gramos. Si desconoce esta información de algún ingrediente, puede dejar la que viene por defecto y completar solo el resto.">
+									<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
+								</abbr>
+							</div>
+							<div class="col-auto">
+								<button type="button" 
+										class="btn" 
+										data-bs-dismiss="modal" 
+										aria-label="Close">
+										<i class="fa fa-times text-primary fs-3" aria-hidden="true"></i>
+								</button>		
+							</div>	
+						</div>	
+						<div class="modal-body pt-0 mt-0">
+							<div th:replace="receta/formCompraConPreparacionesModal :: compraForm">
+							</div>
+						</div>										
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="instruccionesModal" class="modal fade" tabindex="-1" aria-labelledby="instruccionesModal" aria-hidden="true">
+			<div class="row justify-content-center">
+				<div class="modal-dialog modal-xl">
+					<div class="modal-content" style="max-width: 500px;">
+						<div class="modal-header text-primary row justify-content-between">
+		  					<div class="col-auto">
+								<span class="fw-bold fs-5 ms-3">
+									<i  class="bi bi-megaphone-fill fs-5 me-4" aria-hidden="true"></i>Asistente de voz
+								</span>
+							</div>
+							<div class="col-auto">
+								<button type="button" 
+										class="btn" 
+										data-bs-dismiss="modal" 
+										aria-label="Close">
+										<i class="fa fa-times text-primary fs-3" aria-hidden="true"></i>
+								</button>		
+							</div>	
+						</div>	
+						<div class="modal-body pt-0 mt-0">
+							<p class="fs-6 mx-3 mt-3">
+								Haciendo click en el megafono activará 
+								el reproductor de voz para el dictado de instrucciones. 
+								Una vez activado, podrá solicitar que se le dicten los pasos de la receta,
+								mediante las siguientes <b>palabras claves</b>:														
+							</p>
+							<ul>
+								<li class="mb-2"><b>Todo</b><br><small><i>Comenzará el dictado de la receta completa.</i></small></li>
+						      	<li class="mb-2"><b>Comenzar</b><br><small><i>Comenzará el dictado por el Paso 1.</i></small></li>
+						    	<li class="mb-2"><b>Siguiente</b><br><small><i>Pasará al siguiente paso de la receta.</i></small></li>
+						      	<li class="mb-2"><b>Anterior / Previo / Previa</b><br><small><i>Volverá al paso previamente explicado.</i></small></li>
+						      	<li class="mb-2"><b>Repetir</b><br><small><i>Repetirá las instrucciones del último paso explicado.</i></small></li>
+						      	<li class="mb-2"><b>Detener</b><br><small><i>Desactivará el reconocimiento de voz.</i></small></li>
+						    </ul>
+						</div>										
+					</div>
+				</div>
+			</div>
+		</div>			
+		<script th:src="@{//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js}"></script>		
+		<script th:src="@{/js/ver-receta.js}"></script>
+		<script th:src="@{/js/modernizr-browser.js}"></script>	
+		<script th:src="@{/js/modernizr-speech.js}"></script>
+		<script th:src="@{/js/texto-a-voz.js}"></script>											
+	</body>	
+</html>
