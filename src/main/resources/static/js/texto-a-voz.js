@@ -36,6 +36,8 @@ function comenzarDetener() {
 		reproduciendo = true;
 		console.log('REPRODUCIENDO: ' + reproduciendo);
 		$('#asistenteDeVoz').removeClass("bi bi-megaphone").addClass("bi bi-megaphone-fill").addClass("text-danger");
+		$('.visor').text('...Esperando instrucción...');
+		$('.visorCard').show();
 		console.log('Recepción comenzada');
 	}
 	else{
@@ -44,6 +46,7 @@ function comenzarDetener() {
 		reproduciendo = false;
 		console.log('REPRODUCIENDO: ' + reproduciendo);
 		$('#asistenteDeVoz').addClass("bi bi-megaphone").removeClass("bi bi-megaphone-fill").removeClass("text-danger");
+		$('.visorCard').hide();
 		$('.visor').text('');
 		console.log('Recepción detenida');
 	}  		

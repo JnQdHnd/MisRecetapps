@@ -296,12 +296,15 @@
 												<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
 											</button>									
 										</div>																							
-									</div >										
-									<div class="row justify-content-center">
-										<span class="col-auto fst-italic fs-6 text-info visor pb-0 pt-1" 
-											  style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-										</span>
+									</div >	
+									<div class="card visorCard my-3" style="display: none">
+										<div class="row justify-content-center">
+											<span class="col-auto fst-italic fs-6 my-1 text-info visor" 
+												  style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+											</span>
+										</div>
 									</div>									
+																		
 									<input id="cantidadDeInstrucciones" name="cantidadDeInstrucciones" type="hidden" th:value="${#lists.size(receta.instrucciones)}"/>									
 										
 									<div id="cuerpoInstrucciones">
