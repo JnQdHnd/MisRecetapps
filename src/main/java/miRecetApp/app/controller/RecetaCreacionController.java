@@ -68,7 +68,9 @@ public class RecetaCreacionController {
 	List<Producto> productos;
 	List<Artefacto> artefactos;
 	List<ManoDeObra> trabajadores;
-
+	
+	Receta recetaTemp;
+	boolean esRecetaConPreparacionesTemp;
 	// METODOS-----------------------------------------------------------------------------------------
 	
 	/**
@@ -87,8 +89,7 @@ public class RecetaCreacionController {
 		
 		deviceType = identificaDevices.getDevice(device);
 		
-		System.out.println("ABRE CREAR");		
-		boolean esNuevo = true;
+		System.out.println("ABRE CREAR");	
 		Receta receta = new Receta();	
 		receta.setAutor(authentication.getName());
 		List<Ingrediente> ingredientes = new ArrayList<>();
@@ -118,9 +119,9 @@ public class RecetaCreacionController {
 		model.addAttribute("receta", receta);
 		model.addAttribute("productos", productos);
 		model.addAttribute("artefactos", artefactos);
-		model.addAttribute("trabajadores", trabajadores);
-		model.addAttribute("esNuevo", true);
+		model.addAttribute("trabajadores", trabajadores);		
 		model.addAttribute("deviceType", deviceType);
+		model.addAttribute("esNuevo", true);
 		model.addAttribute("esRecetaConPreparaciones", false);
 		return "receta/form";
 	}
@@ -434,81 +435,72 @@ public class RecetaCreacionController {
 		return "receta/form";
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = {"/receta/itemIncorporado"})
-	public String crearConItemIncorporado(Receta receta, 	
-							   			  Model model, 
-							   			  Locale locale,
-							   			  Device device) {
+	@PostMapping(value = {"/receta/itemIncorporado/{item}"})
+	public String guardarItemIncorporado(@PathVariable(value = "item") String item,
+										Producto producto, 
+										Artefacto artefacto, 							  
+										Model model, 
+										RedirectAttributes flash,
+										HttpServletRequest request, 
+										Locale locale) {
 		
-		productos = productoService.findAll(Sort.by("nombre").ascending());
-		artefactos = artefactoService.findAll(Sort.by("nombre").ascending());
-		trabajadores = manoDeObraService.findAll(Sort.by("nombre").ascending());
+		boolean esProducto = item.equalsIgnoreCase("producto");
+		boolean esArtefacto = item.equalsIgnoreCase("artefacto");
 		
-		boolean seHaCreadoItem = true;
-
-		model.addAttribute("titulo", messageSource.getMessage("text.receta.crear.titulo", null, locale));
-		model.addAttribute("btnText", messageSource.getMessage("text.receta.crear.btn", null, locale));
-		model.addAttribute("receta", receta);
-		model.addAttribute("productos", productos);
-		model.addAttribute("artefactos", artefactos);
-		model.addAttribute("trabajadores", trabajadores);
-		model.addAttribute("seHaCreadoItem", seHaCreadoItem);
-		model.addAttribute("deviceType", deviceType);
-
-		return "receta/form";
-	}
-	
-	@PostMapping(value = {"/receta/itemIncorporado"})
-	public String guardarItemIncorporado(Producto producto, 
-							  Artefacto artefacto, 
-							  Model model, 
-							  RedirectAttributes flash,
-							  HttpServletRequest request, 
-							  Locale locale) {
+		System.out.println("HAYPRODUCTO: " + esProducto);
+		System.out.println("HAYARTEFACTO: " + esArtefacto);
 		
-		boolean nombreProductoNotNull = producto.getCantidad() != 0;
-		
-		String mensajeFlash = nombreProductoNotNull ? guardaProducto(producto) : guardaArtefacto(artefacto);
+		String mensajeFlash = esProducto ? guardaProducto(producto) : guardaArtefacto(artefacto);
 		flash.addFlashAttribute("success", mensajeFlash);
 		
-		Receta receta = obtieneRecetaProvisoria(request);
+		recetaTemp = obtieneRecetaProvisoria(request);
+		esRecetaConPreparacionesTemp = Boolean.parseBoolean(request.getParameter("esRecetaConPreparaciones"));
 		
-		if(nombreProductoNotNull) {
+		if(esProducto) {
 			Ingrediente ingrediente = new Ingrediente();
 			ingrediente.setProductoId(producto.getId());
-			receta.getIngredientes().add(ingrediente);
+			recetaTemp.getIngredientes().add(ingrediente);
 		}
 		else {
 			ArtefactoEnUso a = new ArtefactoEnUso();
 			a.setArtefactoId(artefacto.getId());
-			receta.getArtefactosUtilizados().add(a);
+			recetaTemp.getArtefactosUtilizados().add(a);
+		}		
+		if(recetaTemp.getIngredientes().isEmpty()) {
+			Ingrediente ingrediente = new Ingrediente();
+			recetaTemp.getIngredientes().add(ingrediente);
+		}
+		if(recetaTemp.getArtefactosUtilizados().isEmpty()) {
+			ArtefactoEnUso artefactoEnUso = new ArtefactoEnUso();
+			recetaTemp.getArtefactosUtilizados().add(artefactoEnUso);
 		}
 		
-		model.addAttribute("receta", receta);
 		return "redirect:/receta/itemIncorporado";
 	}
 	
-	public String guardaProducto(Producto producto) {
-		System.out.println("GUARDANDO PRODUCTO: " + producto.getNombre());
-		String mensaje = "";
-		if(producto.getNombre() != null && !producto.getNombre().isBlank()) {
-			double cantidadSinDesperdicio = producto.getCantidad() - (producto.getDesperdicio() * producto.getCantidad() / 100);
-			producto.setPrecioSinDesperdicio(producto.getCantidad() * producto.getPrecio() / cantidadSinDesperdicio);
-			
-			productoService.save(producto);
-			mensaje = "¡Producto creado con éxito! Continuemos...";
-		} 
-		return mensaje;
-	}
-	
-	public String guardaArtefacto(Artefacto artefacto) {
-		System.out.println("GUARDANDO ARTEFACTO: " + artefacto.getNombre());
-		String mensaje = "";
-		if(artefacto.getNombre() != null && !artefacto.getNombre().isBlank()) {			
-			artefactoService.save(artefacto);
-			mensaje = "¡Artefacto creado con éxito! Continuemos...";
-		} 
-		return mensaje;
+	@RequestMapping(method = RequestMethod.GET, value = {"/receta/itemIncorporado"})
+	public String crearConItemIncorporado(Model model, 
+							   			  Locale locale,
+							   			  Device device) {
+		
+		System.out.println("esRecetaConPreparaciones: " + esRecetaConPreparacionesTemp);
+		System.out.println("Cantidad de Ingredeintes en Receta Recibida: " + recetaTemp.getIngredientes().size());
+		
+		productos = productoService.findAll(Sort.by("nombre").ascending());
+		artefactos = artefactoService.findAll(Sort.by("nombre").ascending());
+		trabajadores = manoDeObraService.findAll(Sort.by("nombre").ascending());
+
+		model.addAttribute("titulo", messageSource.getMessage("text.receta.crear.titulo", null, locale));
+		model.addAttribute("btnText", messageSource.getMessage("text.receta.crear.btn", null, locale));
+		model.addAttribute("receta", recetaTemp);
+		model.addAttribute("esRecetaConPreparaciones", esRecetaConPreparacionesTemp);
+		model.addAttribute("productos", productos);
+		model.addAttribute("artefactos", artefactos);
+		model.addAttribute("trabajadores", trabajadores);
+		model.addAttribute("seHaCreadoItem", true);
+		model.addAttribute("deviceType", deviceType);
+
+		return "receta/form";
 	}
 	
 	public Receta obtieneRecetaProvisoria(HttpServletRequest request) {
@@ -545,10 +537,6 @@ public class RecetaCreacionController {
 				ingrediente.setUnidadDeMedida(productoUnidad);
 				ingredientes.add(ingrediente);
 			}
-			else if(cantidadDeIngredientes == 1 && productoId == null && productoCantidad.isBlank()) {
-				Ingrediente ingrediente = new Ingrediente();
-				ingredientes.add(ingrediente);
-			}
 		}
 		receta.setIngredientes(ingredientes);		
 		int cantidadDeArtefactos = Integer.parseInt(request.getParameter("cantidadDeArtefactosModal"));
@@ -583,10 +571,6 @@ public class RecetaCreacionController {
 				artefactoEnUso.setUnidadDeTemperatura(unidadDeTemperatura);
 				artefactos.add(artefactoEnUso);
 			}
-			else if(!artefactoIdNotNull && !minutosDeUsoNotNullandNotBlank) {
-				ArtefactoEnUso artefactoEnUso = new ArtefactoEnUso();
-				artefactos.add(artefactoEnUso);
-			}
 		}
 		receta.setArtefactosUtilizados(artefactos);	
 		
@@ -604,6 +588,29 @@ public class RecetaCreacionController {
 		receta.setInstrucciones(instrucciones);
 		return receta;
 	} 
+	
+	public String guardaProducto(Producto producto) {
+		System.out.println("GUARDANDO PRODUCTO: " + producto.getNombre());
+		String mensaje = "";
+		if(producto.getNombre() != null && !producto.getNombre().isBlank()) {
+			double cantidadSinDesperdicio = producto.getCantidad() - (producto.getDesperdicio() * producto.getCantidad() / 100);
+			producto.setPrecioSinDesperdicio(producto.getCantidad() * producto.getPrecio() / cantidadSinDesperdicio);
+			
+			productoService.save(producto);
+			mensaje = "¡Producto creado con éxito! Continuemos...";
+		} 
+		return mensaje;
+	}
+	
+	public String guardaArtefacto(Artefacto artefacto) {
+		System.out.println("GUARDANDO ARTEFACTO: " + artefacto.getNombre());
+		String mensaje = "";
+		if(artefacto.getNombre() != null && !artefacto.getNombre().isBlank()) {			
+			artefactoService.save(artefacto);
+			mensaje = "¡Artefacto creado con éxito! Continuemos...";
+		} 
+		return mensaje;
+	}
 	
 	public void guardaFoto(MultipartFile foto, Instruccion instruccion) {
 		if(!foto.isEmpty()) {
