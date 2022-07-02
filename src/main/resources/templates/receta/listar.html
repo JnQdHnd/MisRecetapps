@@ -37,14 +37,10 @@
 				    				<span class="input-group-text px-2 text-primary fs-6"
 									      style="width: 90px;">Producto
 									</span>
-					    			<select	class="form-select text-secondary selectorDeIngrediente fs-6"
-											onchange="cambiaColorSelect(this);">
-										<option style="color: rgb(192, 192, 192)" th:value="0"
-											disabled="disabled"
-											selected="true"
-											hidden>
-											Elegir producto...
-										</option>
+					    			<select	id="selectorDeIngrediente"
+					    					class="form-select text-secondary selectorDeIngrediente fs-6"
+											data-placeholder="Elije un producto...">
+										<option></option>
 										<option th:each="producto : ${productos}"
 												class="text-dark opcionProducto"
 												th:id="${producto.id}"

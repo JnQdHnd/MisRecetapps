@@ -110,16 +110,12 @@
 												th:orden="${iterador.index+1}"
 												th:id="'producto' + ${iterador.index+1}"
 												th:name="|ingredientes[__${iterador.index}__].productoId|"
-												th:class="${ingrediente.productoId} == null ? 'form-select text-secondary producto fs-6' : 'form-select producto fs-6'"
-												onchange="buscaUnidad(this);">
-												<option style="color: rgb(192, 192, 192)" th:value="0"
-													disabled="disabled"
-													th:selected="${ingrediente.productoId} == null or ${ingrediente.productoId} == 0" hidden>
-													Elegir producto...
-												</option>
+												th:class="'form-select producto fs-6 selectAConfigurar'"
+												onchange="buscaUnidad(this);"
+												data-placeholder="Elija un producto...">
+												<option></option>
 												<option th:each="producto : ${productos}"
 														class="text-dark opcionProducto"
-														th:id="${producto.id} + 'productoID'"
 														th:value="${producto.id}"
 														th:unidad="${producto.unidadDeMedida}"
 														th:text="${producto.nombre}"
@@ -130,14 +126,13 @@
 												th:orden="${iterador.index+1}"	  		  
 												style="width: auto; height: auto;"
 												href=""
-												onclick="modalProducto(this);return false;"
+												onclick="modalProducto();return false;"
 												data-bs-toggle="modal"
 												data-bs-target="#agregaProductoModal"
 												title="Si el producto no está en lista, puede agregarlo haciendo click aquí...">
 												<i class="fa fa-plus" aria-hidden="true"></i>
 											</a>
-										</div>
-	
+										</div>	
 										<div class="input-group">
 											<span class="input-group-text px-2 text-primary fs-6"
 												  style="width: 90px;">
@@ -155,14 +150,9 @@
 											<select	th:id="'unidadDeMedida'+ ${iterador.index+1}"
 													th:name="|ingredientes[__${iterador.index}__].unidadDeMedida|"
 													style="min-width: 100px; max-width: 250px;" 
-													th:class="${ingrediente.unidadDeMedida} == null ? 'form-select text-secondary unidadDeMedida fs-6' : 'form-select unidadDeMedida fs-6'">
-												<option style="color: rgb(192, 192, 192)" 
-														th:value="0"
-														disabled="disabled"
-														th:selected="${ingrediente.unidadDeMedida} == null" 
-														hidden>
-														Elegir unidad de medida...
-												</option>
+													th:class="'form-select unidadDeMedida fs-6 selectAConfigurar'"
+													data-placeholder="Elija unidad de medida...">
+												<option ></option>
 												<option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}"
 														th:if="${unidad.tipoDeMedida.equals('masa') || unidad.tipoDeMedida.equals('capacidad') 
 															   || unidad.tipoDeMedida.equals('unidad')}"
@@ -236,21 +226,15 @@
 												<select th:orden="${iterador.index+1}" 
 														th:id="'artefactoNombre' + ${iterador.index+1}" 
 														th:name="|artefactosUtilizados[__${iterador.index}__].artefactoId|" 
-														th:class="${artefactoEnUso.artefactoId} == null ? 
-														'form-select text-secondary nombreArtefacto fs-6' : 'form-select nombreArtefacto fs-6'"
-														onchange="buscaArtefacto(this);">
-													<option style="color: rgb(192, 192, 192)" 
-															th:value="0" 
-															disabled="disabled" 
-															th:selected="${artefactoEnUso.artefactoId} == null" 
-															hidden>Elija un artefacto...
-													</option>
-													<option th:id="'NartefactoID'" 
-															th:nombre="'No se utilizan artefactos.'" 
+														th:class="'form-select nombreArtefacto fs-6 selectAConfigurar'"
+														onchange="buscaArtefacto(this);"
+														data-placeholder="Elija un artefacto...">
+													<option></option>
+													<option th:nombre="'No se utilizan artefactos.'" 
 															th:value="N">No se utilizan artefactos.
 													</option>
-													<option th:each="artefacto : ${artefactos}" class="text-dark"									      	      
-												    		th:id="${artefacto.id} + 'artefactoID'" 
+													<option th:each="artefacto : ${artefactos}" 
+															th:class="'text-dark ' + 'opcionId' + ${artefacto.id}"
 												    		th:value= "${artefacto.id}" 
 												        	th:text="${artefacto.nombre}" 
 												        	th:nombre="${artefacto.nombre}" 
@@ -266,7 +250,7 @@
 													th:orden="${iterador.index+1}"	  		  
 													style="width: auto; height: auto;"
 													href=""
-													onclick="modalArtefacto(this);return false;"
+													onclick="modalArtefacto();return false;"
 													data-bs-toggle="modal"
 													data-bs-target="#agregaArtefactoModal"
 													title="Si el artefacto no está en lista, puede agregarlo haciendo click aquí...">
@@ -311,10 +295,10 @@
 													</span> 
 													<select th:id="'intensidad'+ ${iterador.index+1}" 
 															th:name="|artefactosUtilizados[__${iterador.index}__].intensidadDeUso|"  
-															th:class="${artefactoEnUso.intensidadDeUso} == null ? 'form-select text-secondary intensidad fs-6' : 'form-select intensidad fs-6'"
-															onchange="cambiaColorSelect(this)">
-														  <option style="color: rgb(192, 192, 192)" value="0" disabled="disabled" 
-														  		  th:selected="${artefactoEnUso.intensidadDeUso} == null" hidden>Elija la intesidad de uso... </option>
+															th:class="'form-select intensidad fs-6 selectAConfigurar'"
+															onchange="cambiaColorSelect(this)"
+															data-placeholder="Elija la intesidad de uso...">
+														  <option></option>
 														  <option style="color: black;" value="Muy baja" th:text="'Muy baja'" 
 														  		  th:selected="${artefactoEnUso.intensidadDeUso} == 'Muy baja'">Muy baja</option>
 														  <option style="color: black;" value="Baja" th:text="'Baja'" 
@@ -348,7 +332,7 @@
 													<select style="width: 80px;" 
 															th:id="'unidadTemperatura'+ ${iterador.index+1}" 
 															th:name="|artefactosUtilizados[__${iterador.index}__].unidadDeTemperatura|" 
-															class="form-select fs-6 unidadTemperatura">
+															class="form-select fs-6 unidadTemperatura selectAConfigurar">
 														  <option style="color: rgb(192, 192, 192)" th:value="0" disabled="disabled" hidden>°C o °F... </option>
 														  <option th:each="unidad : ${T(miRecetApp.app.model.entity.UnidadDeMedida).values()}" 
 													   			  th:if="${unidad.tipoDeMedida.equals('temperatura')}" 
@@ -555,18 +539,12 @@
 					</div>										
 				</div>
 			</div>
-		</div>
-		
-		<script type="text/javascript">
-			$(document).ready(function(){});									
-			if($('#porciones').val() == 0){
-				$('#porciones').val(null);
-			}			
-		</script>	
+		</div> 
+			
 		<script th:src="@{/js/crea-receta.js}"></script>
 		<script th:src="@{/js/voz-a-texto.js}"></script>	
 		<script th:src="@{/js/agrega-foto.js}"></script>
 		<script th:src="@{/js/modernizr-browser.js}"></script>	
-		<script th:src="@{/js/modernizr-speech.js}"></script>						
+		<script th:src="@{/js/modernizr-speech.js}"></script>					
 	</body>	
 </html>

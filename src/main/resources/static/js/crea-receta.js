@@ -8,109 +8,69 @@ var dispositivo = $('#dispositivo').attr('dispositivo');
 var contenedor = '.card';
 var esEdicion = $('.recetaId').val() != null && $('.recetaId').val() > 0;
 
+if($('#porciones').val() == 0){
+	$('#porciones').val(null);
+}
 
-$('.form-select').keyup(function( event ) {
-  if ( event.which == 8 || event.which == 46 ) {
-     event.preventDefault();
-     console.log('CLICK EN SUPR o RETROCESO')
-  }
-  $(this).val(0);
-  var clase = $(this).attr('class');
-  if(clase.includes("text-secondary") == false){
-	$(this).attr('class', clase + ' text-secondary');
-  }
+$('.selectAConfigurar').select2( {
+    theme: "bootstrap-5",
+    width: 'resolve',
+    placeholder: $(this).data('placeholder'),
+    allowClear: true
 });
 
-function modalProducto(producto){
-	var num = $(producto).attr('orden');
-	$('#producto' + num).val(0);
-	$('#cantidadIngrediente' + num).val(null);
-	$('#unidadDeMedida' + num).val(0);	
+function modalProducto(){
 	$('#productoModal').load('/producto/formModal');	
 }
 
-function modalArtefacto(artefacto){
-	var num = $(artefacto).attr('orden');
-	$('#artefactoNombre' + num).val(0); 	
-	$('#minutosArtefacto').val(null); 
-	$('#intensidad').val(0); 
-	$('#temperatura').val(null); 
-	$('#unidadTemperatura').val(0); 
+function modalArtefacto(){
 	$('#artefactoModal').load('/artefacto/formModal');		
 }
 
-function buscaUnidad(producto) {
-	if($(producto).val()=='A'){
-		console.log('Activa AGREGA PRODUCTO')
-		modalProducto(producto);
-		$(producto).attr('class', 'form-select text-secondary producto');
-	}
-	else{
-		console.log('Cambio en producto')
-		var id = producto.value + 'productoID';
-		console.log(id)
-		var unidad = $('#' + id).attr('unidad');
-		console.log(unidad)
-		var ingredienteNum = $(producto).attr('orden');
-		$(producto).attr('class', 'form-select producto');
-		$('#ingrediente' + ingredienteNum + ' .unidadDeMedida').val(unidad);
-		$('#ingrediente' + ingredienteNum + ' .unidadDeMedida').attr('class', 'form-select unidadDeMedida');
-		console.log('#ingrediente' + ingredienteNum + ' .unidadDeMedida' + ' : ' + 'valor de unidad')
-	}
-};
-
 function buscaArtefacto(artefacto) {
-	if($(artefacto).val()=='A'){
-		console.log('Activa AGREGA ARTEFACTO')
-		$(artefacto).removeClass('text-dark').addClass('text-secondary');
-		modalArtefacto(this);
+	console.log('Cambio en artefacto')
+	var id = 'opcionId' + artefacto.value;
+	console.log('OPCION ID: ' + id)
+	var artefactoNum = $(artefacto).attr('orden');
+	
+	var esHorno = $('.' + id).attr('esHorno');
+	console.log('ES HORNO??: ' + esHorno);
+		
+	if(esHorno=='true'){		
+		$('#intensidadTitulo').show();
+		$('#artefacto' + artefactoNum + ' .minutosCasillero').show();
+		$('#artefacto' + artefactoNum + ' .temperaturaCasillero').show();
+		$('#artefacto' + artefactoNum + ' .intensidadCasillero').hide();
+		$('#artefacto' + artefactoNum + ' .esHorno').prop("disabled", false);
+		$('#artefacto' + artefactoNum + ' .artefactosUtilizadosEsHorno').val(true);
+		$('#artefacto' + artefactoNum + ' .esIntensidad').prop("disabled", true);
+		$('#artefacto' + artefactoNum + ' .intensidad').val(0);
+		$('#artefacto' + artefactoNum + ' .intensidad').removeClass('text-dark').addClass('text-secondary');
+	}
+	else if(id == 'NartefactoID'){
+		$('#intensidadTitulo').hide();
+		$('#artefacto' + artefactoNum + ' .nombreArtefacto').removeClass('text-dark').addClass('text-secondary');
+		$('#artefacto' + artefactoNum + ' .minutosCasillero').hide();
+		$('#artefacto' + artefactoNum + ' .temperaturaCasillero').hide();
+		$('#artefacto' + artefactoNum + ' .intensidadCasillero').hide();
+		$('#artefacto' + artefactoNum + ' .esHorno').prop("disabled", true);
+		$('#artefacto' + artefactoNum + ' .esIntensidad').prop("disabled", true);
+		$('#artefacto' + artefactoNum + ' .intensidad').val(0);
+		$('#artefacto' + artefactoNum + ' .intensidad').removeClass('text-dark').addClass('text-secondary');
+		$('#artefacto' + artefactoNum + ' .temperatura').val(null);	
 	}
 	else{
-		console.log('Cambio en artefacto')
-		var id = artefacto.value + 'artefactoID';
-		console.log(id)
-		var artefactoNum = $(artefacto).attr('orden');
-		$(artefacto).removeClass('text-secondary').addClass('text-dark');
-		
-		var esHorno = $('#' + id).attr('esHorno');
-		console.log('ES HORNO??: ' + esHorno);
-			
-		if(esHorno=='true'){		
-			$('#intensidadTitulo').show();
-			$('#artefacto' + artefactoNum + ' .minutosCasillero').show();
-			$('#artefacto' + artefactoNum + ' .temperaturaCasillero').show();
-			$('#artefacto' + artefactoNum + ' .intensidadCasillero').hide();
-			$('#artefacto' + artefactoNum + ' .esHorno').prop("disabled", false);
-			$('#artefacto' + artefactoNum + ' .artefactosUtilizadosEsHorno').val(true);
-			$('#artefacto' + artefactoNum + ' .esIntensidad').prop("disabled", true);
-			$('#artefacto' + artefactoNum + ' .intensidad').val(0);
-			$('#artefacto' + artefactoNum + ' .intensidad').removeClass('text-dark').addClass('text-secondary');
-		}
-		else if(id == 'NartefactoID'){
-			$('#intensidadTitulo').hide();
-			$('#artefacto' + artefactoNum + ' .nombreArtefacto').removeClass('text-dark').addClass('text-secondary');
-			$('#artefacto' + artefactoNum + ' .minutosCasillero').hide();
-			$('#artefacto' + artefactoNum + ' .temperaturaCasillero').hide();
-			$('#artefacto' + artefactoNum + ' .intensidadCasillero').hide();
-			$('#artefacto' + artefactoNum + ' .esHorno').prop("disabled", true);
-			$('#artefacto' + artefactoNum + ' .esIntensidad').prop("disabled", true);
-			$('#artefacto' + artefactoNum + ' .intensidad').val(0);
-			$('#artefacto' + artefactoNum + ' .intensidad').removeClass('text-dark').addClass('text-secondary');
-			$('#artefacto' + artefactoNum + ' .temperatura').val(null);	
-		}
-		else{
-			$('#intensidadTitulo').show();
-			$('#artefacto' + artefactoNum + ' .minutosCasillero').show();
-			$('#artefacto' + artefactoNum + ' .temperaturaCasillero').hide();
-			$('#artefacto' + artefactoNum + ' .intensidadCasillero').show();
-			$('#artefacto' + artefactoNum + ' .esHorno').prop("disabled", true);
-			$('#artefacto' + artefactoNum + ' .esIntensidad').prop("disabled", false);
-			$('#artefacto' + artefactoNum + ' .artefactosUtilizadosEsHorno').val(false);
-			$('#artefacto' + artefactoNum + ' .temperatura').val(null);	
-			$('#artefacto' + artefactoNum + ' .intensidad').val(0);
-			$('#artefacto' + artefactoNum + ' .intensidad').removeClass('text-dark').addClass('text-secondary');
-		}
-	}	
+		$('#intensidadTitulo').show();
+		$('#artefacto' + artefactoNum + ' .minutosCasillero').show();
+		$('#artefacto' + artefactoNum + ' .temperaturaCasillero').hide();
+		$('#artefacto' + artefactoNum + ' .intensidadCasillero').show();
+		$('#artefacto' + artefactoNum + ' .esHorno').prop("disabled", true);
+		$('#artefacto' + artefactoNum + ' .esIntensidad').prop("disabled", false);
+		$('#artefacto' + artefactoNum + ' .artefactosUtilizadosEsHorno').val(false);
+		$('#artefacto' + artefactoNum + ' .temperatura').val(null);	
+		$('#artefacto' + artefactoNum + ' .intensidad').val(0);
+		$('#artefacto' + artefactoNum + ' .intensidad').removeClass('text-dark').addClass('text-secondary');
+	}		
 };
 
 function cambiaColorValidado(casillero) {
@@ -121,11 +81,12 @@ function cambiaColorValidado(casillero) {
 function agregaIngrediente() {
 	console.log('Agregando ingrediente...');
 	var numIngrediente = parseInt($('#cantidadDeIngredientes').val());	
-	console.log('cantidad de ingredientes antes: ' + numIngrediente);
 	var numOrigen = numIngrediente;
 	numIngrediente++;
 	var id = 'ingrediente' + numOrigen;	
 	var nuevoId = 'ingrediente' + numIngrediente;
+	$("#" + id + ' .producto').select2('destroy');
+	$("#" + id + ' .unidadDeMedida').select2('destroy');
 	$("#" + id).clone().attr('id', nuevoId).insertAfter("#" + id);	
 	$('#' + nuevoId).attr('name', nuevoId);
 	$('#' + nuevoId).attr('orden', numIngrediente);	
@@ -147,9 +108,19 @@ function agregaIngrediente() {
 	$('#' + nuevoId + ' .btnIngrediente').attr('orden', numIngrediente);
 	$('#' + nuevoId + ' .agregaProductoModal').attr('orden', numIngrediente);
 	$('#' + nuevoId + ' .btnIngrediente').attr('ingrediente', 0);
-	$('#' + nuevoId + ' .producto').val(0);
+	$('#' + nuevoId + ' .producto').val(null);
 	$('#' + nuevoId + ' .cantidadIngrediente').val(null);
-	$('#' + nuevoId + ' .unidadDeMedida').val(0);
+	$('#' + nuevoId + ' .unidadDeMedida').val(null);
+	
+	$('#' + id + ' .producto' + ' , ' +
+	  '#' + id + ' .unidadDeMedida' + ' , ' +
+	  '#' + nuevoId + ' .producto' + ' , ' +
+	  '#' + nuevoId + ' .unidadDeMedida').select2( {
+	    theme: "bootstrap-5",
+	    width: 'resolve',
+	    placeholder: $(this).data('placeholder'),
+	    allowClear: true
+	});
 	
 	if(esEdicion){
 		$('#' + nuevoId + ' .ingredienteIdRecetaId').attr('name', 'ingredientes['+ numOrigen +'].recetaId');
@@ -159,15 +130,12 @@ function agregaIngrediente() {
 	if(numIngrediente > 1){
 		$('.btnIngrediente').removeClass('disabled');
 	}
-	console.log('cantidad de ingredientes resultante: ' + numIngrediente);
-	console.log('--Fila Agregada--');
 };
 
 function eliminaIngrediente(esteBtn) {
 	
-	console.log('Eliminando...')
+	console.log('Eliminando INGREDIENTE...')
 	var iNum = parseInt($(esteBtn).attr('ingrediente'));
-	console.log('INGREDIENTE ID:' + iNum);
 	
 	if(iNum>0){
 		var index = $(esteBtn).attr('orden') - 1;
@@ -318,7 +286,10 @@ function agregaArtefacto() {
 	
 	var id = 'artefacto' + numOrigen;
 	var nuevoId = 'artefacto' + numArtefacto;
-
+	
+	$("#" + id + ' .nombreArtefacto').select2('destroy');
+	$("#" + id + ' .intensidad').select2('destroy');
+	$("#" + id + ' .unidadTemperatura').select2('destroy');
 	$("#" + id).clone().attr('id', nuevoId).insertAfter("#" + id);
 	$('#' + nuevoId).attr('orden', numArtefacto);
 	$('#' + nuevoId).attr('name', 'artefacto' + numArtefacto);
@@ -339,9 +310,9 @@ function agregaArtefacto() {
 	$('#' + nuevoId + ' .nombreArtefacto').removeClass('text-dark alert-danger').addClass('text-secondary');
 	$('#' + nuevoId + ' .temperatura').removeClass('alert-danger');
 	$('#' + nuevoId + ' .minutosArtefacto').removeClass('alert-danger');
-	$('#' + nuevoId + ' .nombreArtefacto').val(0); 	 	
+	$('#' + nuevoId + ' .nombreArtefacto').val(null); 	 	
 	$('#' + nuevoId + ' .minutosArtefacto').val(null); 
-	$('#' + nuevoId + ' .intensidad').val(0); 
+	$('#' + nuevoId + ' .intensidad').val(null); 
 	$('#' + nuevoId + ' .temperatura').val(null); 
 	$('#' + nuevoId + ' .intensidadCasillero').hide(); 
 	$('#' + nuevoId + ' .temperaturaCasillero').hide(); 
@@ -354,6 +325,18 @@ function agregaArtefacto() {
 	$('#' + nuevoId + ' .btnArtefacto').attr('id', 'btnArtefacto' + numArtefacto);
 	$('#' + nuevoId + ' .btnArtefacto').attr('orden', numArtefacto);
 	$('#cantidadDeArtefactos').val(numArtefacto);
+	
+	$('#' + id + ' .nombreArtefacto' + ' , ' +
+	  '#' + id + ' .intensidad' + ' , ' +
+	  '#' + id + ' .unidadTemperatura' + ' , ' +
+	  '#' + nuevoId + ' .nombreArtefacto' + ' , ' +
+	  '#' + nuevoId + ' .intensidad' + ' , ' +
+	  '#' + nuevoId + ' .unidadTemperatura').select2( {
+	    theme: "bootstrap-5",
+	    width: 'resolve',
+	    placeholder: $(this).data('placeholder'),
+	    allowClear: true
+	});
 	
 	if(numArtefacto > 1){
 		$('.btnArtefacto').removeClass('disabled');
@@ -425,6 +408,7 @@ function verifica() {
 		$('#nombre').addClass('alert-danger');
 		$('#errorNombre').show();
 		hayErrorEnNombre = true;
+		console.log('¡¡¡¡¡¡¡¡¡¡¡¡¡¡ HAY ERROR EN NOMBRE !!!!!!!!!!!!!!!!!!');
 	} 
 	else {
 		$('#nombre').removeClass('alert-danger');
@@ -435,6 +419,7 @@ function verifica() {
 		$('#porciones').addClass('alert-danger');
 		$('#errorPorciones').show();
 		hayErrorEnPorciones = true;
+		console.log('¡¡¡¡¡¡¡¡¡¡¡¡¡¡ HAY ERROR EN PORCIONES !!!!!!!!!!!!!!!!!!');
 	} 
 	else {
 		$('#porciones').removeClass('alert-danger');
@@ -453,9 +438,10 @@ function verifica() {
 		console.log('PRODUCTO VAL: ' + $('#' + id + ' .producto').val());
 		console.log('ID: ' + id);	
 
-		if ($('#' + id + ' .producto').val() == null || $('#' + id + ' .producto').val() == 0) {
+		if ($('#' + id + ' .producto').val() == null || $('#' + id + ' .producto').val() == 0 || $('#' + id + ' .producto').val() == '') {
 			$('#' + id + ' .producto').addClass('alert-danger');
 			hayErrorEnIngrediente = true;
+			console.log('¡¡¡¡¡¡¡¡¡¡¡¡¡¡ HAY ERROR EN INGREDIENTE NOMBRE' + id + ' !!!!!!!!!!!!!!!!!!');
 		}
 		else {
 			$('#' + id + ' .producto').removeClass('alert-danger');
@@ -464,14 +450,16 @@ function verifica() {
 		if ($('#' + id + ' .cantidadIngrediente').val() == null || $('#' + id + ' .cantidadIngrediente').val() == 0) {
 			$('#' + id + ' .cantidadIngrediente').addClass('alert-danger');
 			hayErrorEnIngrediente = true;
+			console.log('¡¡¡¡¡¡¡¡¡¡¡¡¡¡ HAY ERROR EN INGREDIENTE CANTIDAD' + id + ' !!!!!!!!!!!!!!!!!!');
 		}
 		else {
 			$('#' + id + ' .cantidadIngrediente').removeClass('alert-danger');
 		};
 
-		if ($('#' + id + ' .unidadDeMedida').val() == null) {
+		if ($('#' + id + ' .unidadDeMedida').val() == null || $('#' + id + ' .unidadDeMedida').val() == '') {
 			$('#' + id + ' .unidadDeMedida').addClass('alert-danger');
 			hayErrorEnIngrediente = true;
+			console.log('¡¡¡¡¡¡¡¡¡¡¡¡¡¡ HAY ERROR EN INGREDIENTE UNIDAD' + id + ' !!!!!!!!!!!!!!!!!!');
 		}
 		else {
 			$('#' + id + ' .unidadDeMedida').removeClass('alert-danger');
@@ -486,14 +474,16 @@ function verifica() {
 		console.log('ARTEFACTO VAL: ' + $('#' + id + ' .nombreArtefacto').val());
 		console.log('ID: ' + id);	
 		
-		var nombreNulo = $('#' + id + ' .nombreArtefacto').val() == null;
+		var nombreNulo = $('#' + id + ' .nombreArtefacto').val() == '';		
 		var minutosNulo = $('#' + id + ' .minutosArtefacto').val() == 0;
-		var intensidadNulo = $('#' + id + ' .intensidad').val() == null;
+		var intensidadNulo = $('#' + id + ' .intensidad').val() == '';
 		var temperaturaNulo = $('#' + id + ' .temperatura').val() == 0;
 		
 		console.log('nombreNulo: ' + nombreNulo);
+		console.log('nombreNulo: ' + $('#' + id + ' .nombreArtefacto').val());
 		console.log('minutosNulo: ' + minutosNulo);
 		console.log('intensidadNulo: ' + intensidadNulo);
+		console.log('intensidadNulo: ' + $('#' + id + ' .intensidad').val());
 		console.log('temperaturaNulo: ' + temperaturaNulo);
 		
 		if (nombreNulo && minutosNulo && intensidadNulo && temperaturaNulo) {						
@@ -504,6 +494,7 @@ function verifica() {
 			if (nombreNulo) {
 			hayErrorEnArtefacto = true;
 			$('#' + id + ' .nombreArtefacto').addClass('alert-danger');
+			console.log('¡¡¡¡¡¡¡¡¡¡¡¡¡¡ HAY ERROR EN ARTEFACTO NOMBRE' + id + ' !!!!!!!!!!!!!!!!!!');
 			}
 			else {
 				$('#' + id + ' .nombreArtefacto').removeClass('alert-danger');
@@ -512,6 +503,7 @@ function verifica() {
 			if (minutosNulo) {
 			hayErrorEnArtefacto = true;
 			$('#' + id + ' .minutosArtefacto').addClass('alert-danger');
+			console.log('¡¡¡¡¡¡¡¡¡¡¡¡¡¡ HAY ERROR EN ARTEFACTO MINUTOS' + id + ' !!!!!!!!!!!!!!!!!!');
 			}
 			else {
 				$('#' + id + ' .minutosArtefacto').removeClass('alert-danger');
@@ -519,6 +511,7 @@ function verifica() {
 			
 			if (intensidadNulo && temperaturaNulo) {
 			hayErrorEnArtefacto = true;
+			console.log('¡¡¡¡¡¡¡¡¡¡¡¡¡¡ HAY ERROR EN ARTEFACTO TEMPERATURA O INTENSIDAD' + id + ' !!!!!!!!!!!!!!!!!!');
 			$('#' + id + ' .intensidad').addClass('alert-danger');
 			$('#' + id + ' .temperatura').addClass('alert-danger');
 			}
@@ -549,6 +542,7 @@ function verifica() {
 			
 			if (pasoNulo) {
 				hayErrorEnInstruccion = true;
+				console.log('¡¡¡¡¡¡¡¡¡¡¡¡¡¡ HAY ERROR EN INSTRUCCION' + id + ' !!!!!!!!!!!!!!!!!!');
 				$('#' + id + ' .pasoTexto').addClass('alert-danger');
 				}
 			else {

@@ -5,6 +5,18 @@ var preparacionesVisibles = new Map();
 var ingredientesDisponiblesEnPreparacion = new Map();
 var ingredientesTotalesEnPreparaciones = new Map();
 
+$('.selectorDeIngrediente').select2( {
+    theme: "bootstrap-5",
+    width: 'resolve',
+    placeholder: $(this).data('placeholder'),
+    allowClear: true
+});
+
+$('.selectorDeIngrediente').change(function() {
+  $('.selectorDeIngrediente').removeClass('text-secondary');
+  $('.select2-selection__rendered').removeClass('text-secondary');
+});
+
 function filtraPorProducto(producto) {
 	console.log('AGRGANDO PRODUCTO AL FILTRADO')	
 	var productoId = $('.selectorDeIngrediente').val();
@@ -28,10 +40,11 @@ function filtraPorProducto(producto) {
 			"</div>"
 		);
 		productosEnFiltros.push(productoId);
-		filtraListadoDeRecetas();
-		$('.selectorDeIngrediente').val(0);
-		$('.selectorDeIngrediente').addClass('text-secondary').removeClass('text-dark');
+		filtraListadoDeRecetas();		
 	};	
+	$('.selectorDeIngrediente').val(null);
+	$('#select2-selectorDeIngrediente-container').text($('.selectorDeIngrediente').data('placeholder')).addClass('text-secondary');	
+	console.log('Cambiando valor a NULL' + $('.selectorDeIngrediente').val());
 };
 
 function filtraListadoDeRecetas() {
@@ -118,7 +131,7 @@ function filtraListadoDeRecetas() {
 	var soloFavoritas = $('#seleccionaListado').attr('soloFavoritas');
 	if(soloFavoritas == 'true'){
 		filtraFavoritas();
-	}			
+	}	
 };
 
 function eliminaProductoFiltro(casillero) {
