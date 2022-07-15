@@ -1,3 +1,7 @@
+<!-- /**
+ * @author Julián Quenard *
+ * @ 01-09-2021
+ */ -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
@@ -79,8 +83,8 @@
 				</div>
 			</div>
 		</div>	
-		<form id="formVerReceta" th:action="@{/receta/verReceta/}" method="post" enctype="multipart/form-data"></form>	
-		<footer th:replace="layout/layout :: footScripts"></footer>
+		<form id="formVerReceta" th:action="@{/receta/verReceta/}" method="post" enctype="multipart/form-data"></form>
+		<footer th:replace="layout/layout :: footer"></footer>
 		<script th:src="@{/js/abrir-receta.js}"></script>
 		<script th:src="@{/js/filtrar-recetas.js}"></script>			
 	</body>

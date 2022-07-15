@@ -1,11 +1,13 @@
 package miRecetApp.app.service;
 
 import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import miRecetApp.app.model.entity.Preparacion;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 public interface IPreparacionService {
 	/**
 	 * Método que trae todos los elementos de la BD.

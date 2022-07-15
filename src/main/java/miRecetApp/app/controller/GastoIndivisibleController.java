@@ -30,6 +30,12 @@ import miRecetApp.app.service.IGastoIndivisibleService;
 import miRecetApp.app.service.implementation.IdentificaDevice;
 import miRecetApp.app.util.paginator.PageRender;
 
+
+/**
+ * @author Julián Quenard *
+ * 01-09-2021
+ */
+
 @Controller
 @SessionAttributes("gastoIndivisible")
 public class GastoIndivisibleController {

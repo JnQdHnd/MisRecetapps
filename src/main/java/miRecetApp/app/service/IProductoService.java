@@ -8,6 +8,10 @@ import org.springframework.data.domain.Sort;
 
 import miRecetApp.app.model.entity.Producto;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 public interface IProductoService {
 	/**
 	 * Método que trae todos los elementos de la BD.
@@ -63,5 +67,12 @@ public interface IProductoService {
 	 * @return Page<Producto>
 	 */
 	public Page<Producto> findAll(Pageable pageable);
+	
+	/**
+	 * Método que verifica la existencia de un elemento en la BD que tenga el nombre indicado.
+	 * @param nombre
+	 * @return boolean
+	 */
+	public boolean existsByNombre(String nombre);
 	
 }

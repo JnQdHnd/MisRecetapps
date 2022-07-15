@@ -9,9 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Clase entity que gestiona los Roles de los Usuarios en el proyecto.
+ * Clase entity que gestiona los Roles de los roles en el proyecto.
  * @author Julian Quenard
- *
+ * 01-09-2021
  */
 @Entity
 @Table(name = "roles")

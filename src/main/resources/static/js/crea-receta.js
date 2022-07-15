@@ -1,6 +1,7 @@
 /**
  *  Código javascript para la vista de creación de recetas.
  *	Julián Quenard
+ *  01-09-2021
  */
 $(document).ready(function(){});
 

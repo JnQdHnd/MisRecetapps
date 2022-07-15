@@ -13,6 +13,10 @@ import miRecetApp.app.model.entity.GastoDivisible;
 
 import miRecetApp.app.service.IGastoDivisibleService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class GastoDivisibleServiceImplementa implements IGastoDivisibleService {
 	

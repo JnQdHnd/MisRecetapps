@@ -11,6 +11,10 @@ import miRecetApp.app.model.dao.IGastoIndivisibleDao;
 import miRecetApp.app.model.entity.GastoIndivisible;
 import miRecetApp.app.service.IGastoIndivisibleService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class GastoIndivisibleServiceImplementa implements IGastoIndivisibleService {
 	

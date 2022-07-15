@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
  * Clase que controla la de idiomas. 
  * 
  * @author Julian Quenard
+ * 01-09-2021
  */
+
 @Controller
 public class LocaleController {
 	

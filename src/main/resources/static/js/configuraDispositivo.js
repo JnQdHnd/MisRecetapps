@@ -1,6 +1,7 @@
 /**
  *  Código javascript para la configuracion de la vista según cuál sea el dispositivo utilizado.
  *	Julián Quenard
+ *	01-09-2021
  */
 $(document).ready(function(){});
 
@@ -14,7 +15,7 @@ if(dispositivo == 'browser'){
 		$(this).addClass('fs-6');
 	});
 	$('#iniciaSesionBtn').addClass('btn btn-primary my-1');
-	$('#dropdownMenuLogingLogout').addClass('btn btn-primary my-1');
+	$('#dropdownMenuLogingLogout').addClass('nav-link my-1');
 	
 	$('.card-title').addClass('fs-4');
 	$('#headersBtns').addClass('col-auto');

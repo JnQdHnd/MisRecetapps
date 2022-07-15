@@ -5,10 +5,14 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import miRecetApp.app.model.entity.Receta;
 
+/**
+ * @author Julián Quenard *
+ * 01-09-2021
+ * @see {@link PagingAndSortingRepository}
+ */
 public interface IRecetaDao extends PagingAndSortingRepository<Receta, Long>{
 	
 	public Receta findByNombreLikeIgnoreCase(String term);
@@ -31,6 +35,5 @@ public interface IRecetaDao extends PagingAndSortingRepository<Receta, Long>{
 	
 	public Page<Receta> findAllByEsPublicaTrueOrAutorOrIdIn(String autor, List<Long> recetasIds, Pageable pageable);
 	
-	
-
+	public boolean existsByNombre(String nombre);
 }

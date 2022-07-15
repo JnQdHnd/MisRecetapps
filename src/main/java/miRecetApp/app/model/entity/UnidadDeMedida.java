@@ -2,9 +2,11 @@ package miRecetApp.app.model.entity;
 
 import java.util.concurrent.TimeUnit;
 
-public enum UnidadDeMedida {
-	
-	
+/**
+ * @author Julián Quenard *
+ * 01-09-2021
+ */
+public enum UnidadDeMedida {	
 	GRAMO("Gramo/s","g",TipoDeMedida.MASA.getNombre(),TipoDeMedida.MASA.getUnidadDeBase(),1),
 	MILILITRO("Mililitro/s","ml",TipoDeMedida.CAPACIDAD.getNombre(),TipoDeMedida.CAPACIDAD.getUnidadDeBase(),1),
 	KILOGRAMO("Kilogramo/s","kg",TipoDeMedida.MASA.getNombre(),TipoDeMedida.MASA.getUnidadDeBase(),1000),

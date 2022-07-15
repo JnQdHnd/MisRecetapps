@@ -1,3 +1,7 @@
+/**
+ * @author Julián Quenard *
+ * @ 01-09-2021
+ */
 $(document).ready(function(){});
 var url = '/receta/listarMias';
 $("#tablaDeRecetas").load(url);
@@ -14,16 +18,26 @@ $('[name="btnRadio"]').click(function () {
  	}
 });	
 
-function enviarRecetaId(receta) {	
-	console.log('ID de la receta: ' + $(receta).attr('recetaId'));	
-	var tienePreparaciones = $(receta).attr('tienePreparaciones') > 0;
+function enviarRecetaId(casillero) {	
+	console.log('ID de la receta: ' + $(casillero).parent().attr('recetaId'));	
+	var tienePreparaciones = $(casillero).parent().attr('tienePreparaciones') > 0;
 	console.log('tienePreparaciones: ' + tienePreparaciones);
 	if(tienePreparaciones){
-		$('#formVerReceta').attr('action', '/receta/verRecetaConPreparaciones/' + $(receta).attr('recetaId'));
+		$('#formVerReceta').attr('action', '/receta/verRecetaConPreparaciones/' + $(casillero).parent().attr('recetaId'));
 	}	
 	else{					
-		$('#formVerReceta').attr('action', '/receta/verReceta/' + $(receta).attr('recetaId'));
+		$('#formVerReceta').attr('action', '/receta/verReceta/' + $(casillero).parent().attr('recetaId'));
 	}
 	$('#formVerReceta').submit();
+};
+
+function llamarModalEliminar(casillero) {	
+	console.log('LLAMANDO MODAL ELIMINAR')
+	var idAEliminar = $(casillero).attr('idAEliminar');
+	var hrefConPreparacion = $('.modalConPreparacion').attr('href');
+	var hrefSinPreparacion = $('.modalSinPreparacion').attr('href');
+	$('.modalConPreparacion').attr('href', hrefConPreparacion + idAEliminar);
+	$('.modalSinPreparacion').attr('href', hrefSinPreparacion + idAEliminar);
+	$("#eliminarConPreparacionesModal").modal("show");
 };
 

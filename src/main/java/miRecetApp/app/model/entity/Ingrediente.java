@@ -11,6 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Clase entity que gestiona los ingredientes (Productos en uso) en el proyecto.
+ * @author Julian Quenard
+ * 01-09-2021
+ */
 @Entity
 @Table(name = "ingredientes")
 public class Ingrediente implements Serializable {

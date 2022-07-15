@@ -25,7 +25,7 @@ import miRecetApp.app.validator.UsuarioExisteEnDB;
 /**
  * Clase entity que gestiona los Usuarios en el proyecto.
  * @author Julian Quenard
- *
+ * 01-09-2021
  */
 
 @Entity

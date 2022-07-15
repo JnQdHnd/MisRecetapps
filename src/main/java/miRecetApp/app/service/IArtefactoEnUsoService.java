@@ -1,5 +1,9 @@
 package miRecetApp.app.service;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 public interface IArtefactoEnUsoService {
 	/**
 	 * Método que elimina el item que corresponda al id de la BD.

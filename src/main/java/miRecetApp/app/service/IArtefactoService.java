@@ -6,6 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import miRecetApp.app.model.entity.Artefacto;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 public interface IArtefactoService {
 	/**
 	 * Método que trae todos los elementos de la BD.
@@ -52,5 +56,12 @@ public interface IArtefactoService {
 	 * @return Page<Artefacto>
 	 */
 	public Page<Artefacto> findAll(Pageable pageable);
+	
+	/**
+	 * Método que verifica la existencia de un elemento en la BD que tenga el nombre indicado.
+	 * @param nombre
+	 * @return boolean
+	 */
+	public boolean existsByNombre(String nombre);
 }
 

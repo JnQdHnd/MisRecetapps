@@ -1,5 +1,9 @@
 package miRecetApp.app.model.entity;
 
+/**
+ * @author Julián Quenard *
+ * 01-09-2021
+ */
 public enum TipoDeMedida {
 	
 	TEMPERATURA("temperatura","CELCIUS"),

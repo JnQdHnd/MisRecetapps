@@ -7,6 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import miRecetApp.app.model.entity.Receta;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 public interface IRecetaService {
 	/**
 	 * Método que trae todos los elementos de la BD.
@@ -109,10 +113,18 @@ public interface IRecetaService {
 	
 	/**
 	 * Método que trae todas las recetas de la BD en la que el autor está invitado.
-	 * @param sort
+	 * @param recetasIds
+	 * @param pageable
 	 * @return Page<Receta>
 	 */
 	public Page<Receta> findByIdIn(List<Long> recetasIds, Pageable pageable); 
+	
+	/**
+	 * Método que verifica si existe una receta con ese nombre en la BD.
+	 * @param nombre
+	 * @return boolean
+	 */
+	public boolean existsByNombre(String nombre);
 	
 	public Long findTop1ById();
 	

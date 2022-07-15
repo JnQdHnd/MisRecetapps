@@ -34,6 +34,12 @@ import miRecetApp.app.service.IRecetaService;
 import miRecetApp.app.service.implementation.IdentificaDevice;
 import miRecetApp.app.util.paginator.PageRender;
 
+
+/**
+ * @author Julián Quenard *
+ * 01-09-2021
+ */
+
 @Controller
 @SessionAttributes("artefacto")
 public class ArtefactoController {

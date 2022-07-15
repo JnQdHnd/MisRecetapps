@@ -11,6 +11,10 @@ import miRecetApp.app.model.dao.IRecetaDao;
 import miRecetApp.app.model.entity.Receta;
 import miRecetApp.app.service.IRecetaService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class RecetaServiceImplementa implements IRecetaService {
 	
@@ -112,10 +116,17 @@ public class RecetaServiceImplementa implements IRecetaService {
 		return recetaDao.findByIdIn(recetasIds, pageable);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Long findTop1ById() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public boolean existsByNombre(String nombre) {		
+		return recetaDao.existsByNombre(nombre);
 	}
 	
 

@@ -44,6 +44,12 @@ import miRecetApp.app.service.IRecetaService;
 import miRecetApp.app.service.IUploadFileService;
 import miRecetApp.app.service.implementation.IdentificaDevice;
 
+
+/**
+ * @author Julián Quenard *
+ * 01-09-2021
+ */
+
 @Controller
 @SessionAttributes("recetaPreparacionCreacion")
 public class RecetaPreparacionCreacionController {
@@ -315,7 +321,6 @@ public class RecetaPreparacionCreacionController {
 			}						
 		}
 		else if(preparacionAGestionar == cantidadDePreparacionesEnReceta) {
-			int i = 0;
 			recetaConPreparaciones.getPreparaciones().clear();
 			for(Receta r: preparacionesProvisorias) {
 				r.setPreparacionEnRecetaNombre(recetaConPreparaciones.getNombre());
@@ -597,8 +602,12 @@ public class RecetaPreparacionCreacionController {
 	@RequestMapping(value = "/receta/eliminarConPreparacion/{id}")
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash, Model model) {
 		if (id > 0) {
+			Receta receta = recetaService.findOne(id);
+			for(Preparacion p : receta.getPreparaciones()) {
+				recetaService.delete(p.getRecetaId());
+			}
 			recetaService.delete(id);
-			flash.addFlashAttribute("success", "Receta eliminado con éxito!");
+			flash.addFlashAttribute("success", "Receta y preparaciones eliminadas con éxito!");
 		}
 		return "redirect:/receta/listar";
 	}

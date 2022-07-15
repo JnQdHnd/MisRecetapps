@@ -14,26 +14,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import miRecetApp.app.model.dao.IRoleDao;
 import miRecetApp.app.model.dao.IUsuarioDao;
 import miRecetApp.app.model.entity.Role;
 import miRecetApp.app.model.entity.Usuario;
 
-
 /**
  * Interfaz de servicio  que gestiona los pedidos y modificaciones en la BD correspondiente a los Usuarios.
  * @author Julian Quenard
- *
+ * 01-09-2021
  */
+
 @Service("usuarioService")
 public class UsuarioService implements UserDetailsService{
 
 	@Autowired
 	private IUsuarioDao usuarioDao;
-	
-	@Autowired
-	private IRoleDao roleDao;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;

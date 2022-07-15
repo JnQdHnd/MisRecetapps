@@ -13,6 +13,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Clase entity que gestiona los Roles de los Usuarios en el proyecto.
+ * @author Julian Quenard
+ * 01-09-2021
+ */
 @Entity
 @Table(name = "artefactos")
 public class Artefacto implements Serializable {

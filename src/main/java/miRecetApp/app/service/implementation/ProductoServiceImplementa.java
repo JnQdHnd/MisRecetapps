@@ -12,6 +12,10 @@ import miRecetApp.app.model.dao.IProductoDao;
 import miRecetApp.app.model.entity.Producto;
 import miRecetApp.app.service.IProductoService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class ProductoServiceImplementa implements IProductoService {
 	
@@ -65,4 +69,8 @@ public class ProductoServiceImplementa implements IProductoService {
 		return productoDao.findAll(pageable);
 	}
 
+	@Override
+	public boolean existsByNombre(String nombre) {
+		return productoDao.existsByNombre(nombre);
+	}
 }

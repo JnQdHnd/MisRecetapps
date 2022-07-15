@@ -1,3 +1,7 @@
+<!-- /**
+ * @author Julián Quenard *
+ * @ 01-09-2021
+ */ -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<body>
@@ -20,14 +24,13 @@
 						th:recetaId="${receta.id}" 
 						th:tienePreparaciones="${#lists.size(receta.preparaciones)}" 
 						th:cantidadDeIngredientes="${#lists.size(receta.ingredientes)}" 
-						recetaFiltrada="false" 
-						onclick="enviarRecetaId(this)">
-						<td class="text-nowrap fs-6 align-middle text-primary py-3" style="text-align: center;">
+						recetaFiltrada="false">
+						<td class="text-nowrap fs-6 align-middle text-primary py-3" style="text-align: center;"	onclick="enviarRecetaId(this)">
 							<i class="fa fa-eye mx-2" aria-hidden="true"></i>
 							<div class="idProducto" th:each="ingrediente:${receta.ingredientes}" th:value="${ingrediente.productoId}" hidden></div>
 							<div class="preparacion" th:each="preparacion:${receta.preparaciones}" th:value="${preparacion.recetaId}" hidden></div>
 						</td>
-						<td class="text-nowrap fs-6 align-middle py-3" th:text="${receta.nombre}"></td>
+						<td class="text-nowrap fs-6 align-middle py-3" th:text="${receta.nombre}" onclick="enviarRecetaId(this)"></td>
 						<td class="text-nowrap fs-6 align-middle py-3" style="width:auto; text-align: center;">
 							<a  class="btn btn-link esFavorita"
 								th:esFavorita="${receta.isEsFavorita()}"
@@ -45,12 +48,24 @@
 							</a>
 						</td>
 						<td th:if="${deviceType == 'browser'}" sec:authorize="hasRole('ROLE_USER')" style="text-align:center">
-							<a class="btn btn-danger mt-2"
-							th:href="@{/receta/eliminar/} + ${receta.id}"
-							onclick="return confirm('¿Seguro de Eliminar?')"
-							title="Eliminar" style="width: 70px;">
+							<a  th:if="${#lists.size(receta.preparaciones)} == 0"
+								class="btn btn-danger mt-2"
+								th:href="@{/receta/eliminar/} + ${receta.id}"
+								onclick="return confirm('¿Seguro de Eliminar?')"
+								title="Eliminar" 
+								style="width: 70px;">
 								<i class="fa fa-trash fs-5 mx-1" aria-hidden="true"></i>
 							</a>
+							<a  th:if="${#lists.size(receta.preparaciones)} > 0"
+								class="btn btn-danger mt-2"
+								data-bs-toggle="modal" 								
+								data-bs-target="#eliminarConPreparacionesModal"
+								title="Eliminar" 
+								style="width: 70px;"
+								th:idAEliminar="${receta.id}"
+								onclick="llamarModalEliminar(this); return false;">
+								<i class="fa fa-trash fs-5 mx-1" aria-hidden="true"></i>
+							</a>							
 						</td>						
 					</tr>
 				</tbody>
@@ -59,7 +74,34 @@
 				<div class="col-auto">
 					<nav th:replace="layout/paginator-nav :: paginator"></nav>	
 				</div>
-			</div>				
+			</div>
+			<div id="eliminarConPreparacionesModal" class="modal fade" tabindex="-1" aria-labelledby="eliminarConPreparacionesModal" aria-hidden="true">
+				<div class="row justify-content-center">
+					<div class="modal-dialog modal-xl">
+						<div class="modal-content" style="max-width: 500px;">
+							<div class="modal-header text-primary row justify-content-center">
+			  					<div class="col-auto">
+									<span class="fw-bold fs-5 ms-3">
+										Eliminando
+									</span>
+								</div>	
+							</div>	
+							<div class="modal-body pt-0 mt-2">
+								<a  class="btn btn-danger mt-2 col-12 modalConPreparacion"									
+									th:href="@{/receta/eliminarConPreparacion/}"
+									onclick="return confirm('¿Seguro de Eliminar receta y preparaciones?')"
+									title="Eliminar receta y preparaciones">Eliminar receta y preparaciones
+								</a>
+								<a  class="btn btn-danger mt-2 col-12 modalSinPreparacion"
+									th:href="@{/receta/eliminar/}"
+									onclick="return confirm('¿Seguro de conservar preparaciones y eliminar solo la receta?')"
+									title="Eliminar solo receta">Conservar preparaciones, solo eliminar receta.
+								</a>
+							</div>										
+						</div>
+					</div>
+				</div>
+			</div>					
 		</nav>
-	</body>
+	</body>	
 </html>

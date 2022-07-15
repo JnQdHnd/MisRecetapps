@@ -19,6 +19,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+/**
+ * Clase entity que gestiona las Recetas en el proyecto.
+ * @author Julian Quenard
+ * 01-09-2021
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "recetas")
 public class Receta implements Serializable {
@@ -82,6 +90,10 @@ public class Receta implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public void removeId() {
+		this.id = null;
 	}
 	
 	public void cleanId() {

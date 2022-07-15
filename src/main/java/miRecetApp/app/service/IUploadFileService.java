@@ -6,6 +6,10 @@ import java.net.MalformedURLException;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 public interface IUploadFileService {
 
 	public Resource load(String filename) throws MalformedURLException;

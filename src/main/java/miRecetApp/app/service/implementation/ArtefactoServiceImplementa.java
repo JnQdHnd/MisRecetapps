@@ -11,6 +11,10 @@ import miRecetApp.app.model.dao.IArtefactoDao;
 import miRecetApp.app.model.entity.Artefacto;
 import miRecetApp.app.service.IArtefactoService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class ArtefactoServiceImplementa implements IArtefactoService {
 	
@@ -58,6 +62,12 @@ public class ArtefactoServiceImplementa implements IArtefactoService {
 	@Override
 	public Page<Artefacto> findAll(Pageable pageable) {
 		return artefactoDao.findAll(pageable);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public boolean existsByNombre(String nombre) {
+		return artefactoDao.existsByNombre(nombre);
 	}
 	
 	

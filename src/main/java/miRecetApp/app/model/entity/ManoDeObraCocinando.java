@@ -10,6 +10,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Clase entity que gestiona los trabajadores activos en el proyecto.
+ * @author Julian Quenard
+ * 01-09-2021
+ */
 @Entity
 @Table(name = "trabajadores_cocinando")
 public class ManoDeObraCocinando implements Serializable {

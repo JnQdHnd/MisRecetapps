@@ -135,9 +135,8 @@
 		    <groupId>org.passay</groupId>
 		    <artifactId>passay</artifactId>
 		    <version>1.6.1</version>
-		</dependency>
-		
-						
+		</dependency>	
+							
 	</dependencies>
 	
 	<build>

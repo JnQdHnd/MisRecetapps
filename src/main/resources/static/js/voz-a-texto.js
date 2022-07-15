@@ -1,3 +1,8 @@
+/**
+ * @author Julián Quenard *
+ * @ 01-09-2021
+ */
+ 
 $(document).ready(function(){});
 
 var getBrowserInfo = function() {

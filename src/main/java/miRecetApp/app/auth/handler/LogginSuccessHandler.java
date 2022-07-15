@@ -16,7 +16,9 @@ import org.springframework.web.servlet.support.SessionFlashMapManager;
  *Clase que maneja el Loggin en la vista principal de acceso a la aplicación.
  *
  *@author Julian Quenard
+ *01-09-2021
  */
+
 @Component
 public class LogginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 	

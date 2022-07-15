@@ -1,3 +1,7 @@
+<!-- /**
+ * @author Julián Quenard *
+ * @ 01-09-2021
+ */ -->
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org" 
@@ -61,10 +65,10 @@
 									</a>
 									<ul class="dropdown-menu dropdown-menu-dark mt-xl-2 mt-lg-2" aria-labelledby="recetasDropdown">
 										<li>
-											<a sec:authorize="hasRole('ROLE_USER')" class="dropdown-item fs-6" th:href="@{/receta/listar}" th:text="#{text.layout.receta.listado}">Listado</a>
+											<a sec:authorize="hasRole('ROLE_USER')" class="dropdown-item fs-6 mb-2" th:href="@{/receta/listar}" th:text="#{text.layout.receta.listado}">Listado</a>
 										</li>
 										<li>
-											<a sec:authorize="hasRole('ROLE_USER')" class="dropdown-item fs-6" th:href="@{/receta/inicio}" th:text="#{text.layout.receta.nueva}">Listado</a>
+											<a sec:authorize="hasRole('ROLE_USER')" class="dropdown-item fs-6 mt-2" th:href="@{/receta/inicio}" th:text="#{text.layout.receta.nueva}">Nueva</a>
 										</li>
 									</ul>
 								</div>									
@@ -80,17 +84,30 @@
 							</li>
 							<li class="nav-item">
 								<a sec:authorize="hasRole('ROLE_USER')" class="nav-link" th:href="@{/gastos}" th:text="#{text.layout.gastos}">Gastos</a>
-							</li>														
-						</ul>						
-						<!-- GRUPO DERECHA DE ICONOS Y BOTONES - INICIO DE SESIÓN - POSIBILIDAD DE IDIOMAS Y OTROS -->	
-						<ul class="navbar-nav">					
-							<li sec:authorize="!isAuthenticated()">
-								<a id="iniciaSesionBtn" class="" th:href="@{/login}" th:text="#{text.layout.iniciarSesion}">Iniciar Sesión</a>
 							</li>
 							<li sec:authorize="isAuthenticated()">
-								<div class="dropdown">	
+								<div class="col-auto ms-0 me-2">
+									<a  class="nav-link" 
+										title="Incorporar una receta desde archivo MisRecetapps"
+										onclick="recuperaReceta(); return false">
+<!-- 										<i class="bi bi-download"></i> -->
+										<span>Importa</span><span class="fw-bold">R</span>																				
+									</a>
+									<form id="recuperaRecetaForm" th:action="@{/receta/incorporaRecetaJson}" method="post" enctype="multipart/form-data" style="display: none">
+										<input id="recetaJson" name="recetaJson" type="file" hidden>
+									</form>
+								</div>										
+							</li>																				
+						</ul>						
+						<!-- GRUPO DERECHA DE ICONOS Y BOTONES - INICIO DE SESIÓN - POSIBILIDAD DE IDIOMAS Y OTROS -->	
+						<ul class="navbar-nav">													
+							<li sec:authorize="!isAuthenticated()">
+								<a id="iniciaSesionBtn" th:href="@{/login}" th:text="#{text.layout.iniciarSesion}">Iniciar Sesión</a>
+							</li>							
+							<li sec:authorize="isAuthenticated()">
+								<div class="dropdown col-auto ms-0 ps-0">	
 									<a  id="dropdownMenuLogingLogout"  
-										class="dropdown-toggle" 
+										class="dropdown-toggle text-info" 
 										type="button" 
 										data-bs-toggle="dropdown" 
 										aria-expanded="false">
@@ -104,7 +121,7 @@
 									    	</form>
 									    </li>							   
 									</ul>
-								</div>	
+								</div>
 							</li>
 						</ul>						
 					</div>
@@ -134,10 +151,17 @@
 				<span class="text-secondary" style="font-size: 90%">| Rol: </span>
 				<span class="text-secondary" style="font-size: 90%" sec:authentication="principal.authorities"></span>
 			</div>
+			<div class="fs-6 text-center flex-nowrap" sec:authorize="isAuthenticated()">
+				<span class="text-secondary" style="font-size: 90%">Copyright &#169; : </span>
+				<span class="text-secondary" style="font-size: 90%">Julián Quenard</span>
+				<span class="text-secondary" style="font-size: 90%">| Fecha de creación: </span>
+				<span class="text-secondary" style="font-size: 90%">09-2021</span>
+			</div>
 			
 			<div th:fragment="footScripts">
 				<script th:src="@{/js/generales.js}"></script>
 				<script th:src="@{/js/configuraDispositivo.js}"></script>
+				<script th:src="@{/js/recupera-receta.js}"></script>
 			</div>					
 		</footer>
 	</body>

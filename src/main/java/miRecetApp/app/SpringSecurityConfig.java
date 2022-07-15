@@ -17,6 +17,7 @@ import miRecetApp.app.service.implementation.UsuarioService;
  * @author Julian Quenard
  * @version 1
  */
+
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {

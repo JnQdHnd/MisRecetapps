@@ -8,6 +8,10 @@ import org.springframework.data.domain.Sort;
 
 import miRecetApp.app.model.entity.GastoDivisible;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 public interface IGastoDivisibleService {
 	/**
 	 * Método que trae todos los elementos de la BD.

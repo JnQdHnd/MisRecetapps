@@ -5,6 +5,10 @@ import org.springframework.stereotype.Service;
 import miRecetApp.app.model.dao.IInstruccionDao;
 import miRecetApp.app.service.IInstruccionService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class InstruccionServiceImplementa implements IInstruccionService {	
 	@Autowired

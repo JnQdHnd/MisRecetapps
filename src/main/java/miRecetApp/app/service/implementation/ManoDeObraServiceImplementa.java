@@ -11,6 +11,10 @@ import miRecetApp.app.model.dao.IManoDeObraDao;
 import miRecetApp.app.model.entity.ManoDeObra;
 import miRecetApp.app.service.IManoDeObraService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class ManoDeObraServiceImplementa implements IManoDeObraService {
 	

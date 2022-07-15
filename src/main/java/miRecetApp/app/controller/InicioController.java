@@ -13,7 +13,9 @@ import miRecetApp.app.service.implementation.IdentificaDevice;
  * Clase que controla la gestión la ventana de inicio. 
  * 
  * @author Julian Quenard
+ * 01-09-2021
  */
+
 @Controller
 public class InicioController {
 	

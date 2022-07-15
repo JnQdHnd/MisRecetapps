@@ -1,5 +1,9 @@
 package miRecetApp.app.model.entity;
 
+/**
+ * @author Julián Quenard *
+ * 01-09-2021
+ */
 public enum Servicio {
 	
 	GAS_NATURAL("Gas Natural","METRO3_MINUTO"),

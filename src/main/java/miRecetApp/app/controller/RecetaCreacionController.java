@@ -43,6 +43,11 @@ import miRecetApp.app.service.IRecetaService;
 import miRecetApp.app.service.IUploadFileService;
 import miRecetApp.app.service.implementation.IdentificaDevice;
 
+/**
+ * @author Julián Quenard *
+ * 01-09-2021
+ */
+
 @Controller
 @SessionAttributes("recetaCreacion")
 public class RecetaCreacionController {
@@ -344,7 +349,7 @@ public class RecetaCreacionController {
 	 */
 	@RequestMapping(value = "/receta/eliminar/{id}")
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash, Model model) {
-		if (id > 0) {
+		if (id > 0) {			
 			recetaService.delete(id);
 			flash.addFlashAttribute("success", "Receta eliminado con éxito!");
 		}
@@ -507,29 +512,21 @@ public class RecetaCreacionController {
 		System.out.println("***************RECETA PROVISORIA************");
 		Receta receta = new Receta();
 		String recetaId = request.getParameter("idModal");
-		System.out.println("recetaId en provisoria: " + recetaId);
 		receta.setId(recetaId);
 		String autor = request.getParameter("autorModal");
-		System.out.println("autor en provisoria: " + autor);
 		receta.setAutor(autor);
 		String nombre = request.getParameter("nombreModal");
-		System.out.println("nombre en provisoria: " + nombre);
 		receta.setNombre(nombre);
 		String porciones = request.getParameter("porcionesModal");
 		receta.setPorciones(porciones);	
-		System.out.println("porciones en provisoria: " + porciones);
 		
 		int cantidadDeIngredientes = Integer.parseInt(request.getParameter("cantidadDeIngredientesModal"));
-		System.out.println("cantidadDeIngredientes provisoria: " + cantidadDeIngredientes);
 		List<Ingrediente> ingredientes = new ArrayList<>();
 		for(int i = 0; i<cantidadDeIngredientes; i++) {
 			System.out.println("Ingrediente" + i + ":");
 			String productoId= request.getParameter("ingredientes["+ i +"].productoIdModal"); 
 			String productoCantidad= request.getParameter("ingredientes["+ i +"].cantidadModal");
 			String productoUnidad= request.getParameter("ingredientes["+ i +"].unidadDeMedidaModal");
-			System.out.println("productoId: " + productoId);
-			System.out.println("productoCantidad: " + productoCantidad);
-			System.out.println("productoUnidad: " + productoUnidad);
 			if(productoId != null || !productoCantidad.isBlank()) {
 				Ingrediente ingrediente = new Ingrediente();
 				ingrediente.setProductoId(productoId);
@@ -540,7 +537,6 @@ public class RecetaCreacionController {
 		}
 		receta.setIngredientes(ingredientes);		
 		int cantidadDeArtefactos = Integer.parseInt(request.getParameter("cantidadDeArtefactosModal"));
-		System.out.println("cantidadDeArtefactos provisoria: " + cantidadDeArtefactos);
 		List<ArtefactoEnUso> artefactos = new ArrayList<>();
 		for(int i = 0; i<cantidadDeArtefactos; i++) {
 			System.out.println("Artefacto" + i + ":");
@@ -550,16 +546,8 @@ public class RecetaCreacionController {
 			String intensidad= request.getParameter("artefactosUtilizados["+ i +"].intensidadDeUsoModal");
 			String temperatura= request.getParameter("artefactosUtilizados["+ i +"].temperaturaModal");
 			String unidadDeTemperatura= request.getParameter("artefactosUtilizados["+ i +"].unidadDeTemperaturaModal");
-			System.out.println("artefactoId: " + artefactoId);
-			System.out.println("minutosDeUso: " + minutosDeUso);
-			System.out.println("esHorno: " + esHorno);
-			System.out.println("intensidad: " + intensidad);
-			System.out.println("temperatura: " + temperatura);
-			System.out.println("unidadDeTemperatura: " + unidadDeTemperatura);
 			boolean artefactoIdNotNull = artefactoId != null;
 			boolean minutosDeUsoNotNullandNotBlank = minutosDeUso != null && !minutosDeUso.isBlank();
-			System.out.println("artefactoIdNotNull: " + artefactoIdNotNull);
-			System.out.println("minutosDeUsoNotNullandNotBlank: " + minutosDeUsoNotNullandNotBlank);
 			
 			if(artefactoIdNotNull || minutosDeUsoNotNullandNotBlank) { 
 				ArtefactoEnUso artefactoEnUso = new ArtefactoEnUso();
@@ -575,7 +563,6 @@ public class RecetaCreacionController {
 		receta.setArtefactosUtilizados(artefactos);	
 		
 		int cantidadDeInstrucciones = Integer.parseInt(request.getParameter("cantidadDeInstruccionesModal"));
-		System.out.println("cantidadDeInstrucciones provisoria: " + cantidadDeInstrucciones);
 		List<Instruccion> instrucciones = new ArrayList<>();
 		for(int i = 0; i<cantidadDeInstrucciones; i++) {
 			System.out.println("Instruccion" + i + ":");

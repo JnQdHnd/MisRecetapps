@@ -3,6 +3,10 @@ package miRecetApp.app.service.implementation;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class IdentificaDevice {
 	

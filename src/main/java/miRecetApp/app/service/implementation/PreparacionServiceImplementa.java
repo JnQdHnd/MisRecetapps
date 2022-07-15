@@ -9,6 +9,10 @@ import miRecetApp.app.model.dao.IPreparacionDao;
 import miRecetApp.app.model.entity.Preparacion;
 import miRecetApp.app.service.IPreparacionService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class PreparacionServiceImplementa implements IPreparacionService {
 	

@@ -2,7 +2,6 @@ package miRecetApp.app.controller;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -31,11 +30,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import miRecetApp.app.model.entity.Artefacto;
+import miRecetApp.app.model.entity.ArtefactoEnUso;
 import miRecetApp.app.model.entity.Ingrediente;
 import miRecetApp.app.model.entity.ManoDeObra;
 import miRecetApp.app.model.entity.Preparacion;
 import miRecetApp.app.model.entity.Producto;
 import miRecetApp.app.model.entity.Receta;
+import miRecetApp.app.model.entity.RecetaExportableWraper;
 import miRecetApp.app.model.entity.UnidadDeMedida;
 import miRecetApp.app.model.entity.Usuario;
 import miRecetApp.app.service.IArtefactoService;
@@ -45,6 +46,11 @@ import miRecetApp.app.service.IUploadFileService;
 import miRecetApp.app.service.implementation.IdentificaDevice;
 import miRecetApp.app.service.implementation.UsuarioService;
 import miRecetApp.app.util.paginator.PageRender;
+
+/**
+ * @author Julián Quenard *
+ * 01-09-2021
+ */
 
 @Controller
 @SessionAttributes("recetario")
@@ -236,8 +242,7 @@ public class RecetaVerController {
 	 * @param request
 	 * @return String
 	 */
-	@RequestMapping(value = { "/receta/listarMias", "/browser/receta/listarMias",
-							  "/mobile/receta/listarMias" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/receta/listarMias"}, method = RequestMethod.GET)
 	public String listarMias(@RequestParam(name = "page", defaultValue = "0") int page, 
 						 Model model,
 						 Authentication authentication, 
@@ -288,8 +293,59 @@ public class RecetaVerController {
 		return "receta/listarMias";
 	}
 	
-	@RequestMapping(value = { "/receta/verReceta/{recetaId}"})
+	@RequestMapping(value = {"/receta/verReceta/{recetaId}"})
 	public String verReceta(@PathVariable(name = "recetaId") long recetaId,
+							Authentication authentication, 
+							Model model, 
+							Device device) {
+	
+		List<Producto> productos = productoService.findAll(Sort.by("nombre").ascending());
+		List<Artefacto> artefactos = artefactoService.findAll(Sort.by("nombre").ascending());		
+		List<Producto> productosEnReceta = new ArrayList<>();	
+		List<Artefacto> artefactosEnReceta = new ArrayList<>();	
+		Receta receta = recetaService.findOne(recetaId);
+		RecetaExportableWraper recetaExportable = new RecetaExportableWraper();
+		
+		deviceType = identificaDevices.getDevice(device);	
+		
+		for(Usuario u:receta.getUsuariosFanaticos()) {
+			System.out.println("VERIFICANDO FANATICOS");
+			if(u.getUsername().equals(authentication.getName())) {
+				System.out.println("SETEANDO FAVORITAS");
+				receta.setEsFavorita(true);
+				break;
+			}
+		}		
+		for(Ingrediente i : receta.getIngredientes()) {
+			Producto producto = productoService.findOne(i.getProductoId());
+			productosEnReceta.add(producto);			
+		}
+		for(ArtefactoEnUso i : receta.getArtefactosUtilizados()) {
+			Artefacto artefacto = artefactoService.findOne(i.getArtefactoId());
+			artefactosEnReceta.add(artefacto);			
+		}
+		recetaExportable.setReceta(receta);
+		recetaExportable.setProductosEnReceta(productosEnReceta);
+		recetaExportable.setArtefactosEnReceta(artefactosEnReceta);
+		double costoPorcion = calculaCostoPorcion(receta);
+		double costoTotal = costoPorcion * receta.getPorciones();		
+		costoPorcion = Precision.round(costoPorcion, 2);
+		costoTotal = Precision.round(costoTotal, 2);
+		
+		model.addAttribute("titulo", receta.getNombre());	
+		model.addAttribute("receta", receta);	
+		model.addAttribute("recetaExportable", recetaExportable);
+		model.addAttribute("productos", productos);
+		model.addAttribute("artefactos", artefactos);
+		model.addAttribute("costoPorcion", costoPorcion);
+		model.addAttribute("costoTotal", costoTotal);
+		model.addAttribute("deviceType", deviceType);
+
+		return "receta/verReceta";
+	}
+	
+	@RequestMapping(value = { "/receta/verRecetaConPreparaciones/{recetaId}"})
+	public String verRecetaConPreparacion(@PathVariable(name = "recetaId") long recetaId,
 							Authentication authentication, 
 							Model model,
 							HttpServletRequest request, 
@@ -302,28 +358,72 @@ public class RecetaVerController {
 		
 		List<Producto> productos = productoService.findAll(Sort.by("nombre").ascending());
 		List<Artefacto> artefactos = artefactoService.findAll(Sort.by("nombre").ascending());
-		
+		List<Receta> preparaciones = new ArrayList<>();
+		List<Producto> productosEnReceta = new ArrayList<>();	
+		List<Artefacto> artefactosEnReceta = new ArrayList<>();	
 		Receta receta = recetaService.findOne(recetaId);
+		RecetaExportableWraper recetaExportable = new RecetaExportableWraper();
+		LinkedHashSet<Long> ingredientesSinRepetir = new LinkedHashSet<Long>();	
+		LinkedHashSet<Long> artefactosSinRepetir = new LinkedHashSet<Long>();	
+		double costoTotal = 0;
+		double costoPorcion = 0;		
+		
+		for(Preparacion p : receta.getPreparaciones()) {
+			Long id = p.getRecetaId();
+			Receta r = recetaService.findOne(id);
+			preparaciones.add(r);
+			double costoDePreparacionTotal = calculaCostoTotal(r);
+			costoTotal = costoTotal + costoDePreparacionTotal;
+			System.out.println("PREPARACION: " + r.getNombre() + " - Costo: " + costoDePreparacionTotal);
+			for (Ingrediente ingrediente : r.getIngredientes()) {
+				Long productoId = ingrediente.getProductoId();
+				ingredientesSinRepetir.add(productoId);							
+			}
+			for (ArtefactoEnUso artefactoEnUso : r.getArtefactosUtilizados()) {
+				Long artefactoId = artefactoEnUso.getArtefactoId();
+				artefactosSinRepetir.add(artefactoId);							
+			}
+		}
+		
+		for(Long i : ingredientesSinRepetir) {
+			Producto producto = productoService.findOne(i);
+			productosEnReceta.add(producto);			
+		}
+		for(Long i : artefactosSinRepetir) {
+			Artefacto artefacto = artefactoService.findOne(i);
+			artefactosEnReceta.add(artefacto);			
+		}
+		recetaExportable.setReceta(receta);
+		recetaExportable.setProductosEnReceta(productosEnReceta);
+		recetaExportable.setArtefactosEnReceta(artefactosEnReceta);
+		recetaExportable.setPreparaciones(preparaciones);
+		
+		costoPorcion = costoTotal / receta.getPorciones();				
+		costoPorcion = Precision.round(costoPorcion, 2);
+		costoTotal = Precision.round(costoTotal, 2);
+		
+		System.out.println("RECETA: " + receta.getNombre() + " - CostoTotal: " + costoTotal);
+		System.out.println("RECETA: " + receta.getNombre() + " - CostoPorcion: " + costoPorcion);
+		
 		for(Usuario u:receta.getUsuariosFanaticos()) {
 			if(u.getUsername().equals(authentication.getName())) {
 				receta.setEsFavorita(true);
 				break;
 			}
 		}
-		double costoPorcion = calculaCostoPorcion(receta);
-		double costoTotal = costoPorcion * receta.getPorciones();		
-		costoPorcion = Precision.round(costoPorcion, 2);
-		costoTotal = Precision.round(costoTotal, 2);
 		
 		model.addAttribute("titulo", receta.getNombre());	
-		model.addAttribute("receta", receta);		
+		model.addAttribute("receta", receta);	
+		model.addAttribute("recetaExportable", recetaExportable);
+		model.addAttribute("preparaciones", preparaciones);	
+		model.addAttribute("ingredientesSinRepetir", ingredientesSinRepetir);	
 		model.addAttribute("productos", productos);
 		model.addAttribute("artefactos", artefactos);
 		model.addAttribute("costoPorcion", costoPorcion);
 		model.addAttribute("costoTotal", costoTotal);
 		model.addAttribute("deviceType", deviceType);
 
-		return "receta/verReceta";
+		return "receta/verRecetaConPreparaciones";
 	}
 	
 	@RequestMapping(value = { "/receta/actualizaPrecios"}) 
@@ -359,66 +459,6 @@ public class RecetaVerController {
 		model.addAttribute("deviceType", deviceType);
 
 		return "receta/verReceta";
-	}
-	
-	@RequestMapping(value = { "/receta/verRecetaConPreparaciones/{recetaId}"})
-	public String verRecetaConPreparacion(@PathVariable(name = "recetaId") long recetaId,
-							Authentication authentication, 
-							Model model,
-							HttpServletRequest request, 
-							Locale locale, 
-							Device device) {
-
-		deviceType = identificaDevices.getDevice(device);
-		
-		System.out.println("ID DE RECETA RECIBIDO: " + recetaId);
-		
-		List<Producto> productos = productoService.findAll(Sort.by("nombre").ascending());
-		List<Artefacto> artefactos = artefactoService.findAll(Sort.by("nombre").ascending());
-		List<Receta> preparaciones = new ArrayList<>();
-		LinkedHashSet<Long> ingredientesSinRepetir = new LinkedHashSet<Long>();		
-		double costoTotal = 0;
-		double costoPorcion = 0;		
-		
-		Receta receta = recetaService.findOne(recetaId);
-		for(Preparacion p : receta.getPreparaciones()) {
-			Long id = p.getRecetaId();
-			Receta r = recetaService.findOne(id);
-			preparaciones.add(r);
-			double costoDePreparacionTotal = calculaCostoTotal(r);
-			costoTotal = costoTotal + costoDePreparacionTotal;
-			System.out.println("PREPARACION: " + r.getNombre() + " - Costo: " + costoDePreparacionTotal);
-			for (Ingrediente ingrediente : r.getIngredientes()) {
-				Long productoId = ingrediente.getProductoId();
-				ingredientesSinRepetir.add(productoId);							
-			}
-		}
-		
-		costoPorcion = costoTotal / receta.getPorciones();				
-		costoPorcion = Precision.round(costoPorcion, 2);
-		costoTotal = Precision.round(costoTotal, 2);
-		
-		System.out.println("RECETA: " + receta.getNombre() + " - CostoTotal: " + costoTotal);
-		System.out.println("RECETA: " + receta.getNombre() + " - CostoPorcion: " + costoPorcion);
-		
-		for(Usuario u:receta.getUsuariosFanaticos()) {
-			if(u.getUsername().equals(authentication.getName())) {
-				receta.setEsFavorita(true);
-				break;
-			}
-		}
-		
-		model.addAttribute("titulo", receta.getNombre());	
-		model.addAttribute("receta", receta);	
-		model.addAttribute("preparaciones", preparaciones);	
-		model.addAttribute("ingredientesSinRepetir", ingredientesSinRepetir);	
-		model.addAttribute("productos", productos);
-		model.addAttribute("artefactos", artefactos);
-		model.addAttribute("costoPorcion", costoPorcion);
-		model.addAttribute("costoTotal", costoTotal);
-		model.addAttribute("deviceType", deviceType);
-
-		return "receta/verRecetaConPreparaciones";
 	}
 	
 	@RequestMapping(value = { "/receta/actualizaPreciosConPreparaciones"}) 

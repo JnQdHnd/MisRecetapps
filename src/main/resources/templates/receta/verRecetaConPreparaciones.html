@@ -1,3 +1,7 @@
+<!-- /**
+ * @author Julián Quenard *
+ * @ 01-09-2021
+ */ -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
@@ -44,10 +48,18 @@
 								</i>
 							</a>							
 							<a  class="btn btn-outline-violetasuave my-1" 
-								th:href="@{/receta/verReceta/exportaPDF/} + ${receta.id}" 
+								th:href="@{/receta/verRecetaConPreparacion/exportaPDF/} + ${receta.id}" 
 								target="_blank"
 								title="Exportar a PDF">
 								<i  class="fa fa-file-pdf-o fs-4" 
+									style="width:25px;">
+								</i>
+							</a>
+							<a  class="btn btn-outline-violetasuave my-1" 
+								th:href="@{'/receta/verRecetaConPreparaciones/' + ${receta.id} (format=json)}" 
+								target="_blank"
+								title="Compartir con otro usuario de MisRecetapps">
+								<i  class="fa fa-share fs-4" 
 									style="width:25px;">
 								</i>
 							</a>								

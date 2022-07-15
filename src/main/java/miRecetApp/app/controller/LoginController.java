@@ -16,7 +16,9 @@ import miRecetApp.app.service.implementation.IdentificaDevice;
  * Clase que controla la gestión del Logging en la ventana de inicio. 
  * 
  * @author Julian Quenard
+ * 01-09-2021
  */
+
 @Controller
 public class LoginController {
 	

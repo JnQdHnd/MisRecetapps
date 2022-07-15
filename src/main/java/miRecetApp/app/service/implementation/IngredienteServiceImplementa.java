@@ -6,6 +6,10 @@ import miRecetApp.app.model.dao.IIngredienteDao;
 import miRecetApp.app.model.entity.Ingrediente;
 import miRecetApp.app.service.IIngredienteService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class IngredienteServiceImplementa implements IIngredienteService {	
 	@Autowired

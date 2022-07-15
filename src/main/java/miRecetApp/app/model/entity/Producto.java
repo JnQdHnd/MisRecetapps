@@ -13,6 +13,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import miRecetApp.app.validator.CodigoBarras;
 
+/**
+ * Clase entity que gestiona los Productos en el proyecto.
+ * @author Julian Quenard
+ * 01-09-2021
+ */
 @Entity
 @Table(name = "productos")
 public class Producto implements Serializable {

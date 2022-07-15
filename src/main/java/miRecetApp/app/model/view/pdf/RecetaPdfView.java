@@ -23,6 +23,10 @@ import miRecetApp.app.model.entity.Receta;
 import miRecetApp.app.service.IArtefactoService;
 import miRecetApp.app.service.IProductoService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Component("receta/verReceta.pdf")
 public class RecetaPdfView  extends AbstractPdfView {
 	@Autowired
@@ -99,6 +103,8 @@ public class RecetaPdfView  extends AbstractPdfView {
 		cellCuerpo.setPadding(8f);
 		cellCuerpo.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
 		
+		document.add(tabla1);
+		
 		PdfPTable tabla2 = new PdfPTable(2);
 		cellCuerpo.setPaddingTop(10);
 		cellCuerpo.setPaddingBottom(2);
@@ -121,6 +127,8 @@ public class RecetaPdfView  extends AbstractPdfView {
 		cellCuerpo.setBorderWidthLeft(0);
 		cellCuerpo.setBorderWidthRight(0.5f);
 		tabla2.addCell(cellCuerpo);
+		
+		document.add(tabla2);
 		
 		PdfPTable tabla3 = new PdfPTable(3);
 		cellCuerpo.setPaddingTop(10);
@@ -177,6 +185,8 @@ public class RecetaPdfView  extends AbstractPdfView {
 		cellCuerpo.setBorderWidthLeft(0);
 		cellCuerpo.setBorderWidthRight(0.5f);
 		tabla3.addCell(cellCuerpo);
+		
+		document.add(tabla3);
 		
 		PdfPTable tabla4 = new PdfPTable(3);
 		cellCuerpo.setPaddingTop(10);
@@ -242,6 +252,8 @@ public class RecetaPdfView  extends AbstractPdfView {
 		cellCuerpo.setBorderWidthRight(0.5f);
 		tabla4.addCell(cellCuerpo);
 		
+		document.add(tabla4);
+		
 		PdfPTable tabla5 = new PdfPTable(2);
 		cellCuerpo.setPaddingTop(10);
 		cellCuerpo.setPaddingBottom(6);
@@ -292,12 +304,8 @@ public class RecetaPdfView  extends AbstractPdfView {
 		tabla5.addCell(cellCuerpo);
 		cellCuerpo.setBorderWidthLeft(0);
 		cellCuerpo.setBorderWidthRight(0.5f);
-		tabla5.addCell(cellCuerpo);
+		tabla5.addCell(cellCuerpo);		
 		
-		document.add(tabla1);
-		document.add(tabla2);
-		document.add(tabla3);
-		document.add(tabla4);
 		document.add(tabla5);		
 	}	
 }

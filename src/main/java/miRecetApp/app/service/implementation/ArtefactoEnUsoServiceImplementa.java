@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 import miRecetApp.app.model.dao.IArtefactoEnUsoDao;
 import miRecetApp.app.service.IArtefactoEnUsoService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class ArtefactoEnUsoServiceImplementa implements IArtefactoEnUsoService {
 	

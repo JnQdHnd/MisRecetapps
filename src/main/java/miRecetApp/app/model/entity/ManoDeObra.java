@@ -12,6 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Clase entity que gestiona los trabajadores en el proyecto.
+ * @author Julian Quenard
+ * 01-09-2021
+ */
 @Entity
 @Table(name = "trabajadores")
 public class ManoDeObra implements Serializable {

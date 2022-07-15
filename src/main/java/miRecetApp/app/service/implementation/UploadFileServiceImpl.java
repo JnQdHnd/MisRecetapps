@@ -18,6 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import miRecetApp.app.service.IUploadFileService;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 @Service
 public class UploadFileServiceImpl implements IUploadFileService {
 

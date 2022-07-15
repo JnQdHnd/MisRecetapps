@@ -3,11 +3,7 @@ package miRecetApp.app.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.mobile.device.Device;
@@ -17,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import miRecetApp.app.model.entity.Usuario;
 import miRecetApp.app.service.implementation.IdentificaDevice;
@@ -30,7 +25,9 @@ import miRecetApp.app.model.entity.Role;
  * Clase que controla la creación de Usuarios en la vista. 
  * 
  * @author Julian Quenard
+ * 01-09-2021
  */
+
 @Controller
 public class UsuarioController {
 	
@@ -50,8 +47,6 @@ public class UsuarioController {
 	
 	@Autowired
 	private IdentificaDevice identificaDevices;
-	
-	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	private String deviceType = "browser";
 	

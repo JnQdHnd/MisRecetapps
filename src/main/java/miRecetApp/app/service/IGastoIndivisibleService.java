@@ -7,6 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import miRecetApp.app.model.entity.GastoIndivisible;
 
+/**
+ * @author Julián Quenard *
+ * 15 jul. 2022
+ */
 public interface IGastoIndivisibleService {
 	/**
 	 * Método que trae todos los elementos de la BD.

@@ -1,12 +1,9 @@
 package miRecetApp.app.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-import org.apache.derby.tools.sysinfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +25,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import miRecetApp.app.model.entity.Artefacto;
-import miRecetApp.app.model.entity.ArtefactoEnUso;
 import miRecetApp.app.model.entity.Ingrediente;
-import miRecetApp.app.model.entity.Instruccion;
 import miRecetApp.app.model.entity.Producto;
 import miRecetApp.app.model.entity.Receta;
 import miRecetApp.app.service.IArtefactoService;
@@ -45,6 +39,7 @@ import miRecetApp.app.util.paginator.PageRender;
  * Clase que controla la gestión de la pestaña Productos de la vista. 
  * 
  * @author Julian Quenard
+ * 01-09-2021
  */
 
 @Controller
