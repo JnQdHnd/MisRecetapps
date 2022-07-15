@@ -20,7 +20,7 @@
 		    				<div id="headersBtns" class="" sec:authorize="hasRole('ROLE_USER')">
 		    					<div class="row justify-content-end text-nowrap flex-nowrap">
 	     							<a class="btn btn-primary btnNuevo" th:href="@{/receta/inicio}" th:text="'Nueva'">Nueva</a>
-	     							<a class="col-auto btn btn-success text-white" th:href="@{/receta/listar(format=xlsx)}" th:text="XLS">XLS</a>
+	     							<a hidden class="col-auto btn btn-success text-white" th:href="@{/receta/listar(format=xlsx)}" th:text="XLS">XLS</a>
 	     							<button class="col-auto btn btn-outline-success ms-2" 
 											type="button"
 											data-bs-toggle="collapse" 

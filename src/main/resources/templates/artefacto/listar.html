@@ -19,7 +19,7 @@
 	    					<div id="headersBtns" class="" sec:authorize="hasRole('ROLE_USER')">
 	    						<div class="row justify-content-end text-nowrap flex-nowrap">
      								<a class="btn btn-primary btnNuevo" th:href="@{/artefacto/form}">Nuevo</a>
-     								<a class="col-auto btn btn-success text-white" th:href="@{/artefacto/listar(format=xlsx)}" th:text="XLS">XLS</a>
+     								<a class="col-auto btn btn-success text-white" th:href="@{/artefacto/listar(format=xlsx)}" th:text="XLS" hidden>XLS</a>
    								</div>
 							</div>
     					</div>

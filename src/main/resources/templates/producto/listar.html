@@ -20,7 +20,7 @@
 	    					<div id="headersBtns" class="" sec:authorize="hasRole('ROLE_USER')">
 	    						<div class="row justify-content-end text-nowrap flex-nowrap">
      								<a class="btn btn-primary btnNuevo" th:href="@{/producto/form}" th:text="'Nuevo'"></a>
-     								<a class="col-auto btn btn-success text-white" th:href="@{/producto/listar(format=xlsx)}" th:text="XLS">XLS</a>
+     								<a hidden class="col-auto btn btn-success text-white" th:href="@{/producto/listar(format=xlsx)}" th:text="XLS">XLS</a>
    								</div>
 							</div>
     					</div>

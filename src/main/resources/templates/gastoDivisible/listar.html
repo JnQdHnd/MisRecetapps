@@ -19,7 +19,7 @@
 	    					<div id="headersBtns" class="" sec:authorize="hasRole('ROLE_USER')">
 	    						<div class="row justify-content-end text-nowrap flex-nowrap">
      								<a class="btn btn-primary btnNuevo" th:href="@{/gastoDivisible/form}" th:text="'Nuevo'"></a> 
-     								<a class="col-auto btn btn-success text-white" th:href="@{/gastoDivisible/listar(format=xlsx)}" th:text="XLS"></a>
+     								<a class="col-auto btn btn-success text-white" th:href="@{/gastoDivisible/listar(format=xlsx)}" th:text="XLS" hidden></a>
    								</div>
 							</div>
     					</div>
