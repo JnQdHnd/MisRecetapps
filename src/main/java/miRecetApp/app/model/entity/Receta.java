@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.validator.internal.constraintvalidators.bv.notempty.NotEmptyValidatorForCharSequence;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -244,4 +246,14 @@ public class Receta implements Serializable {
 		}
 		return soloNombrePreparacion;
 	}
+
+	@Override
+	public String toString() {
+		return "Receta [id=" + id + ", nombre=" + nombre + ", ingredientes=" + ingredientes + ", artefactosUtilizados="
+				+ artefactosUtilizados + ", manoDeObra=" + manoDeObra + ", instrucciones=" + instrucciones + ", autor="
+				+ autor + ", usuariosAutorizados=" + usuariosAutorizados + ", usuariosFanaticos=" + usuariosFanaticos
+				+ ", preparaciones=" + preparaciones + ", esPublica=" + esPublica + ", porciones=" + porciones
+				+ ", costo=" + costo + ", esFavorita=" + esFavorita + ", preparacionEnRecetaNombre="
+				+ preparacionEnRecetaNombre + "]";
+	}	
 }

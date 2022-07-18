@@ -257,4 +257,14 @@ function validateDecimal(valor) {
     }
 }
 
+function llamarModalEliminar(casillero) {	
+	console.log('LLAMANDO MODAL ELIMINAR')
+	var idAEliminar = $(casillero).attr('idAEliminar');
+	var hrefConPreparacion = $('.modalConPreparacion').attr('href');
+	var hrefSinPreparacion = $('.modalSinPreparacion').attr('href');
+	$('.modalConPreparacion').attr('href', hrefConPreparacion + idAEliminar);
+	$('.modalSinPreparacion').attr('href', hrefSinPreparacion + idAEliminar);
+	$("#eliminarConPreparacionesModal").modal("show");
+};
+
 

@@ -32,20 +32,21 @@
 					<div class="row justify-content-center">
 						<div class="col-auto">					
 							<a  class="btn btn-outline-violetasuave my-1" 
-								th:href="@{/receta/form/} + ${receta.id}"
+								th:href="@{/receta/preparaciones/} + ${receta.id}"
 								title="Editar receta">
 								<i  class="fa fa-pencil fs-4" 
 									aria-hidden="true" 
 									style="width:25px;">
 								</i>
 							</a>
-							<a  class="btn btn-outline-violetasuave my-1" 
-								th:href="@{/receta/eliminar/} + ${receta.id}" 
-								onclick="return confirm('¿Seguro de Eliminar?')"
-								title="Eliminar receta">
-								<i  class="fa fa-trash-o fs-4" 
-									style="width:25px;">
-								</i>
+							<a  class="btn btn-outline-violetasuave my-1"
+								data-bs-toggle="modal" 								
+								data-bs-target="#eliminarConPreparacionesModal"
+								title="Eliminar receta" 								
+								th:idAEliminar="${receta.id}"
+								onclick="llamarModalEliminar(this); return false;">
+								<i  class="fa fa-trash fs-4" 
+									style="width: 25px;"></i>
 							</a>							
 							<a  class="btn btn-outline-violetasuave my-1" 
 								th:href="@{/receta/verRecetaConPreparacion/exportaPDF/} + ${receta.id}" 
@@ -137,9 +138,9 @@
 								</li>	
 <!--PREPARACIONES---------------------------------------------------------------------------------------------------->								
 								<li class="list-group-item mx-0 px-0">
-									<div class="row justify-content-between px-0 flex-nowrap">
-										<label class="col-auto fs-3 mb-2 fw-bold text-primary ms-3">Preparaciones:&nbsp;</label>															
-									</div>									
+									
+									<label class="col-auto fs-3 mb-2 fw-bold text-primary ms-3">Preparaciones:&nbsp;</label>															
+																
 									<input id="cantidadDePreparaciones" name="cantidadDePreparaciones" type="hidden" th:value="${#lists.size(receta.preparaciones)}"/>
 									<div id="cuerpoPreparaciones">	
 										<div th:each="preparacion, iterador : ${preparaciones}">
@@ -319,9 +320,7 @@
 																<div class="row justify-content-between px-0 mb-2 flex-nowrap">
 																	<label class="col-auto fs-5 fw-bold text-primary" style="width: 190px;">
 																		Instrucciones:&nbsp;											
-																	</label>				
-																	<span class="col-auto fst-italic fs-6 text-info visor pb-0 pt-1" 
-																		  style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span>
+																	</label>																		
 																	<div class="col-auto text-end me-0" style="width: 130px;">									
 																		<button class="btn btn-outline-violetasuave py-0 reproduceTexto"												
 																		  		title="Reproduce instrucciones por comando de voz."
@@ -338,9 +337,17 @@
 																		  		style="display: none;">
 																			<i class="fa fa-question-circle-o fs-5" aria-hidden="true"></i>
 																		</button>									
-																	</div>
-																														
+																	</div>																																																
 																</div>
+																<div class="row">
+																	<div class="card visorCard my-3" style="display: none">
+																		<div class="row justify-content-center">
+																			<span class="col-auto fst-italic fs-6 my-1 text-info visor" 
+																				  style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+																			</span>
+																		</div>
+																	</div>	
+																</div>	
 																<input id="cantidadDeInstrucciones" name="cantidadDeInstrucciones" type="hidden" th:value="${#lists.size(preparacion.instrucciones)}"/>									
 																	
 																<div id="cuerpoInstrucciones">
@@ -502,8 +509,35 @@
 						</div>										
 					</div>
 				</div>
-			</div>
-		</div>			
+			</div>			
+		</div>		
+		<div id="eliminarConPreparacionesModal" class="modal fade" tabindex="-1" aria-labelledby="eliminarConPreparacionesModal" aria-hidden="true">
+				<div class="row justify-content-center">
+					<div class="modal-dialog modal-xl">
+						<div class="modal-content" style="max-width: 500px;">
+							<div class="modal-header text-primary row justify-content-center">
+			  					<div class="col-auto">
+									<span class="fw-bold fs-5 ms-3">
+										Eliminando
+									</span>
+								</div>	
+							</div>	
+							<div class="modal-body pt-0 mt-2">
+								<a  class="btn btn-danger mt-2 col-12 modalConPreparacion"									
+									th:href="@{/receta/eliminarConPreparacion/}"
+									onclick="return confirm('¿Seguro de Eliminar receta y preparaciones?')"
+									title="Eliminar receta y preparaciones">Eliminar receta y preparaciones
+								</a>
+								<a  class="btn btn-danger mt-2 col-12 modalSinPreparacion"
+									th:href="@{/receta/eliminar/}"
+									onclick="return confirm('¿Seguro de conservar preparaciones y eliminar solo la receta?')"
+									title="Eliminar solo receta">Conservar preparaciones, solo eliminar receta.
+								</a>
+							</div>										
+						</div>
+					</div>
+				</div>
+			</div>		
 		<script th:src="@{//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js}"></script>		
 		<script th:src="@{/js/ver-receta.js}"></script>
 		<script th:src="@{/js/modernizr-browser.js}"></script>	

@@ -8,13 +8,36 @@ $("#tablaDeRecetas").load(url);
 		 		
 $('[name="btnRadio"]').click(function () {
 	var checkedradio = $('[name="btnRadio"]:radio:checked').val();
-	if(checkedradio=='mias'){ 
+	if(checkedradio=='mias'){ 		
 		$('#seleccionaListado').attr('soloFavoritas', false);
-		filtraFavoritas(); 	 			      	
+		filtraFavoritas(); 	 
+		$( ".recetaId" ).each(function() {
+			var esPreparacion = $(this).attr('esPreparacion');
+			console.log('esPreparacion: ' + esPreparacion)
+			if(esPreparacion == 'false'){
+				$(this).show();
+			}
+			else{
+				$(this).hide();
+			}			
+		});			      	
 	}
     if(checkedradio=='favoritas'){
 		$('#seleccionaListado').attr('soloFavoritas', true);
 		filtraFavoritas();  	
+ 	}
+ 	if(checkedradio=='preparaciones'){
+		console.log('CLICK EN PREPARACIONES');
+		$( ".recetaId" ).each(function() {
+			var esPreparacion = $(this).attr('esPreparacion');
+			console.log('esPreparacion: ' + esPreparacion)
+			if(esPreparacion == 'true'){
+				$(this).show();
+			}
+			else{
+				$(this).hide();
+			}			
+		});
  	}
 });	
 

@@ -16,10 +16,10 @@
 				</div>			
 				<div class="card-body pt-1 mt-0 px-2 mx-1">
 					<form id="formulario" th:action="${esRecetaConPreparaciones} ? @{/receta/formPreparaciones} : @{/receta/form}" th:object="${receta}" method="post" enctype="multipart/form-data">
-						<input type="hidden" name="esNuevo" id="esNuevo" th:value="${esNuevo}">
+						<input type="hidden" name="esPreparacionNueva" id="esPreparacionNueva" th:value="${esPreparacionNueva}">
 						<input type="hidden" name="esRecetaConPreparaciones" id="esRecetaConPreparaciones" th:value="${esRecetaConPreparaciones}">
 						<input type="hidden" id="seHaCreadoItem" th:value="${seHaCreadoItem}">
-						<input th:if="${esRecetaConPreparaciones} and ${esNuevo  == false}" type="hidden" name="indexPreparacion" id="indexPreparacion" th:value="${indexPreparacion}">
+						<input th:if="${esRecetaConPreparaciones} and ${esPreparacionNueva  == false}" type="hidden" name="indexPreparacion" id="indexPreparacion" th:value="${indexPreparacion}">
 						<!--NOMBE---------------------------------------------------------------------------------------------------->											
 						<div class="row">
 							<div class="col-12">

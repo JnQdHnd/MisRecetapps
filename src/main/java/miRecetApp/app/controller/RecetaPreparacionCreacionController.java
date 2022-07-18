@@ -78,7 +78,7 @@ public class RecetaPreparacionCreacionController {
 	List<Artefacto> artefactos;
 	List<ManoDeObra> trabajadores;
 	List<Receta> recetas;
-	
+	boolean esNuevaReceta;
 	Receta recetaProvisoria;
 	int preparacionAGestionar = 0;
 	List<Receta> preparacionesProvisorias = new ArrayList<>();
@@ -98,7 +98,12 @@ public class RecetaPreparacionCreacionController {
 	@RequestMapping(value = {"/receta/inicio"})
 	public String seleccionaTipoDeReceta(Model model, Locale locale, Device device) {
 		
+		productos = productoService.findAll(Sort.by("nombre").ascending());
+		artefactos = artefactoService.findAll(Sort.by("nombre").ascending());
+		trabajadores = manoDeObraService.findAll(Sort.by("nombre").ascending());	
+		
 		deviceType = identificaDevices.getDevice(device);
+		esNuevaReceta = true;
 
 		model.addAttribute("titulo", messageSource.getMessage("text.receta.configurar.titulo", null, locale));
 		model.addAttribute("btnText", messageSource.getMessage("text.receta.configurar.btn", null, locale));
@@ -133,8 +138,6 @@ public class RecetaPreparacionCreacionController {
 		preparacionAGestionar = 0;
 		contadorDeRecetasIncorporadas = 0;
 		preparacionesProvisorias = new ArrayList<>();
-			
-		boolean esNuevo = true;
 		
 		recetas = recetaService.findAll(Sort.by("nombre").ascending());
 
@@ -142,7 +145,7 @@ public class RecetaPreparacionCreacionController {
 		model.addAttribute("btnText", messageSource.getMessage("text.receta.configurar.btn", null, locale));
 		model.addAttribute("recetaConPreparaciones", receta);
 		model.addAttribute("recetas", recetas);
-		model.addAttribute("esNuevo", esNuevo);
+		model.addAttribute("esNuevo", esNuevaReceta);
 		model.addAttribute("deviceType", deviceType);
 
 		return "receta/formPreparaciones";
@@ -161,10 +164,9 @@ public class RecetaPreparacionCreacionController {
 									   Device device, 
 									   Authentication authentication) {
 		
-		System.out.println("SEGUIMOS CON LA RECETA CON PREPARACIONES");
+		Receta r = recetaProvisoria;
+		System.out.println("SEGUIMOS CON LA RECETA CON PREPARACIONES: " + r.getNombre());
 		deviceType = identificaDevices.getDevice(device);	
-			
-		boolean esNuevo = true;
 
 		model.addAttribute("titulo", messageSource.getMessage("text.receta.configurar.titulo", null, locale));
 		model.addAttribute("btnText", messageSource.getMessage("text.receta.configurar.btn", null, locale));
@@ -172,7 +174,7 @@ public class RecetaPreparacionCreacionController {
 		model.addAttribute("recetas", recetas);
 		model.addAttribute("preparacionAGestionar", preparacionAGestionar);
 		model.addAttribute("preparacionesProvisorias", preparacionesProvisorias);
-		model.addAttribute("esNuevo", esNuevo);
+		model.addAttribute("esNuevo", esNuevaReceta);
 		model.addAttribute("deviceType", deviceType);
 
 		return "receta/formPreparaciones";
@@ -192,25 +194,37 @@ public class RecetaPreparacionCreacionController {
 									   		Device device, 
 									   		Authentication authentication) {
 		
+		productos = productoService.findAll(Sort.by("nombre").ascending());
+		artefactos = artefactoService.findAll(Sort.by("nombre").ascending());
+		trabajadores = manoDeObraService.findAll(Sort.by("nombre").ascending());
+		
 		deviceType = identificaDevices.getDevice(device);
-		Receta receta = null;
+		esNuevaReceta = false;			
 
 		if (id > 0) {
-			receta = recetaService.findOne(id);
+			recetaProvisoria = recetaService.findOne(id);
+			preparacionesProvisorias.clear();
+			for(Preparacion p : recetaProvisoria.getPreparaciones()) {
+				Receta r = recetaService.findOne(p.getRecetaId());
+				preparacionesProvisorias.add(r);
+				preparacionAGestionar = preparacionesProvisorias.size();
+				System.out.println(r.toString());
+			}
 		}
 		else {
 			System.out.println("ERROR AL RECUPERAR RECETA CON PREPARACIONES");
 			return "redirect:/receta/listar";
 		}			
-		boolean esNuevo = false;
 		
 		recetas = recetaService.findAll(Sort.by("nombre").ascending());
 
 		model.addAttribute("titulo", messageSource.getMessage("text.receta.configurar.titulo", null, locale));
 		model.addAttribute("btnText", messageSource.getMessage("text.receta.configurar.btn", null, locale));
-		model.addAttribute("recetaConPreparaciones", receta);
+		model.addAttribute("recetaConPreparaciones", recetaProvisoria);
+		model.addAttribute("preparacionAGestionar", preparacionAGestionar);
 		model.addAttribute("recetas", recetas);
-		model.addAttribute("esNuevo", esNuevo);
+		model.addAttribute("esNuevo", esNuevaReceta);
+		model.addAttribute("preparacionesProvisorias", preparacionesProvisorias);
 		model.addAttribute("deviceType", deviceType);
 
 		return "receta/formPreparaciones";
@@ -233,7 +247,8 @@ public class RecetaPreparacionCreacionController {
 									  HttpServletRequest request) {
 		
 		System.out.println("GESTIONANDO PREPARACIONES");	
-		
+		boolean esPreparacionNueva = Boolean.parseBoolean(request.getParameter("esPreparacionNueva"));
+		System.out.println("esPreparacionNueva: " + esPreparacionNueva);
 		deviceType = identificaDevices.getDevice(device);
 		int cantidadDePreparacionesEnReceta = recetaConPreparaciones.getPreparaciones().size();
 		int cantidadDePreparacionesEnForm = Integer.parseInt(request.getParameter("cantidadDePreparaciones"));
@@ -241,7 +256,7 @@ public class RecetaPreparacionCreacionController {
 		System.out.println("cantidadDePreparacionesEnForm: " + cantidadDePreparacionesEnForm);
 		System.out.println("preparacionAGestionar: " + preparacionAGestionar);
 		
-		recetaProvisoria = recetaConPreparaciones;
+		recetaProvisoria = recetaConPreparaciones; //TODO Agregar opcion para editar preparaciones al ser llamado este metodo
 		
 		if(cantidadDePreparacionesEnReceta < cantidadDePreparacionesEnForm) {
 			System.out.println("DIFERENCIA ENTRE RECETA Y FORM: HAY < PREPARACIONES EN RECETRA DE LO DEBIDO");
@@ -279,7 +294,7 @@ public class RecetaPreparacionCreacionController {
 					model.addAttribute("trabajadores", trabajadores);
 					model.addAttribute("deviceType", deviceType);
 					model.addAttribute("esRecetaConPreparaciones", true);
-					model.addAttribute("esNuevo", true);
+					model.addAttribute("esPreparacionNueva", true);
 
 					System.out.println("LLAMANDO A FORM");
 					
@@ -309,7 +324,7 @@ public class RecetaPreparacionCreacionController {
 					model.addAttribute("trabajadores", trabajadores);
 					model.addAttribute("deviceType", deviceType);
 					model.addAttribute("esRecetaConPreparaciones", true);
-					model.addAttribute("esNuevo", true);
+					model.addAttribute("esPreparacionNueva", true);
 					
 					System.out.println("LLAMANDO A FORM");
 					
@@ -321,20 +336,34 @@ public class RecetaPreparacionCreacionController {
 			}						
 		}
 		else if(preparacionAGestionar == cantidadDePreparacionesEnReceta) {
+			System.out.println("GUARDANDO PREPARACIONES EN BD TOTAL: " + preparacionesProvisorias.size());
 			recetaConPreparaciones.getPreparaciones().clear();
 			for(Receta r: preparacionesProvisorias) {
+				System.out.println("GUARDANDO PREPARACION EN BD: " + r.getNombre());
 				r.setPreparacionEnRecetaNombre(recetaConPreparaciones.getNombre());
+				boolean idEsNull = r.getId() == null;				
+				System.out.println("idEsNull: " + idEsNull);
 				recetaService.save(r);
-				Long id = recetaService.findByNombre(r.getNombre()).getId();
-				Preparacion p = new Preparacion();
-				p.setRecetaId(id);
-				preparacionService.save(p);
-				System.out.println("PREPARACION ID: " + preparacionService.findByRecetaId(id).getId());
-				recetaConPreparaciones.getPreparaciones().add(p);
-			}
-			System.out.println("GUARDANDO RECETA CON PREPARACIONES YA CONFIGURADA");
+				if(!idEsNull) {
+					System.out.println("EDITANDO PREPARACION EN RECETA");
+					Preparacion p = preparacionService.findByRecetaId(r.getId());
+					if(p != null) {
+						recetaConPreparaciones.getPreparaciones().add(p);
+					}
+				}
+				else {
+					System.out.println("INCORPORANDO PREPARACION EN RECETA");
+					Long id = recetaService.findByNombre(r.getNombre()).getId();
+					Preparacion p = new Preparacion();
+					p.setRecetaId(id);
+					preparacionService.save(p);
+					System.out.println("PREPARACION ID: " + preparacionService.findByRecetaId(id).getId());
+					recetaConPreparaciones.getPreparaciones().add(p);
+				}				
+			}			
 			recetaConPreparaciones.setAutor(authentication.getName());
 			recetaService.save(recetaConPreparaciones);
+			System.out.println("GUARDANDO RECETA CON PREPARACIONES YA CONFIGURADA");
 			String mensajeFlash = "¡Receta con preparación guardada con éxito!";
 			flash.addFlashAttribute("success", mensajeFlash);	
 			return "redirect:/receta/verRecetaConPreparaciones/" + recetaConPreparaciones.getId();			
@@ -486,16 +515,16 @@ public class RecetaPreparacionCreacionController {
 			model.addAttribute("artefactos", artefactos);
 			model.addAttribute("deviceType", deviceType);
 			return "receta/form";
-		}
+		}		
 		
-		boolean esNuevo = Boolean.parseBoolean(request.getParameter("esNuevo"));
+		boolean esPreparacionNueva = Boolean.parseBoolean(request.getParameter("esPreparacionNueva"));
+		
+		
 		boolean hayArtefactosUtilizados = receta.getArtefactosUtilizados() != null;
 		boolean hayInstrucciones = receta.getInstrucciones() != null;
 		
-		System.out.println("receta: " + receta.getNombre());
-		System.out.println("porciones: " + receta.getPorciones());
-		System.out.println("ingredientes: " + receta.getIngredientes().size());
-		
+		System.out.println(receta.toString());
+		System.out.println("esPreparacionNueva: " + esPreparacionNueva);
 		System.out.println("hayArtefactosUtilizados: " + hayArtefactosUtilizados);
 		System.out.println("hayInstrucciones: " + hayInstrucciones);
 		
@@ -570,19 +599,18 @@ public class RecetaPreparacionCreacionController {
 			for(int i = ingredientesEnReceta; i > cantidadDeIngredientes; i--) {
 				receta.getIngredientes().remove(i);
 			}
-		}		
-		
-		 //SE ELIMINA ID PARA QUE SE GUARDE COMO UNA NUEVA RECETA DADO QUE ES UNA PREPARACION
-		
+		}				 
 		String mensajeFlash;
-		if(esNuevo) {
+		if(esPreparacionNueva) {
+			System.out.println("GUARDANDO PREPARACION EN LISTADO DE PREPARACIONES PROVISORIO");		
 			receta.cleanId();
 			preparacionesProvisorias.add(receta);
 			mensajeFlash = "Preparación creada con éxito!";
 			preparacionAGestionar++;
 		}
-		else {
+		else {			
 			int index = Integer.parseInt(request.getParameter("indexPreparacion"));
+			System.out.println("EDITANDO PREPARACION EN EL INDEX: " + index);
 			preparacionesProvisorias.set(index, receta);
 			mensajeFlash = "Preparación editada con éxito!";
 		}		
@@ -689,29 +717,23 @@ public class RecetaPreparacionCreacionController {
 	@RequestMapping(value = { "/receta/editaPreparacion/{index}"})
 	public String editaPreparacion(@PathVariable(value = "index") int index, Model model, Locale locale, Receta recetaConPreparaciones) {
 		
-		System.out.println("EDITANDO PREPARACION EN RECETA: " + recetaConPreparaciones.getNombre());
-		System.out.println("INDEX: " + index);
-		
-		for(Receta r: preparacionesProvisorias) {
-			System.out.println("NOMBRE PROVISORIA: " + r.getNombre());
-		}
-		
 		Receta receta = preparacionesProvisorias.get(index);
 		
-		if(receta.getIngredientes() == null) {
+		if(receta.getIngredientes() == null || receta.getIngredientes().size() == 0) {
+			System.out.println("INGREDIENTES VACIO EN EDICION - CREANDO INGREDIENTES POR DEFECTO");
 			List<Ingrediente> ingredientes = new ArrayList<>();
 			Ingrediente ingrediente = new Ingrediente();
 			ingredientes.add(ingrediente);
 			receta.setIngredientes(ingredientes);
 		}
-		if(receta.getArtefactosUtilizados() == null) {
+		if(receta.getArtefactosUtilizados() == null || receta.getArtefactosUtilizados().size() == 0) {
 			System.out.println("ARTEFACTOS VACIO EN EDICION - CREANDO ARTEFACTO POR DEFECTO");
 			List<ArtefactoEnUso> artefactosEnUso = new ArrayList<>();
 			ArtefactoEnUso artefacto = new ArtefactoEnUso();
 			artefactosEnUso.add(artefacto);
 			receta.setArtefactosUtilizados(artefactosEnUso);
 		}
-		if(receta.getInstrucciones() == null) {
+		if(receta.getInstrucciones() == null || receta.getInstrucciones().size() == 0) {
 			System.out.println("INSTRUCCIONES VACIO EN EDICION - CREANDO INSTRUCCION POR DEFECTO");
 			List<Instruccion> instrucciones = new ArrayList<>();
 			Instruccion instruccion = new Instruccion();
@@ -728,7 +750,7 @@ public class RecetaPreparacionCreacionController {
 		model.addAttribute("trabajadores", trabajadores);
 		model.addAttribute("deviceType", deviceType);
 		model.addAttribute("esRecetaConPreparaciones", true);
-		model.addAttribute("esNuevo", false);
+		model.addAttribute("esPreparacionNueva", false);
 		model.addAttribute("indexPreparacion", index);
 
 		System.out.println("LLAMANDO A FORM");

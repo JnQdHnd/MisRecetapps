@@ -97,7 +97,7 @@ public class RecetaVerController {
 	 * @param request
 	 * @return String
 	 */
-	@RequestMapping(value = { "/receta/listar", "/browser/receta/listar", "/mobile/receta/listar" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/receta/listar"}, method = RequestMethod.GET)
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, 
 						 Model model,
 						 Authentication authentication, 
@@ -139,7 +139,7 @@ public class RecetaVerController {
 	 * @param request
 	 * @return String
 	 */
-	@RequestMapping(value = { "/receta/listarVisibles", "/browser/receta/listarVisibles", "/mobile/receta/listarVisibles" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/receta/listarVisibles"}, method = RequestMethod.GET)
 	public String listarVisibles(@RequestParam(name = "page", defaultValue = "0") int page, 
 						 Model model,
 						 Authentication authentication, 

@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<body>
-		<nav th:fragment="listarMias">
+		<nav th:fragment="listarPreparaciones">
 			<table class="table table-hover m-0 p-0">
 				<thead>
 					<tr>								
@@ -20,10 +20,9 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="recetaId" th:each="receta:${recetasMias}" 
-						th:style="${#strings.isEmpty(receta.preparacionEnRecetaNombre) == false} ? 'display: none;'" 
+					<tr class="recetaId" th:each="receta:${recetasMias}"
+						th:if="${#strings.isEmpty(receta.preparacionEnRecetaNombre) == false}" 
 						th:recetaId="${receta.id}" 
-						th:esPreparacion="${#strings.isEmpty(receta.preparacionEnRecetaNombre) == false}" 
 						th:tienePreparaciones="${#lists.size(receta.preparaciones)}" 
 						th:cantidadDeIngredientes="${#lists.size(receta.ingredientes)}" 
 						recetaFiltrada="false">

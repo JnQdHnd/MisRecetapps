@@ -69,9 +69,9 @@
   						<div class="row justify-content-end text-nowrap flex-nowrap">  							
 							<div id="seleccionaListado" class="col-12 btn-group mx-0 ps-2 pe-0 mb-2" role="group" soloFavoritas="false">
 								<input type="radio" class="btn-check" name="btnRadio" id="mias" value="mias" autocomplete="off" checked="checked">
-								<label class="btn btn-outline-primary" for="mias" th:text="${tituloMias}">Mías</label>
-<!-- 							<input type="radio" class="btn-check" name="btnRadio" id="visibles" value="visibles" autocomplete="off"> -->
-<!-- 							<label class="btn btn-outline-primary" for="visibles" th:text="${tituloVisibles}">Otras</label>          -->
+								<label class="btn btn-outline-primary" for="mias" th:text="'Recetas'">Recetas</label>
+	 							<input type="radio" class="btn-check" name="btnRadio" id="preparaciones" value="preparaciones" autocomplete="off"> 
+	 							<label class="btn btn-outline-primary" for="preparaciones" th:text="'Preparaciones'">Preparaciones</label>          
 								<input type="radio" class="btn-check" name="btnRadio" id="favoritas" value="favoritas" autocomplete="off">
 								<label class="btn btn-outline-primary" for="favoritas" th:text="${tituloFavoritas}">Favoritas</label>
 							</div>

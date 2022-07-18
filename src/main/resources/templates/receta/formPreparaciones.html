@@ -16,7 +16,7 @@
 				</div>			
 				<div class="card-body pt-1 mt-0 px-2 mx-1">
 					<form id="formulario" th:action="@{/receta/gestionaPreparaciones}" th:object="${recetaConPreparaciones}" method="post" enctype="multipart/form-data">
-						<input type="hidden" id="esNuevo" th:value="${esNuevo}">
+						<input type="hidden" id="esNuevo" name="esNuevo" th:value="${esNuevo}">
 						<input type="hidden" id="tienePreparaciones" name="tienePreparaciones" th:value="${tienePreparaciones}">
 						<!--NOMBE---------------------------------------------------------------------------------------------------->											
 						<div class="row">
